@@ -26,7 +26,6 @@ public class LongConverterTest {
         Assert.assertEquals(Long.valueOf(0L), converter.convert("0"));
         Assert.assertEquals(Long.valueOf(1L), converter.convert("1"));
         Assert.assertEquals(Long.valueOf(-1L), converter.convert("-1"));
-        Assert.assertEquals(Long.valueOf(1L), converter.convert("+1"));
         Assert.assertEquals(Long.MIN_VALUE, converter.convert("-9223372036854775808").longValue());
         Assert.assertEquals(Long.MAX_VALUE, converter.convert("9223372036854775807").longValue());
     }

@@ -26,7 +26,6 @@ public class ByteConverterTest {
         Assert.assertEquals(Byte.valueOf((byte) 0), converter.convert("0"));
         Assert.assertEquals(Byte.valueOf((byte) 1), converter.convert("1"));
         Assert.assertEquals(Byte.valueOf((byte) -1), converter.convert("-1"));
-        Assert.assertEquals(Byte.valueOf((byte) 1), converter.convert("+1"));
         Assert.assertEquals(Byte.MIN_VALUE, converter.convert("-128").byteValue());
         Assert.assertEquals(Byte.MAX_VALUE, converter.convert("127").byteValue());
     }

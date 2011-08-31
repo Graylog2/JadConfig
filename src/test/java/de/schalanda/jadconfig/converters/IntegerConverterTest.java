@@ -26,7 +26,6 @@ public class IntegerConverterTest {
         Assert.assertEquals(Integer.valueOf(0), converter.convert("0"));
         Assert.assertEquals(Integer.valueOf(1), converter.convert("1"));
         Assert.assertEquals(Integer.valueOf(-1), converter.convert("-1"));
-        Assert.assertEquals(Integer.valueOf(1), converter.convert("+1"));
         Assert.assertEquals(Integer.MIN_VALUE, converter.convert("-2147483648").intValue());
         Assert.assertEquals(Integer.MAX_VALUE, converter.convert("2147483647").intValue());
     }
