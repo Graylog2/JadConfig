@@ -151,4 +151,25 @@ public class JadConfig {
 
         configurationBeans.add(configurationBean);
     }
+
+    public void save() throws RepositoryException {
+
+        for (Object configurationBean : configurationBeans) {
+            for (Field field : configurationBean.getClass().getDeclaredFields()) {
+                Parameter parameter = field.getAnnotation(Parameter.class);
+
+                if (parameter != null) {
+
+                    Object fieldValue = getFieldValue(field, configurationBean);
+
+                    if (fieldValue != null) {
+
+                        repository.write(parameter.value(), fieldValue.toString());
+                    }
+                }
+            }
+        }
+
+        repository.save();
+    }
 }

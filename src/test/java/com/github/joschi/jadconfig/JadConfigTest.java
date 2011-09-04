@@ -1,5 +1,6 @@
 package com.github.joschi.jadconfig;
 
+import com.github.joschi.jadconfig.repositories.InMemoryRepository;
 import com.github.joschi.jadconfig.repositories.PropertiesRepository;
 import com.github.joschi.jadconfig.testbeans.*;
 import com.github.joschi.jadconfig.testconverters.FoobarConverterFactory;
@@ -8,7 +9,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -184,5 +187,43 @@ public class JadConfigTest {
         jadConfig.process();
 
         Assert.assertEquals("Foobar", configurationBean.getMyString());
+    }
+
+    @Test
+    public void testSaveEmptyBean() throws RepositoryException, ValidationException {
+
+        Repository repository = new InMemoryRepository();
+        EmptyBean configurationBean = new EmptyBean();
+        jadConfig = new JadConfig(repository, configurationBean);
+        jadConfig.process();
+        jadConfig.save();
+    }
+
+    @Test
+    public void testSave() throws RepositoryException, ValidationException, URISyntaxException, IOException {
+
+        Repository inMemoryRepository = new InMemoryRepository();
+
+        SaveMeBean bean = new SaveMeBean();
+        jadConfig = new JadConfig(inMemoryRepository, bean);
+        jadConfig.process();
+
+        File file = File.createTempFile("JadConfigTest-testSave", "");
+
+        bean.setMyString("Test");
+        bean.setMyInteger(123);
+        bean.setMyUri(new URI("http://example.com/"));
+        bean.setMyFile(file);
+
+        jadConfig.save();
+
+        SaveMeBean otherBean = new SaveMeBean();
+        JadConfig otherJadConfig = new JadConfig(inMemoryRepository, otherBean);
+        otherJadConfig.process();
+
+        Assert.assertEquals("Test", otherBean.getMyString());
+        Assert.assertEquals(Integer.valueOf(123), otherBean.getMyInteger());
+        Assert.assertEquals(new URI("http://example.com/"), otherBean.getMyUri());
+        Assert.assertEquals(file.getCanonicalPath(), otherBean.getMyFile().getCanonicalPath());
     }
 }
