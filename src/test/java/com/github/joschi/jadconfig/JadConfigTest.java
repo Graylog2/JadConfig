@@ -2,6 +2,7 @@ package com.github.joschi.jadconfig;
 
 import com.github.joschi.jadconfig.repositories.PropertiesRepository;
 import com.github.joschi.jadconfig.testbeans.*;
+import com.github.joschi.jadconfig.testconverters.FoobarConverterFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +34,7 @@ public class JadConfigTest {
     public void testProcess() throws RepositoryException, ValidationException {
 
         SimpleConfigurationBean configurationBean = new SimpleConfigurationBean();
-        jadConfig = new JadConfig(configurationBean, repository);
+        jadConfig = new JadConfig(repository, configurationBean);
 
         jadConfig.process();
 
@@ -62,7 +63,7 @@ public class JadConfigTest {
     public void testProcessNonExistingProperty() throws RepositoryException, ValidationException {
 
         NonExistingParameterBean configurationBean = new NonExistingParameterBean();
-        jadConfig = new JadConfig(configurationBean, repository);
+        jadConfig = new JadConfig(repository, configurationBean);
 
         jadConfig.process();
         Assert.assertEquals("Test", configurationBean.getMyString());
@@ -73,7 +74,7 @@ public class JadConfigTest {
     public void testProcessRequiredPropertyNotFound() throws RepositoryException, ValidationException {
 
         RequiredParameterBean configurationBean = new RequiredParameterBean();
-        jadConfig = new JadConfig(configurationBean, repository);
+        jadConfig = new JadConfig(repository, configurationBean);
 
         jadConfig.process();
     }
@@ -82,7 +83,7 @@ public class JadConfigTest {
     public void testProcessDefaultProperty() throws RepositoryException, ValidationException {
 
         DefaultValueConfigurationBean configurationBean = new DefaultValueConfigurationBean();
-        jadConfig = new JadConfig(configurationBean, repository);
+        jadConfig = new JadConfig(repository, configurationBean);
 
         jadConfig.process();
         Assert.assertEquals("Test", configurationBean.getMyString());
@@ -94,7 +95,7 @@ public class JadConfigTest {
     public void testProcessValidatorMethod() throws RepositoryException, ValidationException {
 
         ValidatorMethodConfigurationBean configurationBean = new ValidatorMethodConfigurationBean();
-        jadConfig = new JadConfig(configurationBean, repository);
+        jadConfig = new JadConfig(repository, configurationBean);
 
         jadConfig.process();
 
@@ -109,7 +110,7 @@ public class JadConfigTest {
     public void testProcessEmptyBean() throws RepositoryException, ValidationException {
 
         EmptyBean configurationBean = new EmptyBean();
-        jadConfig = new JadConfig(configurationBean, repository);
+        jadConfig = new JadConfig(repository, configurationBean);
 
         jadConfig.process();
     }
@@ -118,8 +119,70 @@ public class JadConfigTest {
     public void testProcessVoidBean() throws RepositoryException, ValidationException {
 
         VoidConfigurationBean configurationBean = new VoidConfigurationBean();
-        jadConfig = new JadConfig(configurationBean, repository);
+        jadConfig = new JadConfig(repository, configurationBean);
 
         jadConfig.process();
+    }
+
+    @Test
+    public void testProcessNoBean() throws RepositoryException, ValidationException {
+
+        jadConfig = new JadConfig(repository);
+
+        jadConfig.process();
+    }
+
+    @Test
+    public void testProcessMultipleBeans() throws RepositoryException, ValidationException {
+
+        Multi1ConfigurationBean bean1 = new Multi1ConfigurationBean();
+        Multi2ConfigurationBean bean2 = new Multi2ConfigurationBean();
+
+        jadConfig = new JadConfig(repository, bean1, bean2);
+
+        jadConfig.process();
+
+        Assert.assertEquals("Test", bean1.getMyString());
+        Assert.assertEquals(123, bean2.getMyByte());
+    }
+
+    @Test
+    public void testAddConfigurationBean() throws RepositoryException, ValidationException {
+
+        Multi1ConfigurationBean bean1 = new Multi1ConfigurationBean();
+        Multi2ConfigurationBean bean2 = new Multi2ConfigurationBean();
+
+        jadConfig = new JadConfig(repository);
+
+        jadConfig.addConfigurationBean(bean1);
+        jadConfig.addConfigurationBean(bean2);
+
+        jadConfig.process();
+
+        Assert.assertEquals("Test", bean1.getMyString());
+        Assert.assertEquals(123, bean2.getMyByte());
+    }
+
+    @Test
+    public void testProcessCustomConverter() throws RepositoryException, ValidationException {
+
+        FoobarConfigurationBean configurationBean = new FoobarConfigurationBean();
+        jadConfig = new JadConfig(repository, configurationBean);
+
+        jadConfig.process();
+
+        Assert.assertEquals("Foobar", configurationBean.getMyString());
+    }
+
+    @Test
+    public void testProcessCustomConverterFactory() throws RepositoryException, ValidationException {
+
+        SimpleConfigurationBean configurationBean = new SimpleConfigurationBean();
+        jadConfig = new JadConfig(repository, configurationBean);
+
+        jadConfig.addConverterFactory(new FoobarConverterFactory());
+        jadConfig.process();
+
+        Assert.assertEquals("Foobar", configurationBean.getMyString());
     }
 }

@@ -5,31 +5,29 @@ import com.github.joschi.jadconfig.converters.StringConverter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author jschalanda
  */
 public class JadConfig {
 
-    private static final List<ConverterFactory> CONVERTER_FACTORIES = new ArrayList<ConverterFactory>();
+    private LinkedList<ConverterFactory> converterFactories;
+    private List<Object> configurationBeans;
 
-    static {
-        CONVERTER_FACTORIES.add(new DefaultConverterFactory());
-    }
-
-    private Object configurationBean;
     private Repository repository;
 
-    public void addConverterFactory(ConverterFactory converterFactory) {
+    public JadConfig() {
+        configurationBeans = new ArrayList<Object>();
 
-        CONVERTER_FACTORIES.add(converterFactory);
+        converterFactories = new LinkedList<ConverterFactory>();
+        converterFactories.add(new DefaultConverterFactory());
     }
 
-    public JadConfig(Object configurationBean, Repository repository) {
+    public JadConfig(Repository repository, Object... configurationBeans) {
+        this();
 
-        this.configurationBean = configurationBean;
+        this.configurationBeans.addAll(Arrays.asList(configurationBeans));
         this.repository = repository;
     }
 
@@ -37,11 +35,13 @@ public class JadConfig {
 
         repository.open();
 
-        processClassFields(configurationBean.getClass().getDeclaredFields());
-        invokeValidatorMethods(configurationBean.getClass().getMethods());
+        for (Object configurationBean : configurationBeans) {
+            processClassFields(configurationBean, configurationBean.getClass().getDeclaredFields());
+            invokeValidatorMethods(configurationBean, configurationBean.getClass().getMethods());
+        }
     }
 
-    private void processClassFields(Field[] fields) throws ValidationException {
+    private void processClassFields(Object configurationBean, Field[] fields) throws ValidationException {
         for (Field field : fields) {
             Parameter parameter = field.getAnnotation(Parameter.class);
 
@@ -118,7 +118,7 @@ public class JadConfig {
         validator.validate(name, value);
     }
 
-    private void invokeValidatorMethods(Method[] methods) throws ValidationException {
+    private void invokeValidatorMethods(Object configurationBean, Method[] methods) throws ValidationException {
         for (Method method : methods) {
             ValidatorMethod validatorMethod = method.getAnnotation(ValidatorMethod.class);
 
@@ -133,7 +133,7 @@ public class JadConfig {
     }
 
     private <T> Class<? extends Converter<T>> findConverter(Class<T> clazz) {
-        for (ConverterFactory factory : CONVERTER_FACTORIES) {
+        for (ConverterFactory factory : converterFactories) {
             Class<? extends Converter<T>> result = factory.getConverter(clazz);
 
             if (result != null) {
@@ -142,5 +142,15 @@ public class JadConfig {
         }
 
         return null;
+    }
+
+    public void addConverterFactory(ConverterFactory converterFactory) {
+
+        converterFactories.addFirst(converterFactory);
+    }
+
+    public void addConfigurationBean(Object configurationBean) {
+
+        configurationBeans.add(configurationBean);
     }
 }
