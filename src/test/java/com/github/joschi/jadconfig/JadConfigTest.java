@@ -76,8 +76,6 @@ public class JadConfigTest {
         jadConfig = new JadConfig(configurationBean, repository);
 
         jadConfig.process();
-        Assert.assertEquals("Test", configurationBean.getMyString());
-        Assert.assertNull(configurationBean.getNonExisting());
     }
 
     @Test
@@ -89,6 +87,7 @@ public class JadConfigTest {
         jadConfig.process();
         Assert.assertEquals("Test", configurationBean.getMyString());
         Assert.assertEquals(123, configurationBean.getMyByte());
+        Assert.assertEquals(1234, configurationBean.getMyShort());
     }
 
     @Test
@@ -104,5 +103,23 @@ public class JadConfigTest {
         Assert.assertEquals(1234, configurationBean.getMyShort());
         Assert.assertEquals(123456, configurationBean.getMyInt());
         Assert.assertEquals(1234567890123L, configurationBean.getMyLong());
+    }
+
+    @Test
+    public void testProcessEmptyBean() throws RepositoryException, ValidationException {
+
+        EmptyBean configurationBean = new EmptyBean();
+        jadConfig = new JadConfig(configurationBean, repository);
+
+        jadConfig.process();
+    }
+
+    @Test(expected = ParameterException.class)
+    public void testProcessVoidBean() throws RepositoryException, ValidationException {
+
+        VoidConfigurationBean configurationBean = new VoidConfigurationBean();
+        jadConfig = new JadConfig(configurationBean, repository);
+
+        jadConfig.process();
     }
 }

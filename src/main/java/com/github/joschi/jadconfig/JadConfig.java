@@ -47,35 +47,44 @@ public class JadConfig {
 
             if (parameter != null) {
 
-                Object fieldValue;
-                String name = parameter.value();
-                String value = repository.read(name);
+                Object fieldValue = getFieldValue(field, configurationBean);
 
-                if (value == null && parameter.required()) {
-                    throw new ParameterException("Required parameter \"" + name + "\" not found.");
+                String parameterName = parameter.value();
+                String parameterValue = repository.read(parameterName);
+
+                if (parameterValue == null && fieldValue == null && parameter.required()) {
+                    throw new ParameterException("Required parameter \"" + parameterName + "\" not found.");
                 }
 
-                field.setAccessible(true);
+                if (parameterValue != null) {
+
+                    validateParameter(parameter.validator(), parameterName, parameterValue);
+
+                    fieldValue = convertStringValue(field.getType(), parameter.converter(), parameterValue);
+                }
 
                 try {
-                    fieldValue = field.get(configurationBean);
-                } catch (IllegalAccessException e) {
-                    throw new ParameterException("Couldn't obtain value of field " + field.getName(), e);
-                }
-
-                if (value != null) {
-
-                    validateParameter(parameter, name, value);
-
-                    Converter converter = getConverter(field.getType(), parameter.converter());
-
-                    try {
-                        field.set(configurationBean, converter.convert(value));
-                    } catch (IllegalAccessException e) {
-                        throw new ParameterException("Couldn't set field " + field.getName(), e);
-                    }
+                    field.set(configurationBean, fieldValue);
+                } catch (Exception e) {
+                    throw new ParameterException("Couldn't set field " + field.getName(), e);
                 }
             }
+        }
+    }
+
+    private Object convertStringValue(Class<?> fieldType, Class<? extends Converter<?>> converterClass, String stringValue) {
+        Converter converter = getConverter(fieldType, converterClass);
+
+        return converter.convert(stringValue);
+    }
+
+    private Object getFieldValue(Field field, Object bean) {
+        field.setAccessible(true);
+
+        try {
+            return field.get(bean);
+        } catch (IllegalAccessException e) {
+            throw new ParameterException("Couldn't obtain value of field " + field.getName(), e);
         }
     }
 
@@ -97,13 +106,13 @@ public class JadConfig {
         }
     }
 
-    private void validateParameter(Parameter parameter, String name, String value) throws ValidationException {
+    private void validateParameter(Class<? extends Validator> validatorClass, String name, String value) throws ValidationException {
         Validator validator;
 
         try {
-            validator = parameter.validator().newInstance();
+            validator = validatorClass.newInstance();
         } catch (Exception e) {
-            throw new ParameterException("Couldn't initialize validator " + parameter.validator().getCanonicalName(), e);
+            throw new ParameterException("Couldn't initialize validator " + validatorClass.getCanonicalName(), e);
         }
 
         validator.validate(name, value);
