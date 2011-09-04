@@ -120,9 +120,7 @@ public class JadConfig {
 
     private void invokeValidatorMethods(Object configurationBean, Method[] methods) throws ValidationException {
         for (Method method : methods) {
-            ValidatorMethod validatorMethod = method.getAnnotation(ValidatorMethod.class);
-
-            if (validatorMethod != null) {
+            if (method.isAnnotationPresent(ValidatorMethod.class)) {
                 try {
                     method.invoke(configurationBean);
                 } catch (Exception e) {
