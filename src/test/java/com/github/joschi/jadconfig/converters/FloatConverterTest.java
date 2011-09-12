@@ -21,33 +21,60 @@ public class FloatConverterTest {
     }
 
     @Test
-    public void testConvert() {
+    public void testConvertFrom() {
 
-        Assert.assertEquals(Float.valueOf(0.0f), converter.convert("0.0"));
-        Assert.assertEquals(Float.valueOf(1.0f), converter.convert("1.0"));
-        Assert.assertEquals(Float.valueOf(-1.0f), converter.convert("-1.0"));
-        Assert.assertEquals(Float.valueOf(1.0f), converter.convert("+1.0"));
+        Assert.assertEquals(Float.valueOf(0.0f), converter.convertFrom("0.0"));
+        Assert.assertEquals(Float.valueOf(-0.0f), converter.convertFrom("-0.0"));
+        Assert.assertEquals(Float.valueOf(1.0f), converter.convertFrom("1.0"));
+        Assert.assertEquals(Float.valueOf(-1.0f), converter.convertFrom("-1.0"));
+        Assert.assertEquals(Float.valueOf(1.0f), converter.convertFrom("+1.0"));
 
-        Assert.assertEquals(Float.MIN_VALUE, converter.convert("1.4E-45"), 0.0f);
-        Assert.assertEquals(Float.MAX_VALUE, converter.convert("3.4028235E38"), 0.0f);
+        Assert.assertEquals(Float.MIN_VALUE, converter.convertFrom("1.4E-45"), 0.0f);
+        Assert.assertEquals(Float.MAX_VALUE, converter.convertFrom("3.4028235E38"), 0.0f);
 
-        Assert.assertEquals(0.0f, converter.convert("1.4E-46"), 0.0f);
-        Assert.assertEquals(Float.MIN_NORMAL, converter.convert("1.17549435E-38f"), 0.0f);
+        Assert.assertEquals(0.0f, converter.convertFrom("1.4E-46"), 0.0f);
+        Assert.assertEquals(Float.MIN_NORMAL, converter.convertFrom("1.17549435E-38f"), 0.0f);
 
-        Assert.assertTrue(converter.convert("3.4028235E39").isInfinite());
-        Assert.assertTrue(converter.convert("-3.4028235E39").isInfinite());
-        Assert.assertTrue(converter.convert("NaN").isNaN());
+        Assert.assertEquals(Float.POSITIVE_INFINITY, converter.convertFrom("3.4028235E39"), 0.0f);
+        Assert.assertEquals(Float.NEGATIVE_INFINITY, converter.convertFrom("-3.4028235E39"), 0.0f);
+        Assert.assertEquals(Float.POSITIVE_INFINITY, converter.convertFrom("Infinity"), 0.0f);
+        Assert.assertEquals(Float.NEGATIVE_INFINITY, converter.convertFrom("-Infinity"), 0.0f);
+        Assert.assertTrue(converter.convertFrom("NaN").isNaN());
     }
 
     @Test(expected = ParameterException.class)
-    public void testConvertNull() {
+    public void testConvertFromNull() {
 
-        converter.convert(null);
+        converter.convertFrom(null);
     }
 
     @Test(expected = ParameterException.class)
-    public void testConvertInvalid() {
+    public void testConvertFromInvalid() {
 
-        converter.convert("Not a number");
+        converter.convertFrom("Not a number");
+    }
+
+    @Test
+    public void testConvertTo() {
+
+        Assert.assertEquals("0.0", converter.convertTo(0.0f));
+        Assert.assertEquals("-0.0", converter.convertTo(-0.0f));
+        Assert.assertEquals("1.0", converter.convertTo(1.0f));
+        Assert.assertEquals("-1.0", converter.convertTo(-1.0f));
+
+        Assert.assertEquals("1.4E-45", converter.convertTo(Float.MIN_VALUE));
+        Assert.assertEquals("3.4028235E38", converter.convertTo(Float.MAX_VALUE));
+
+        Assert.assertEquals("1.17549435E-38", converter.convertTo(Float.MIN_NORMAL));
+
+        Assert.assertEquals("Infinity", converter.convertTo(Float.POSITIVE_INFINITY));
+        Assert.assertEquals("-Infinity", converter.convertTo(Float.NEGATIVE_INFINITY));
+        Assert.assertEquals("NaN", converter.convertTo(Float.NaN));
+    }
+
+    @Test(expected = ParameterException.class)
+    public void testConvertToNull() {
+
+        converter.convertTo(null);
     }
 }

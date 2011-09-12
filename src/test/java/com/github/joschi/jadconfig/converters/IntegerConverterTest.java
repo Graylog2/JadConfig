@@ -21,36 +21,52 @@ public class IntegerConverterTest {
     }
 
     @Test
-    public void testConvert() {
+    public void testConvertFrom() {
 
-        Assert.assertEquals(Integer.valueOf(0), converter.convert("0"));
-        Assert.assertEquals(Integer.valueOf(1), converter.convert("1"));
-        Assert.assertEquals(Integer.valueOf(-1), converter.convert("-1"));
-        Assert.assertEquals(Integer.MIN_VALUE, converter.convert("-2147483648").intValue());
-        Assert.assertEquals(Integer.MAX_VALUE, converter.convert("2147483647").intValue());
+        Assert.assertEquals(Integer.valueOf(0), converter.convertFrom("0"));
+        Assert.assertEquals(Integer.valueOf(1), converter.convertFrom("1"));
+        Assert.assertEquals(Integer.valueOf(-1), converter.convertFrom("-1"));
+        Assert.assertEquals(Integer.MIN_VALUE, converter.convertFrom("-2147483648").intValue());
+        Assert.assertEquals(Integer.MAX_VALUE, converter.convertFrom("2147483647").intValue());
     }
 
     @Test(expected = ParameterException.class)
-    public void testConvertTooBig() {
+    public void testConvertFromTooBig() {
 
-        converter.convert("2147483648");
+        converter.convertFrom("2147483648");
     }
 
     @Test(expected = ParameterException.class)
-    public void testConvertTooSmall() {
+    public void testConvertFromTooSmall() {
 
-        converter.convert("-2147483649");
+        converter.convertFrom("-2147483649");
     }
 
     @Test(expected = ParameterException.class)
-    public void testConvertNull() {
+    public void testConvertFromNull() {
 
-        converter.convert(null);
+        converter.convertFrom(null);
     }
 
     @Test(expected = ParameterException.class)
     public void testConvertInvalid() {
 
-        converter.convert("Not a number");
+        converter.convertFrom("Not a number");
+    }
+
+    @Test
+    public void testConvertTo() {
+
+        Assert.assertEquals("0", converter.convertTo(0));
+        Assert.assertEquals("1", converter.convertTo(1));
+        Assert.assertEquals("-1", converter.convertTo(-1));
+        Assert.assertEquals("-2147483648", converter.convertTo(Integer.MIN_VALUE));
+        Assert.assertEquals("2147483647", converter.convertTo(Integer.MAX_VALUE));
+    }
+
+    @Test(expected = ParameterException.class)
+    public void testConvertToNull() {
+
+        converter.convertTo(null);
     }
 }

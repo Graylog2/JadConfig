@@ -11,7 +11,7 @@ import com.github.joschi.jadconfig.ParameterException;
 public class IntegerConverter implements Converter<Integer> {
 
     @Override
-    public Integer convert(String value) {
+    public Integer convertFrom(String value) {
 
         Integer result;
 
@@ -23,5 +23,15 @@ public class IntegerConverter implements Converter<Integer> {
         }
 
         return result;
+    }
+
+    @Override
+    public String convertTo(Integer value) {
+
+        if (value == null) {
+            throw new ParameterException("Couldn't convert \"null\" to String.");
+        }
+
+        return value.toString();
     }
 }

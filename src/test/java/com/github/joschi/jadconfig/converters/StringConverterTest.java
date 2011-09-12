@@ -21,15 +21,28 @@ public class StringConverterTest {
     }
 
     @Test
-    public void testConvert() {
+    public void testConvertFrom() {
 
-        Assert.assertEquals("", converter.convert(""));
-        Assert.assertEquals("Test", converter.convert("Test"));
+        Assert.assertEquals("", converter.convertFrom(""));
+        Assert.assertEquals("Test", converter.convertFrom("Test"));
     }
 
     @Test(expected = ParameterException.class)
-    public void testConvertNull() {
+    public void testConvertFromNull() {
 
-        converter.convert(null);
+        converter.convertFrom(null);
+    }
+
+    @Test
+    public void testConvertTo() {
+
+        Assert.assertEquals("", converter.convertTo(""));
+        Assert.assertEquals("Test", converter.convertTo("Test"));
+    }
+
+    @Test(expected = ParameterException.class)
+    public void testConvertToNull() {
+
+        converter.convertTo(null);
     }
 }

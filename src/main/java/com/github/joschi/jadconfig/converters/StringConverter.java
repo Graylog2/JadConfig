@@ -11,12 +11,18 @@ import com.github.joschi.jadconfig.ParameterException;
 public class StringConverter implements Converter<String> {
 
     @Override
-    public String convert(String value) {
+    public String convertFrom(String value) {
 
         if (value == null) {
             throw new ParameterException("Couldn't convert value \"" + value + "\" to String.");
         }
 
         return value;
+    }
+
+    @Override
+    public String convertTo(String value) {
+
+        return convertFrom(value);
     }
 }

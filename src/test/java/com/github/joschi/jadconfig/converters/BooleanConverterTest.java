@@ -21,29 +21,42 @@ public class BooleanConverterTest {
     }
 
     @Test
-    public void testConvert() {
+    public void testConvertFrom() {
 
-        Assert.assertTrue(converter.convert("true"));
-        Assert.assertTrue(converter.convert("tRuE"));
-        Assert.assertFalse(converter.convert("false"));
-        Assert.assertFalse(converter.convert("fAlSe"));
+        Assert.assertTrue(converter.convertFrom("true"));
+        Assert.assertTrue(converter.convertFrom("tRuE"));
+        Assert.assertFalse(converter.convertFrom("false"));
+        Assert.assertFalse(converter.convertFrom("fAlSe"));
     }
 
     @Test(expected = ParameterException.class)
-    public void testConvertNull() {
+    public void testConvertFromNull() {
 
-        Assert.assertTrue(converter.convert(null));
+        Assert.assertTrue(converter.convertFrom(null));
     }
 
     @Test(expected = ParameterException.class)
     public void testConvertEmpty() {
 
-        Assert.assertTrue(converter.convert(""));
+        Assert.assertTrue(converter.convertFrom(""));
     }
 
     @Test(expected = ParameterException.class)
     public void testConvertInvalid() {
 
-        Assert.assertTrue(converter.convert("yes"));
+        Assert.assertTrue(converter.convertFrom("yes"));
+    }
+
+    @Test
+    public void testConvertTo() {
+
+        Assert.assertEquals("true", converter.convertTo(true));
+        Assert.assertEquals("false", converter.convertTo(false));
+    }
+
+    @Test(expected = ParameterException.class)
+    public void testConvertToNull() {
+
+        converter.convertTo(null);
     }
 }

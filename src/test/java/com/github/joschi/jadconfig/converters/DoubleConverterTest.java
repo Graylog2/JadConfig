@@ -21,33 +21,59 @@ public class DoubleConverterTest {
     }
 
     @Test
-    public void testConvert() {
+    public void testConvertFrom() {
 
-        Assert.assertEquals(Double.valueOf(0.0f), converter.convert("0.0"));
-        Assert.assertEquals(Double.valueOf(1.0f), converter.convert("1.0"));
-        Assert.assertEquals(Double.valueOf(-1.0f), converter.convert("-1.0"));
-        Assert.assertEquals(Double.valueOf(1.0f), converter.convert("+1.0"));
+        Assert.assertEquals(Double.valueOf(0.0d), converter.convertFrom("0.0"));
+        Assert.assertEquals(Double.valueOf(-0.0d), converter.convertFrom("-0.0"));
+        Assert.assertEquals(Double.valueOf(1.0d), converter.convertFrom("1.0"));
+        Assert.assertEquals(Double.valueOf(-1.0d), converter.convertFrom("-1.0"));
+        Assert.assertEquals(Double.valueOf(1.0d), converter.convertFrom("+1.0"));
 
-        Assert.assertEquals(Double.MIN_VALUE, converter.convert("4.9E-324"), 0.0d);
-        Assert.assertEquals(Double.MAX_VALUE, converter.convert("1.7976931348623157E308"), 0.0d);
+        Assert.assertEquals(Double.MIN_VALUE, converter.convertFrom("4.9E-324"), 0.0d);
+        Assert.assertEquals(Double.MAX_VALUE, converter.convertFrom("1.7976931348623157E308"), 0.0d);
 
-        Assert.assertEquals(0.0d, converter.convert("4.9E-325"), 0.0d);
-        Assert.assertEquals(Double.MIN_NORMAL, converter.convert("2.2250738585072014E-308"), 0.0d);
+        Assert.assertEquals(0.0d, converter.convertFrom("4.9E-325"), 0.0d);
+        Assert.assertEquals(Double.MIN_NORMAL, converter.convertFrom("2.2250738585072014E-308"), 0.0d);
 
-        Assert.assertTrue(converter.convert("1.7976931348623157E309").isInfinite());
-        Assert.assertTrue(converter.convert("-1.7976931348623157E309").isInfinite());
-        Assert.assertTrue(converter.convert("NaN").isNaN());
+        Assert.assertEquals(Double.POSITIVE_INFINITY, converter.convertFrom("Infinity"), 0.0d);
+        Assert.assertEquals(Double.NEGATIVE_INFINITY, converter.convertFrom("-Infinity"), 0.0d);
+        Assert.assertEquals(Double.POSITIVE_INFINITY, converter.convertFrom("1.7976931348623157E309"), 0.0d);
+        Assert.assertEquals(Double.NEGATIVE_INFINITY, converter.convertFrom("-1.7976931348623157E309"), 0.0d);
+        Assert.assertTrue(converter.convertFrom("NaN").isNaN());
     }
 
     @Test(expected = ParameterException.class)
-    public void testConvertNull() {
+    public void testConvertFromNull() {
 
-        converter.convert(null);
+        converter.convertFrom(null);
     }
 
     @Test(expected = ParameterException.class)
-    public void testConvertInvalid() {
+    public void testConvertFromInvalid() {
 
-        converter.convert("Not a number");
+        converter.convertFrom("Not a number");
+    }
+
+    @Test
+    public void testConvertTo() {
+
+        Assert.assertEquals("0.0", converter.convertTo(0.0d));
+        Assert.assertEquals("-0.0", converter.convertTo(-0.0d));
+        Assert.assertEquals("1.0", converter.convertTo(1.0d));
+        Assert.assertEquals("-1.0", converter.convertTo(-1.0d));
+
+        Assert.assertEquals("4.9E-324", converter.convertTo(Double.MIN_VALUE));
+        Assert.assertEquals("1.7976931348623157E308", converter.convertTo(Double.MAX_VALUE));
+        Assert.assertEquals("2.2250738585072014E-308", converter.convertTo(Double.MIN_NORMAL));
+
+        Assert.assertEquals("Infinity", converter.convertTo(Double.POSITIVE_INFINITY));
+        Assert.assertEquals("-Infinity", converter.convertTo(Double.NEGATIVE_INFINITY));
+        Assert.assertEquals("NaN", converter.convertTo(Double.NaN));
+    }
+
+    @Test(expected = ParameterException.class)
+    public void testConvertToNull() {
+
+        converter.convertTo(null);
     }
 }

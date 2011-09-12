@@ -11,7 +11,7 @@ import com.github.joschi.jadconfig.ParameterException;
 public class ShortConverter implements Converter<Short> {
 
     @Override
-    public Short convert(String value) {
+    public Short convertFrom(String value) {
 
         Short result;
 
@@ -23,5 +23,15 @@ public class ShortConverter implements Converter<Short> {
         }
 
         return result;
+    }
+
+    @Override
+    public String convertTo(Short value) {
+
+        if (value == null) {
+            throw new ParameterException("Couldn't convert \"null\" to String.");
+        }
+
+        return value.toString();
     }
 }

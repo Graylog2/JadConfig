@@ -13,7 +13,7 @@ import java.net.URI;
 public class URIConverter implements Converter<URI> {
 
     @Override
-    public URI convert(String value) {
+    public URI convertFrom(String value) {
 
         URI result;
 
@@ -25,5 +25,15 @@ public class URIConverter implements Converter<URI> {
         }
 
         return result;
+    }
+
+    @Override
+    public String convertTo(URI value) {
+
+        if (value == null) {
+            throw new ParameterException("Couldn't convert \"null\" to String.");
+        }
+
+        return value.toString();
     }
 }

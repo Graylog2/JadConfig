@@ -17,7 +17,7 @@ public class StringListConverter implements Converter<List<String>> {
     private static final String DELIMITER = ",";
 
     @Override
-    public List<String> convert(String value) {
+    public List<String> convertFrom(String value) {
 
         if (value == null) {
             throw new ParameterException("Couldn't convert value \"" + value + "\" to list of String.");
@@ -29,5 +29,24 @@ public class StringListConverter implements Converter<List<String>> {
         }
 
         return Arrays.asList(value.split(DELIMITER));
+    }
+
+    @Override
+    public String convertTo(List<String> value) {
+
+        if (value == null) {
+            throw new ParameterException("Couldn't convert \"null\" to String.");
+        }
+
+        StringBuilder sb = new StringBuilder();
+        String separator = "";
+
+        for (String element : value) {
+            sb.append(separator);
+            sb.append(element);
+            separator = DELIMITER;
+        }
+
+        return sb.toString();
     }
 }

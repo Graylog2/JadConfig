@@ -23,21 +23,34 @@ public class URIConverterTest {
     }
 
     @Test
-    public void testConvert() {
+    public void testConvertFrom() {
 
-        Assert.assertEquals(URI.create("http://localhost:80/path?key=value#fragment"), converter.convert("http://localhost:80/path?key=value#fragment"));
-        Assert.assertEquals(URI.create(""), converter.convert(""));
+        Assert.assertEquals(URI.create("http://localhost:80/path?key=value#fragment"), converter.convertFrom("http://localhost:80/path?key=value#fragment"));
+        Assert.assertEquals(URI.create(""), converter.convertFrom(""));
     }
 
     @Test(expected = ParameterException.class)
-    public void testConvertNull() {
+    public void testConvertFromNull() {
 
-        converter.convert(null);
+        converter.convertFrom(null);
     }
 
     @Test(expected = ParameterException.class)
-    public void testConvertInvalid() {
+    public void testConvertFromInvalid() {
 
-        converter.convert("Not an URI");
+        converter.convertFrom("Not an URI");
+    }
+
+    @Test
+    public void testConvertTo() {
+
+        Assert.assertEquals("http://localhost:80/path?key=value#fragment", converter.convertTo(URI.create("http://localhost:80/path?key=value#fragment")));
+        Assert.assertEquals("", converter.convertTo(URI.create("")));
+    }
+
+    @Test(expected = ParameterException.class)
+    public void testConvertToNull() {
+
+        converter.convertTo(null);
     }
 }

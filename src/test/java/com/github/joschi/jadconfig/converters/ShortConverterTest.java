@@ -21,36 +21,52 @@ public class ShortConverterTest {
     }
 
     @Test
-    public void testConvert() {
+    public void testConvertFrom() {
 
-        Assert.assertEquals(Short.valueOf((short) 0), converter.convert("0"));
-        Assert.assertEquals(Short.valueOf((short) 1), converter.convert("1"));
-        Assert.assertEquals(Short.valueOf((short) -1), converter.convert("-1"));
-        Assert.assertEquals(Short.MIN_VALUE, converter.convert("-32768").shortValue());
-        Assert.assertEquals(Short.MAX_VALUE, converter.convert("32767").shortValue());
+        Assert.assertEquals(Short.valueOf((short) 0), converter.convertFrom("0"));
+        Assert.assertEquals(Short.valueOf((short) 1), converter.convertFrom("1"));
+        Assert.assertEquals(Short.valueOf((short) -1), converter.convertFrom("-1"));
+        Assert.assertEquals(Short.MIN_VALUE, converter.convertFrom("-32768").shortValue());
+        Assert.assertEquals(Short.MAX_VALUE, converter.convertFrom("32767").shortValue());
     }
 
     @Test(expected = ParameterException.class)
-    public void testConvertTooBig() {
+    public void testConvertFromTooBig() {
 
-        converter.convert("32768");
+        converter.convertFrom("32768");
     }
 
     @Test(expected = ParameterException.class)
-    public void testConvertTooSmall() {
+    public void testConvertFromTooSmall() {
 
-        converter.convert("-32769");
+        converter.convertFrom("-32769");
     }
 
     @Test(expected = ParameterException.class)
-    public void testConvertNull() {
+    public void testConvertFromNull() {
 
-        converter.convert(null);
+        converter.convertFrom(null);
     }
 
     @Test(expected = ParameterException.class)
-    public void testConvertInvalid() {
+    public void testConvertFromInvalid() {
 
-        converter.convert("Not a number");
+        converter.convertFrom("Not a number");
+    }
+
+    @Test
+    public void testConvertTo() {
+
+        Assert.assertEquals("0", converter.convertTo((short) 0));
+        Assert.assertEquals("1", converter.convertTo((short) 1));
+        Assert.assertEquals("-1", converter.convertTo((short) -1));
+        Assert.assertEquals("-32768", converter.convertTo(Short.MIN_VALUE));
+        Assert.assertEquals("32767", converter.convertTo(Short.MAX_VALUE));
+    }
+
+    @Test(expected = ParameterException.class)
+    public void testConvertToNull() {
+
+        converter.convertTo(null);
     }
 }

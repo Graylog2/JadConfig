@@ -11,7 +11,12 @@ import com.github.joschi.jadconfig.Converter;
 public class NoConverter implements Converter<String> {
 
     @Override
-    public String convert(String value) {
+    public String convertFrom(String value) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String convertTo(String value) {
         throw new UnsupportedOperationException();
     }
 }

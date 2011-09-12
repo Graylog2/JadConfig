@@ -11,7 +11,7 @@ import com.github.joschi.jadconfig.ParameterException;
 public class FloatConverter implements Converter<Float> {
 
     @Override
-    public Float convert(String value) {
+    public Float convertFrom(String value) {
 
         Float result;
 
@@ -23,5 +23,15 @@ public class FloatConverter implements Converter<Float> {
         }
 
         return result;
+    }
+
+    @Override
+    public String convertTo(Float value) {
+
+        if (value == null) {
+            throw new ParameterException("Couldn't convert \"null\" to String.");
+        }
+
+        return value.toString();
     }
 }

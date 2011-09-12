@@ -5,7 +5,10 @@ import com.github.joschi.jadconfig.converters.StringConverter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author jschalanda
@@ -75,7 +78,7 @@ public class JadConfig {
     private Object convertStringValue(Class<?> fieldType, Class<? extends Converter<?>> converterClass, String stringValue) {
         Converter converter = getConverter(fieldType, converterClass);
 
-        return converter.convert(stringValue);
+        return converter.convertFrom(stringValue);
     }
 
     private Object getFieldValue(Field field, Object bean) {
@@ -163,13 +166,20 @@ public class JadConfig {
                     Object fieldValue = getFieldValue(field, configurationBean);
 
                     if (fieldValue != null) {
+                        String stringValue = convertFieldValue(field.getType(), parameter.converter(), fieldValue);
 
-                        repository.write(parameter.value(), fieldValue.toString());
+                        repository.write(parameter.value(), stringValue);
                     }
                 }
             }
         }
 
         repository.save();
+    }
+
+    private String convertFieldValue(Class<?> fieldType, Class<? extends Converter<?>> converterClass, Object fieldValue) {
+        Converter converter = getConverter(fieldType, converterClass);
+
+        return converter.convertTo(fieldValue);
     }
 }

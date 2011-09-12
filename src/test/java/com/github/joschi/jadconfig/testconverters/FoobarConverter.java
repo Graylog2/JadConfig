@@ -8,7 +8,12 @@ import com.github.joschi.jadconfig.Converter;
 public class FoobarConverter implements Converter<String> {
 
     @Override
-    public String convert(String value) {
+    public String convertFrom(String value) {
         return "Foobar";
+    }
+
+    @Override
+    public String convertTo(String value) {
+        return value;
     }
 }

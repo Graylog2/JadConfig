@@ -5,5 +5,7 @@ package com.github.joschi.jadconfig;
  */
 public interface Converter<T> {
 
-    T convert(String value);
+    T convertFrom(String value);
+
+    String convertTo(T value);
 }

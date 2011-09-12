@@ -19,8 +19,14 @@ public class NoConverterTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testConvert() {
+    public void testConvertFrom() {
 
-        converter.convert("");
+        converter.convertFrom("");
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testConvertTo() {
+
+        converter.convertTo("");
     }
 }

@@ -11,7 +11,7 @@ import com.github.joschi.jadconfig.ParameterException;
 public class DoubleConverter implements Converter<Double> {
 
     @Override
-    public Double convert(String value) {
+    public Double convertFrom(String value) {
 
         Double result;
 
@@ -23,5 +23,15 @@ public class DoubleConverter implements Converter<Double> {
         }
 
         return result;
+    }
+
+    @Override
+    public String convertTo(Double value) {
+
+        if (value == null) {
+            throw new ParameterException("Couldn't convert \"null\" to String.");
+        }
+
+        return value.toString();
     }
 }

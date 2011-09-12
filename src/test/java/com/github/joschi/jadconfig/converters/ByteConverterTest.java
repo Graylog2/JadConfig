@@ -21,36 +21,52 @@ public class ByteConverterTest {
     }
 
     @Test
-    public void testConvert() {
+    public void testConvertFrom() {
 
-        Assert.assertEquals(Byte.valueOf((byte) 0), converter.convert("0"));
-        Assert.assertEquals(Byte.valueOf((byte) 1), converter.convert("1"));
-        Assert.assertEquals(Byte.valueOf((byte) -1), converter.convert("-1"));
-        Assert.assertEquals(Byte.MIN_VALUE, converter.convert("-128").byteValue());
-        Assert.assertEquals(Byte.MAX_VALUE, converter.convert("127").byteValue());
+        Assert.assertEquals(Byte.valueOf((byte) 0), converter.convertFrom("0"));
+        Assert.assertEquals(Byte.valueOf((byte) 1), converter.convertFrom("1"));
+        Assert.assertEquals(Byte.valueOf((byte) -1), converter.convertFrom("-1"));
+        Assert.assertEquals(Byte.MIN_VALUE, converter.convertFrom("-128").byteValue());
+        Assert.assertEquals(Byte.MAX_VALUE, converter.convertFrom("127").byteValue());
     }
 
     @Test(expected = ParameterException.class)
-    public void testConvertTooBig() {
+    public void testConvertFromTooBig() {
 
-        converter.convert("128");
+        converter.convertFrom("128");
     }
 
     @Test(expected = ParameterException.class)
-    public void testConvertTooSmall() {
+    public void testConvertFromTooSmall() {
 
-        converter.convert("-129");
+        converter.convertFrom("-129");
     }
 
     @Test(expected = ParameterException.class)
-    public void testConvertNull() {
+    public void testConvertFromNull() {
 
-        converter.convert(null);
+        converter.convertTo(null);
     }
 
     @Test(expected = ParameterException.class)
     public void testConvertInvalid() {
 
-        converter.convert("Not a number");
+        converter.convertFrom("Not a number");
+    }
+
+    @Test
+    public void testConvertTo() {
+
+        Assert.assertEquals("0", converter.convertTo((byte) 0));
+        Assert.assertEquals("1", converter.convertTo((byte) 1));
+        Assert.assertEquals("-1", converter.convertTo((byte) -1));
+        Assert.assertEquals("-128", converter.convertTo(Byte.MIN_VALUE));
+        Assert.assertEquals("127", converter.convertTo(Byte.MAX_VALUE));
+    }
+
+    @Test(expected = ParameterException.class)
+    public void testConvertToNull() {
+
+        converter.convertTo(null);
     }
 }

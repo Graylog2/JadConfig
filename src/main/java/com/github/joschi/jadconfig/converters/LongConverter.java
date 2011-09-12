@@ -11,7 +11,7 @@ import com.github.joschi.jadconfig.ParameterException;
 public class LongConverter implements Converter<Long> {
 
     @Override
-    public Long convert(String value) {
+    public Long convertFrom(String value) {
 
         Long result;
 
@@ -23,5 +23,15 @@ public class LongConverter implements Converter<Long> {
         }
 
         return result;
+    }
+
+    @Override
+    public String convertTo(Long value) {
+
+        if (value == null) {
+            throw new ParameterException("Couldn't convert \"null\" to String.");
+        }
+
+        return value.toString();
     }
 }

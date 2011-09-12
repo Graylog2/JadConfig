@@ -4,16 +4,14 @@ import com.github.joschi.jadconfig.Converter;
 import com.github.joschi.jadconfig.ParameterException;
 
 /**
- * Created by IntelliJ IDEA.
- * User: joschi
- * Date: 28.08.11
- * Time: 18:22
- * To change this template use File | Settings | File Templates.
+ * Converter for type {@link Byte}
+ *
+ * @author jschalanda
  */
 public class ByteConverter implements Converter<Byte> {
 
     @Override
-    public Byte convert(String value) {
+    public Byte convertFrom(String value) {
 
         Byte result;
 
@@ -25,5 +23,15 @@ public class ByteConverter implements Converter<Byte> {
         }
 
         return result;
+    }
+
+    @Override
+    public String convertTo(Byte value) {
+
+        if (value == null) {
+            throw new ParameterException("Couldn't convert \"null\" to String.");
+        }
+
+        return value.toString();
     }
 }

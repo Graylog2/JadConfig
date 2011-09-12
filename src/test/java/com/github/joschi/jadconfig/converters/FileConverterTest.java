@@ -24,18 +24,34 @@ public class FileConverterTest {
     }
 
     @Test
-    public void testConvert() throws IOException {
+    public void testConvertFrom() throws IOException {
 
         File tmpFile = File.createTempFile("FileConverterTest-testConvert", ".tmp");
         tmpFile.deleteOnExit();
 
-        Assert.assertEquals(new File(""), converter.convert(""));
-        Assert.assertEquals(tmpFile, converter.convert(tmpFile.getCanonicalPath()));
+        Assert.assertEquals(new File(""), converter.convertFrom(""));
+        Assert.assertEquals(tmpFile, converter.convertFrom(tmpFile.getCanonicalPath()));
     }
 
     @Test(expected = ParameterException.class)
-    public void testConvertNull() {
+    public void testConvertFromNull() {
 
-        converter.convert(null);
+        converter.convertFrom(null);
+    }
+
+    @Test
+    public void testConvertTo() throws IOException {
+
+        File tmpFile = File.createTempFile("FileConverterTest-testConvert", ".tmp");
+        tmpFile.deleteOnExit();
+
+        Assert.assertEquals("", converter.convertTo(new File("")));
+        Assert.assertEquals(tmpFile.getCanonicalPath(), converter.convertTo(tmpFile));
+    }
+
+    @Test(expected = ParameterException.class)
+    public void testConvertToNull() {
+
+        converter.convertTo(null);
     }
 }
