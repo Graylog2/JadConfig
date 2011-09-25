@@ -28,27 +28,27 @@ import java.util.Map;
  */
 public class DefaultConverterFactory implements ConverterFactory {
 
-    private static Map<Class, Class<? extends Converter<?>>> defaultConverters;
+    private static final Map<Class, Class<? extends Converter<?>>> DEFAULT_CONVERTERS;
 
     static {
-        defaultConverters = new HashMap<Class, Class<? extends Converter<?>>>();
-        defaultConverters.put(String.class, StringConverter.class);
-        defaultConverters.put(Byte.class, ByteConverter.class);
-        defaultConverters.put(byte.class, ByteConverter.class);
-        defaultConverters.put(Short.class, ShortConverter.class);
-        defaultConverters.put(short.class, ShortConverter.class);
-        defaultConverters.put(Integer.class, IntegerConverter.class);
-        defaultConverters.put(int.class, IntegerConverter.class);
-        defaultConverters.put(Long.class, LongConverter.class);
-        defaultConverters.put(long.class, LongConverter.class);
-        defaultConverters.put(Boolean.class, BooleanConverter.class);
-        defaultConverters.put(boolean.class, BooleanConverter.class);
-        defaultConverters.put(Float.class, FloatConverter.class);
-        defaultConverters.put(float.class, FloatConverter.class);
-        defaultConverters.put(Double.class, DoubleConverter.class);
-        defaultConverters.put(double.class, DoubleConverter.class);
-        defaultConverters.put(URI.class, URIConverter.class);
-        defaultConverters.put(File.class, FileConverter.class);
+        DEFAULT_CONVERTERS = new HashMap<Class, Class<? extends Converter<?>>>();
+        DEFAULT_CONVERTERS.put(String.class, StringConverter.class);
+        DEFAULT_CONVERTERS.put(Byte.class, ByteConverter.class);
+        DEFAULT_CONVERTERS.put(byte.class, ByteConverter.class);
+        DEFAULT_CONVERTERS.put(Short.class, ShortConverter.class);
+        DEFAULT_CONVERTERS.put(short.class, ShortConverter.class);
+        DEFAULT_CONVERTERS.put(Integer.class, IntegerConverter.class);
+        DEFAULT_CONVERTERS.put(int.class, IntegerConverter.class);
+        DEFAULT_CONVERTERS.put(Long.class, LongConverter.class);
+        DEFAULT_CONVERTERS.put(long.class, LongConverter.class);
+        DEFAULT_CONVERTERS.put(Boolean.class, BooleanConverter.class);
+        DEFAULT_CONVERTERS.put(boolean.class, BooleanConverter.class);
+        DEFAULT_CONVERTERS.put(Float.class, FloatConverter.class);
+        DEFAULT_CONVERTERS.put(float.class, FloatConverter.class);
+        DEFAULT_CONVERTERS.put(Double.class, DoubleConverter.class);
+        DEFAULT_CONVERTERS.put(double.class, DoubleConverter.class);
+        DEFAULT_CONVERTERS.put(URI.class, URIConverter.class);
+        DEFAULT_CONVERTERS.put(File.class, FileConverter.class);
     }
 
     /**
@@ -58,7 +58,7 @@ public class DefaultConverterFactory implements ConverterFactory {
      * @return A {@link Converter} for the requested class type
      */
     public Class<? extends Converter<?>> getConverter(Class classType) {
-        return defaultConverters.get(classType);
+        return DEFAULT_CONVERTERS.get(classType);
     }
 }
 
