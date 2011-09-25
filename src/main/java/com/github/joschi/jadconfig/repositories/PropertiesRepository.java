@@ -67,10 +67,21 @@ public class PropertiesRepository implements Repository {
             throw new RepositoryException("Properties file " + propertiesFile.getPath() + " doesn't exist!");
         }
 
+        Reader propertiesReader = null;
+
         try {
-            PROPERTIES.load(new FileReader(propertiesFile));
+            propertiesReader = new FileReader(propertiesFile);
+            PROPERTIES.load(propertiesReader);
         } catch (IOException ex) {
             throw new RepositoryException("Couldn't open properties file: " + propertiesFile, ex);
+        } finally {
+            if(propertiesReader != null) {
+                try {
+                    propertiesReader.close();
+                } catch (IOException e) {
+                    // Intentionally empty
+                }
+            }
         }
     }
 
