@@ -161,7 +161,7 @@ public class JadConfig {
                 try {
                     method.invoke(configurationBean);
                 } catch (Exception e) {
-                    throw new ValidationException("Couldn't run validator method " + method.getName());
+                    throw new ValidationException("Couldn't run validator method " + method.getName(), e);
                 }
             }
         }
