@@ -11,7 +11,7 @@ import org.junit.Test;
  */
 public class PositiveIntegerValidatorTest {
 
-    PositiveIntegerValidator validator;
+    private PositiveIntegerValidator validator;
 
     @Before
     public void setUp() {

@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class StringListConverterTest {
 
-    StringListConverter converter;
+    private StringListConverter converter;
 
     @Before
     public void setUp() {

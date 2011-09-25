@@ -10,7 +10,7 @@ import org.junit.Test;
  */
 public class ParameterExceptionTest {
 
-    ParameterException exception;
+    private ParameterException exception;
 
     @Test
     public void testConstructor() {

@@ -12,7 +12,7 @@ import org.junit.Test;
  */
 public class StringConverterTest {
 
-    StringConverter converter;
+    private StringConverter converter;
 
     @Before
     public void setUp() {

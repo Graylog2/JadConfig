@@ -12,7 +12,7 @@ import org.junit.Test;
  */
 public class BooleanConverterTest {
 
-    BooleanConverter converter;
+    private BooleanConverter converter;
 
     @Before
     public void setUp() {

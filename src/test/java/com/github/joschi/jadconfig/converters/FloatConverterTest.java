@@ -12,7 +12,7 @@ import org.junit.Test;
  */
 public class FloatConverterTest {
 
-    FloatConverter converter;
+    private FloatConverter converter;
 
     @Before
     public void setUp() {

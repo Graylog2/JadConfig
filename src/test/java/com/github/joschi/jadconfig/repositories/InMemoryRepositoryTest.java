@@ -13,7 +13,7 @@ import static org.junit.Assert.fail;
  * @author jschalanda
  */public class InMemoryRepositoryTest {
 
-    InMemoryRepository repository;
+    private InMemoryRepository repository;
 
     @Before
     public void setUp() {

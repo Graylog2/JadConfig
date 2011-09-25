@@ -12,7 +12,7 @@ import org.junit.Test;
  */
 public class LongConverterTest {
 
-    LongConverter converter;
+    private LongConverter converter;
 
     @Before
     public void setUp() {

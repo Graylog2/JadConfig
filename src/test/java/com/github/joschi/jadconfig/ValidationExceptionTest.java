@@ -10,7 +10,7 @@ import org.junit.Test;
  */
 public class ValidationExceptionTest {
 
-    ValidationException exception;
+    private ValidationException exception;
 
     @Test
     public void testConstructor() {

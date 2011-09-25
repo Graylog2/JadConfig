@@ -15,7 +15,7 @@ import java.io.IOException;
  */
 public class FileConverterTest {
 
-    FileConverter converter;
+    private FileConverter converter;
 
     @Before
     public void setUp() {

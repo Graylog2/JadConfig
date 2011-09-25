@@ -10,7 +10,7 @@ import org.junit.Test;
  */
 public class NoConverterTest {
 
-    NoConverter converter;
+    private NoConverter converter;
 
     @Before
     public void setUp() {

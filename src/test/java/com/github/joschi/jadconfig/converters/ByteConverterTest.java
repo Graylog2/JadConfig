@@ -12,7 +12,7 @@ import org.junit.Test;
  */
 public class ByteConverterTest {
 
-    ByteConverter converter;
+    private ByteConverter converter;
 
     @Before
     public void setUp() {

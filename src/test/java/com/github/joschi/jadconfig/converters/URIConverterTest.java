@@ -14,7 +14,7 @@ import java.net.URI;
  */
 public class URIConverterTest {
 
-    URIConverter converter;
+    private URIConverter converter;
 
     @Before
     public void setUp() {

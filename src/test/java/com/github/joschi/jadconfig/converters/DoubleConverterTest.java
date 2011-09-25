@@ -12,7 +12,7 @@ import org.junit.Test;
  */
 public class DoubleConverterTest {
 
-    DoubleConverter converter;
+    private DoubleConverter converter;
 
     @Before
     public void setUp() {

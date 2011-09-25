@@ -11,7 +11,7 @@ import org.junit.Test;
  */
 public class NoValidatorTest {
 
-    NoValidator validator;
+    private NoValidator validator;
 
     @Before
     public void setUp() {

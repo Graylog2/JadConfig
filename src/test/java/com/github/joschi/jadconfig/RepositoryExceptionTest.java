@@ -10,7 +10,7 @@ import org.junit.Test;
  */
 public class RepositoryExceptionTest {
 
-    RepositoryException exception;
+    private RepositoryException exception;
 
     @Test
     public void testConstructor() {

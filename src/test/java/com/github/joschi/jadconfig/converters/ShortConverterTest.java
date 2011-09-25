@@ -12,7 +12,7 @@ import org.junit.Test;
  */
 public class ShortConverterTest {
 
-    ShortConverter converter;
+    private ShortConverter converter;
 
     @Before
     public void setUp() {
