@@ -32,7 +32,8 @@ public class JadConfig {
     /**
      * Creates a new (empty) instance of JadConfig.
      * <p/>
-     * Any configuration beans will have to be added with {@link #addConfigurationBean(Object)}.
+     * Configuration beans will have to be added with {@link #addConfigurationBean(Object)} and a {@link Repository}
+     * will have to be set with {@link #setRepository(Repository)}.
      *
      * @see #addConfigurationBean(Object)
      */
@@ -229,5 +230,14 @@ public class JadConfig {
         Converter converter = getConverter(fieldType, converterClass);
 
         return converter.convertTo(fieldValue);
+    }
+
+    /**
+     * Set the {@link Repository} to load configuration data from.
+     *
+     * @param repository A {@link Repository} instance
+     */
+    public void setRepository(Repository repository) {
+        this.repository = repository;
     }
 }
