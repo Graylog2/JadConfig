@@ -23,7 +23,7 @@ public class FileConverter implements Converter<File> {
 
         if (value == null) {
 
-            throw new ParameterException("Couldn convert value \"" + value + "\" to File object.");
+            throw new ParameterException("Couldn't convert value \"" + value + "\" to File object.");
         }
 
         return new File(value);
