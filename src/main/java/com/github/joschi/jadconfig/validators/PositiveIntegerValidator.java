@@ -27,7 +27,7 @@ public class PositiveIntegerValidator implements Validator {
         try {
             n = Integer.parseInt(value);
         } catch (NumberFormatException ex) {
-            throw new ValidationException("Parameter " + name + " should be a positive number (found " + value + ")");
+            throw new ValidationException("Parameter " + name + " should be a positive number (found " + value + ")", ex);
         }
 
         if (n < 0) {
