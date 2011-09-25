@@ -62,11 +62,10 @@ public class JadConfig {
      * Processes the configuration provided by the configured {@link Repository} and filling the provided configuration
      * beans.
      *
-     * @throws ParameterException  If any parameter couldn't be read or couldn't be set in the respective configuration bean
      * @throws RepositoryException If an error occurred while reading from the configured {@link Repository}
      * @throws ValidationException If any parameter couldn't be successfully validated
      */
-    public void process() throws ParameterException, RepositoryException, ValidationException {
+    public void process() throws RepositoryException, ValidationException {
 
         repository.open();
 
