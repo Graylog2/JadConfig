@@ -11,7 +11,7 @@ import com.github.joschi.jadconfig.Converter;
 public class NoConverter implements Converter<String> {
 
     /**
-     * Default {@link #convertFrom(String)} implementation. Always throws {@link UnsupportedOperationException}.
+     * Default {@link Converter#convertFrom(String)} implementation. Always throws {@link UnsupportedOperationException}.
      *
      * @param value The configuration parameter's {@link String} value
      * @return A {@link String} instance representing the configuration parameter's value
@@ -22,7 +22,7 @@ public class NoConverter implements Converter<String> {
     }
 
     /**
-     * Default {@link #convertTo(Object)} implementation. Always throws {@link UnsupportedOperationException}.
+     * Default {@link Converter#convertTo(Object)} implementation. Always throws {@link UnsupportedOperationException}.
      *
      * @param value The configuration parameter's {@link String} value
      * @return A {@link String} instance representing the configuration parameter's typed value
