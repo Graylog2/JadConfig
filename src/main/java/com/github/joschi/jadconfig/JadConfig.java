@@ -124,19 +124,21 @@ public class JadConfig {
 
     private Converter getConverter(Class<?> fieldType, Class<? extends Converter<?>> converterClass) {
 
-        if (converterClass == null || converterClass == NoConverter.class) {
-            converterClass = findConverter(fieldType);
+        Class<? extends Converter<?>> clazz = converterClass;
+
+        if (clazz == null || clazz == NoConverter.class) {
+            clazz = findConverter(fieldType);
         }
 
         // Fallback to StringConverter
-        if (converterClass == null) {
-            converterClass = StringConverter.class;
+        if (clazz == null) {
+            clazz = StringConverter.class;
         }
 
         try {
-            return converterClass.newInstance();
+            return clazz.newInstance();
         } catch (Exception e) {
-            throw new ParameterException("Couldn't initialize converter class " + converterClass.getCanonicalName(), e);
+            throw new ParameterException("Couldn't initialize converter class " + clazz.getCanonicalName(), e);
         }
     }
 
