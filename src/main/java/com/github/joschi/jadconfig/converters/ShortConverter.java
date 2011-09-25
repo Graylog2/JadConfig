@@ -10,6 +10,12 @@ import com.github.joschi.jadconfig.ParameterException;
  */
 public class ShortConverter implements Converter<Short> {
 
+    /**
+     * Returns a {@link Short} instance representing the specified {@link String} {@literal value}.
+     *
+     * @param value The configuration parameter's {@link String} value
+     * @return A {@link Short} instance representing the configuration parameter's value
+     */
     @Override
     public Short convertFrom(String value) {
 
@@ -25,6 +31,12 @@ public class ShortConverter implements Converter<Short> {
         return result;
     }
 
+    /**
+     * Returns a {@link String} instance representing the configuration parameter's {@literal value}.
+     *
+     * @param value The configuration parameter's {@link Short} value
+     * @return A {@link String} instance representing the configuration parameter's typed value
+     */
     @Override
     public String convertTo(Short value) {
 

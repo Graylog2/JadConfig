@@ -1,6 +1,8 @@
 package com.github.joschi.jadconfig;
 
 /**
+ * This exception indicates that a configuration parameter's value couldn't be validated successfully by a {@link Validator}
+ *
  * @author jschalanda
  */
 public class ValidationException extends Exception {

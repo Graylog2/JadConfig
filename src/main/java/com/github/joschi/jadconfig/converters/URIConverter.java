@@ -12,6 +12,12 @@ import java.net.URI;
  */
 public class URIConverter implements Converter<URI> {
 
+    /**
+     * Returns a {@link URI} instance representing the specified {@link String} {@literal value}.
+     *
+     * @param value The configuration parameter's {@link String} representation
+     * @return A {@link URI} instance representing the configuration parameter's value
+     */
     @Override
     public URI convertFrom(String value) {
 
@@ -27,6 +33,12 @@ public class URIConverter implements Converter<URI> {
         return result;
     }
 
+    /**
+     * Returns a {@link String} instance representing the configuration parameter's {@literal value}.
+     *
+     * @param value The configuration parameter's {@link URI} representation
+     * @return A {@link String} instance representing the configuration parameter's typed value
+     */
     @Override
     public String convertTo(URI value) {
 

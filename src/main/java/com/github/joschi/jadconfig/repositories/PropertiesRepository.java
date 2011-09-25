@@ -7,7 +7,7 @@ import java.io.*;
 import java.util.Properties;
 
 /**
- * {@link Repository} class providing access to a {@link Properties} backed configuration repository
+ * {@link Repository} class providing access to a configuration repository backed by {@link Properties} files
  *
  * @author jschalanda
  */
@@ -16,6 +16,12 @@ public class PropertiesRepository implements Repository {
     private Properties properties = new Properties();
     private File propertiesFile = null;
 
+    /**
+     * Creates a new {@link PropertiesRepository} from the provided properties file {@literal filename}
+     *
+     * @param filename The filename of the properties file
+     * @throws IllegalArgumentException If the provided {@literal filename} is null or empty
+     */
     public PropertiesRepository(String filename) {
 
         if (filename == null || "".equals(filename)) {
@@ -26,6 +32,12 @@ public class PropertiesRepository implements Repository {
         this.propertiesFile = new File(filename);
     }
 
+    /**
+     * Creates a new {@link PropertiesRepository} from the provided {@literal propertiesFile}
+     *
+     * @param propertiesFile The properties {@link File}
+     * @throws IllegalArgumentException If the provided {@link File} is null
+     */
     public PropertiesRepository(File propertiesFile) {
 
         if (propertiesFile == null) {
@@ -36,6 +48,12 @@ public class PropertiesRepository implements Repository {
         this.propertiesFile = propertiesFile;
     }
 
+    /**
+     * Opens the properties file and reads its {@link Properties}
+     *
+     * @throws RepositoryException If the {@literal propertiesFile} is null, doesn't exist or an error occurred while
+     *                             reading the properties file.
+     */
     @Override
     public void open() throws RepositoryException {
 
@@ -56,18 +74,36 @@ public class PropertiesRepository implements Repository {
         }
     }
 
+    /**
+     * Returns the value for a property {@literal name} or {@literal null}
+     *
+     * @param name The parameter name
+     * @return The property value for {@literal name} or {@literal null}
+     */
     @Override
     public String read(String name) {
 
         return properties.getProperty(name);
     }
 
+    /**
+     * Puts a property value {@literal value} with key {@literal name}
+     *
+     * @param name  The parameter name
+     * @param value The parameter value
+     * @throws RepositoryException Never
+     */
     @Override
     public void write(String name, String value) throws RepositoryException {
 
         properties.put(name, value);
     }
 
+    /**
+     * Writes the changed {@link Properties} back to disk.
+     *
+     * @throws RepositoryException If an error occurred while writing the properties file
+     */
     @Override
     public void save() throws RepositoryException {
 
@@ -81,6 +117,11 @@ public class PropertiesRepository implements Repository {
         }
     }
 
+    /**
+     * Close the underlying properties file.
+     *
+     * @throws RepositoryException
+     */
     @Override
     public void close() throws RepositoryException {
     }

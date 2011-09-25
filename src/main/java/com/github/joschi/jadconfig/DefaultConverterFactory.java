@@ -8,7 +8,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * {@link ConverterFactory} for holding the default {@link Converter} classes
+ * {@link ConverterFactory} for holding the default {@link Converter} classes.
+ *
+ * Supported {@link Converter} types are:
+ * <ul>
+ *     <li>{@link String} through {@link StringConverter}</li>
+ *     <li>{@link Byte} and {@literal byte} through {@link ByteConverter}</li>
+ *     <li>{@link Short} and {@literal short} through {@link ByteConverter}</li>
+ *     <li>{@link Integer} and {@literal int} through {@link ByteConverter}</li>
+ *     <li>{@link Long} and {@literal long} through {@link ByteConverter}</li>
+ *     <li>{@link Boolean} and {@literal boolean} through {@link ByteConverter}</li>
+ *     <li>{@link Float} and {@literal float} through {@link ByteConverter}</li>
+ *     <li>{@link Double} and {@literal double} through {@link ByteConverter}</li>
+ *     <li>{@link URI} through {@link URIConverter}</li>
+ *     <li>{@link File} through {@link FileConverter}</li>
+ * </ul>
  *
  * @author jschalanda
  */
@@ -37,6 +51,13 @@ public class DefaultConverterFactory implements ConverterFactory {
         defaultConverters.put(File.class, FileConverter.class);
     }
 
+    /**
+     * Finds and returns a {@link Converter} for the provided {@literal classType}.
+     *
+     * @param classType The class type for which to find and return a {@link Converter}
+     * @param <T>
+     * @return A {@link Converter} for the requested class type
+     */
     public Class<? extends Converter<?>> getConverter(Class classType) {
         return defaultConverters.get(classType);
     }

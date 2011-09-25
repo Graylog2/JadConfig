@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * {@link Repository} class providing access to a simple {@link HashMap} backed configuration repository
+ * {@link Repository} class providing access to a simple configuration repository backed by {@link HashMap}
  *
  * @author jschalanda
  */

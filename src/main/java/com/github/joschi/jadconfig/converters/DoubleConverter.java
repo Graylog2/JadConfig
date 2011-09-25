@@ -10,6 +10,12 @@ import com.github.joschi.jadconfig.ParameterException;
  */
 public class DoubleConverter implements Converter<Double> {
 
+    /**
+     * Returns a {@link Double} instance representing the specified {@link String} {@literal value}.
+     *
+     * @param value The configuration parameter's {@link String} value
+     * @return A {@link Double} instance representing the configuration parameter's value
+     */
     @Override
     public Double convertFrom(String value) {
 
@@ -25,6 +31,12 @@ public class DoubleConverter implements Converter<Double> {
         return result;
     }
 
+    /**
+     * Returns a {@link String} instance representing the configuration parameter's {@literal value}.
+     *
+     * @param value The configuration parameter's {@link Double} value
+     * @return A {@link String} instance representing the configuration parameter's typed value
+     */
     @Override
     public String convertTo(Double value) {
 

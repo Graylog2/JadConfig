@@ -1,6 +1,8 @@
 package com.github.joschi.jadconfig;
 
 /**
+ * This exception indicates an error while processing a configuration parameter.
+ *
  * @author jschalanda
  */
 public class ParameterException extends RuntimeException {

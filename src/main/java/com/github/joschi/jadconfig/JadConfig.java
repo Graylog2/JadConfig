@@ -11,6 +11,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * The main class for JadConfig. It's responsible for parsing the configuration bean(s) that contain(s) the annotated
+ * fields, use a {@link Repository} to read the raw configuration and assign the fields with the correct values.
+ * <p/>
+ * The configuration bean(s) you pass in the constructor are expected to have one or more {@link Parameter} annotations
+ * on them.
+ * <p/>
+ * You can pass either a single configuration bean or an array of objects. In the case of an array JadConfig will
+ * collect the {@link Parameter} annotations from all the objects passed in.
+ *
  * @author jschalanda
  */
 public class JadConfig {
@@ -20,6 +29,13 @@ public class JadConfig {
 
     private Repository repository;
 
+    /**
+     * Creates a new (empty) instance of JadConfig.
+     * <p/>
+     * Any configuration beans will have to be added with {@link #addConfigurationBean(Object)}.
+     *
+     * @see #addConfigurationBean(Object)
+     */
     public JadConfig() {
         configurationBeans = new ArrayList<Object>();
 
@@ -27,6 +43,13 @@ public class JadConfig {
         converterFactories.add(new DefaultConverterFactory());
     }
 
+    /**
+     * Creates a new instance of JadConfig backed by the provided {@link Repository} and filling the provided
+     * {@literal configurationBeans}.
+     *
+     * @param repository         A {@link Repository} for interfacing with the configuration data
+     * @param configurationBeans One or more objects annotated with JadConfig annotations
+     */
     public JadConfig(Repository repository, Object... configurationBeans) {
         this();
 
@@ -34,6 +57,14 @@ public class JadConfig {
         this.repository = repository;
     }
 
+    /**
+     * Processes the configuration provided by the configured {@link Repository} and filling the provided configuration
+     * beans.
+     *
+     * @throws ParameterException  If any parameter couldn't be read or couldn't be set in the respective configuration bean
+     * @throws RepositoryException If an error occurred while reading from the configured {@link Repository}
+     * @throws ValidationException If any parameter couldn't be successfully validated
+     */
     public void process() throws ParameterException, RepositoryException, ValidationException {
 
         repository.open();
@@ -145,16 +176,31 @@ public class JadConfig {
         return null;
     }
 
+    /**
+     * Adds a {@link ConverterFactory} for processing additional types
+     *
+     * @param converterFactory The {@link ConverterFactory} to be added
+     */
     public void addConverterFactory(ConverterFactory converterFactory) {
 
         converterFactories.addFirst(converterFactory);
     }
 
+    /**
+     * Adds a configuration bean annotated with JadConfig annotations.
+     *
+     * @param configurationBean An object annotated with JadConfig annotations
+     */
     public void addConfigurationBean(Object configurationBean) {
 
         configurationBeans.add(configurationBean);
     }
 
+    /**
+     * Saves all configuration parameters to the configured {@link Repository}.
+     *
+     * @throws RepositoryException If an error occurred while writing to or saving the configured {@link Repository}
+     */
     public void save() throws RepositoryException {
 
         for (Object configurationBean : configurationBeans) {

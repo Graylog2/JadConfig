@@ -10,6 +10,15 @@ import com.github.joschi.jadconfig.Validator;
  */
 public class PositiveIntegerValidator implements Validator {
 
+    /**
+     * Validates if the value {@literal value} the of provided configuration parameter {@literal name} is a positive
+     * integer
+     *
+     * @param name  The name of the configuration parameter
+     * @param value The value of the configuration validator
+     * @throws ValidationException If the value {@literal value} configuration parameter {@literal name} can't be parsed
+     *                             as an {@literal int} or is negative.
+     */
     @Override
     public void validate(String name, String value) throws ValidationException {
 

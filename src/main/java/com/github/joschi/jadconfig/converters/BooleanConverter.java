@@ -10,6 +10,12 @@ import com.github.joschi.jadconfig.ParameterException;
  */
 public class BooleanConverter implements Converter<Boolean> {
 
+    /**
+     * Returns a {@link Boolean} instance representing the specified {@link String} {@literal value}.
+     *
+     * @param value The configuration parameter's {@link String} value
+     * @return A {@link Boolean} instance representing the configuration parameter's value
+     */
     @Override
     public Boolean convertFrom(String value) {
 
@@ -20,6 +26,12 @@ public class BooleanConverter implements Converter<Boolean> {
         }
     }
 
+    /**
+     * Returns a {@link String} instance representing the configuration parameter's {@literal value}.
+     *
+     * @param value The configuration parameter's {@link Boolean} value
+     * @return A {@link String} instance representing the configuration parameter's typed value
+     */
     @Override
     public String convertTo(Boolean value) {
 

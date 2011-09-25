@@ -1,6 +1,8 @@
 package com.github.joschi.jadconfig;
 
 /**
+ * This exception indicates that an error occurred while using a {@link Repository}.
+ *
  * @author jschalanda
  */
 public class RepositoryException extends Exception {
