@@ -13,7 +13,7 @@ import java.util.Properties;
  */
 public class PropertiesRepository implements Repository {
 
-    private Properties properties = new Properties();
+    private final Properties PROPERTIES = new Properties();
     private File propertiesFile = null;
 
     /**
@@ -68,7 +68,7 @@ public class PropertiesRepository implements Repository {
         }
 
         try {
-            properties.load(new FileReader(propertiesFile));
+            PROPERTIES.load(new FileReader(propertiesFile));
         } catch (IOException ex) {
             throw new RepositoryException("Couldn't open properties file: " + propertiesFile, ex);
         }
@@ -83,7 +83,7 @@ public class PropertiesRepository implements Repository {
     @Override
     public String read(String name) {
 
-        return properties.getProperty(name);
+        return PROPERTIES.getProperty(name);
     }
 
     /**
@@ -96,7 +96,7 @@ public class PropertiesRepository implements Repository {
     @Override
     public void write(String name, String value) throws RepositoryException {
 
-        properties.put(name, value);
+        PROPERTIES.put(name, value);
     }
 
     /**
@@ -112,7 +112,7 @@ public class PropertiesRepository implements Repository {
 
         try {
             writer = new FileWriter(propertiesFile);
-            properties.store(writer, comments);
+            PROPERTIES.store(writer, comments);
         } catch (IOException ex) {
             throw new RepositoryException("Couldn't save properties to " + propertiesFile.getPath(), ex);
         } finally {
