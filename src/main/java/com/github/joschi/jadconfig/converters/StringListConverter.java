@@ -19,7 +19,7 @@ public class StringListConverter implements Converter<List<String>> {
     /**
      * Returns a {@link List} of {@link String}s representing the specified {@link String} {@literal value}.
      * <p/>
-     * The {@literal value} is being split on delimiter {@value #DELIMITER}.
+     * The {@literal value} is being split on comma.
      *
      * @param value The configuration parameter's {@link String} value
      * @return A {@link List} of {@link String}s representing the configuration parameter's value
@@ -42,7 +42,7 @@ public class StringListConverter implements Converter<List<String>> {
     /**
      * Returns a {@link String} instance representing the configuration parameter's {@literal value}.
      * <p/>
-     * The elements of the provided {@link List} of {@link String}s are concatenated with delimiter {@value #DELIMITER}.
+     * The elements of the provided {@link List} of {@link String}s are concatenated with commas.
      *
      * @param value The configuration parameter's {@link List} of {@link String} representation
      * @return A {@link String} instance representing the configuration parameter's typed value
