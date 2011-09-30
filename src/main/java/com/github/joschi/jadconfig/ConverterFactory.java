@@ -14,7 +14,7 @@ public interface ConverterFactory {
      * Finds and returns a {@link Converter} for the provided class type.
      *
      * @param classType The class type for which to find and return a {@link Converter}
-     * @param <T>
+     * @param <T> Type of the {@link Converter} to get
      * @return A {@link Converter} for the requested class type
      */
     <T> Class<? extends Converter<T>> getConverter(Class<T> classType);
