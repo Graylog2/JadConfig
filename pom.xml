@@ -27,6 +27,11 @@
         <url>https://github.com/joschi/JadConfig</url>
     </scm>
 
+    <issueManagement>
+        <url>https://github.com/joschi/JadConfig/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+
     <developers>
         <developer>
             <id>jschalanda</id>
