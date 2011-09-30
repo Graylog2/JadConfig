@@ -193,7 +193,6 @@
                 <configuration>
                     <description>Official ${project.name} build of the ${project.version} release</description>
                     <override>true</override>
-                    <dryRun>true</dryRun>
                 </configuration>
                 <executions>
                     <execution>
@@ -211,7 +210,6 @@
                 <version>0.1</version>
                 <configuration>
                     <message>Building site for ${project.version}</message>
-                    <dryRun>true</dryRun>
                 </configuration>
                 <executions>
                     <execution>
