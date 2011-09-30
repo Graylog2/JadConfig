@@ -22,8 +22,8 @@
     </licenses>
 
     <scm>
-        <developerConnection>scm:git:ssh://git@github.com:joschi/JadConfig.git</developerConnection>
-        <connection>scm:git:git://github.com/joschi/JadConfig.git</connection>
+        <developerConnection>scm:git:git@github.com:joschi/JadConfig.git</developerConnection>
+        <connection>scm:git:github.com/joschi/JadConfig.git</connection>
         <url>https://github.com/joschi/JadConfig</url>
     </scm>
 
