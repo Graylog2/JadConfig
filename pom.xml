@@ -27,6 +27,12 @@
         <url>https://github.com/joschi/JadConfig</url>
     </scm>
 
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
     <issueManagement>
         <url>https://github.com/joschi/JadConfig/issues</url>
         <system>GitHub Issues</system>
