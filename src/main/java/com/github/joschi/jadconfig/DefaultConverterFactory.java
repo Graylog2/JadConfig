@@ -57,8 +57,8 @@ public class DefaultConverterFactory implements ConverterFactory {
      * @param classType The class type for which to find and return a {@link Converter}
      * @return A {@link Converter} for the requested class type
      */
-    public Class<? extends Converter<?>> getConverter(Class classType) {
-        return DEFAULT_CONVERTERS.get(classType);
+    public <T> Class<? extends Converter<T>> getConverter(Class<T> classType) {
+        return (Class<? extends Converter<T>>)DEFAULT_CONVERTERS.get(classType);
     }
 }
 
