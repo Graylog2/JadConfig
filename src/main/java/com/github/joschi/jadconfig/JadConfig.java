@@ -2,6 +2,8 @@ package com.github.joschi.jadconfig;
 
 import com.github.joschi.jadconfig.converters.NoConverter;
 import com.github.joschi.jadconfig.converters.StringConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -23,6 +25,8 @@ import java.util.List;
  * @author jschalanda
  */
 public class JadConfig {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JadConfig.class);
 
     private LinkedList<ConverterFactory> converterFactories;
     private List<Object> configurationBeans;
@@ -67,9 +71,12 @@ public class JadConfig {
      */
     public void process() throws RepositoryException, ValidationException {
 
+        LOG.info("Opening repository {}", repository);
         repository.open();
 
         for (Object configurationBean : configurationBeans) {
+            LOG.info("Processing configuration bean {}", configurationBean);
+
             processClassFields(configurationBean, configurationBean.getClass().getDeclaredFields());
             invokeValidatorMethods(configurationBean, configurationBean.getClass().getMethods());
         }
@@ -80,6 +87,7 @@ public class JadConfig {
             Parameter parameter = field.getAnnotation(Parameter.class);
 
             if (parameter != null) {
+                LOG.debug("Processing field {}", parameter);
 
                 Object fieldValue = getFieldValue(field, configurationBean);
 
@@ -87,15 +95,19 @@ public class JadConfig {
                 String parameterValue = repository.read(parameterName);
 
                 if (parameterValue == null && fieldValue == null && parameter.required()) {
+                    LOG.warn("Required parameter {} not found", parameterName);
                     throw new ParameterException("Required parameter \"" + parameterName + "\" not found.");
                 }
 
                 if (parameterValue != null) {
-
+                    LOG.debug("Validating parameter {}", parameterName);
                     validateParameter(parameter.validator(), parameterName, parameterValue);
 
+                    LOG.debug("Converting parameter value {}: ", parameterName, parameterValue);
                     fieldValue = convertStringValue(field.getType(), parameter.converter(), parameterValue);
                 }
+
+                LOG.debug("Setting parameter {} to {}", parameterName, parameterValue);
 
                 try {
                     field.set(configurationBean, fieldValue);
@@ -108,6 +120,8 @@ public class JadConfig {
 
     private Object convertStringValue(Class<?> fieldType, Class<? extends Converter<?>> converterClass, String stringValue) {
         Converter converter = getConverter(fieldType, converterClass);
+
+        LOG.debug("Loaded converter class for type {}: {}", fieldType, converter);
 
         return converter.convertFrom(stringValue);
     }
@@ -124,6 +138,8 @@ public class JadConfig {
 
     private Converter getConverter(Class<?> fieldType, Class<? extends Converter<?>> converterClass) {
 
+        LOG.debug("Trying to find converter class {} for type {}", converterClass, fieldType);
+
         Class<? extends Converter<?>> clazz = converterClass;
 
         if (clazz == null || clazz == NoConverter.class) {
@@ -133,6 +149,8 @@ public class JadConfig {
         // Fallback to StringConverter
         if (clazz == null) {
             clazz = StringConverter.class;
+
+            LOG.debug("Using fallback converter: {}", clazz);
         }
 
         try {
@@ -144,6 +162,8 @@ public class JadConfig {
 
     private void validateParameter(Class<? extends Validator> validatorClass, String name, String value) throws ValidationException {
         Validator validator;
+
+        LOG.debug("Validating parameter {} with value {}", name, value);
 
         try {
             validator = validatorClass.newInstance();
@@ -157,6 +177,8 @@ public class JadConfig {
     private void invokeValidatorMethods(Object configurationBean, Method[] methods) throws ValidationException {
         for (Method method : methods) {
             if (method.isAnnotationPresent(ValidatorMethod.class)) {
+                LOG.debug("Invoking validator method {} in {}", method, configurationBean);
+
                 try {
                     method.invoke(configurationBean);
                 } catch (Exception e) {
@@ -184,8 +206,9 @@ public class JadConfig {
      * @param converterFactory The {@link ConverterFactory} to be added
      */
     public void addConverterFactory(ConverterFactory converterFactory) {
-
         converterFactories.addFirst(converterFactory);
+
+        LOG.info("Added converter factory {}", converterFactory);
     }
 
     /**
@@ -194,8 +217,9 @@ public class JadConfig {
      * @param configurationBean An object annotated with JadConfig annotations
      */
     public void addConfigurationBean(Object configurationBean) {
-
         configurationBeans.add(configurationBean);
+
+        LOG.info("Added configuration bean {}", configurationBean);
     }
 
     /**
@@ -204,30 +228,40 @@ public class JadConfig {
      * @throws RepositoryException If an error occurred while writing to or saving the configured {@link Repository}
      */
     public void save() throws RepositoryException {
+        LOG.info("Saving changed configuration parameters");
 
         for (Object configurationBean : configurationBeans) {
+            LOG.debug("Checking declared fields of {}", configurationBean);
+
             for (Field field : configurationBean.getClass().getDeclaredFields()) {
                 Parameter parameter = field.getAnnotation(Parameter.class);
+
+                LOG.debug("Checking declared field {} of {}", parameter, configurationBean);
 
                 if (parameter != null) {
 
                     Object fieldValue = getFieldValue(field, configurationBean);
 
+                    LOG.debug("Retrieved field value {} = {}", field, fieldValue);
+
                     if (fieldValue != null) {
                         String stringValue = convertFieldValue(field.getType(), parameter.converter(), fieldValue);
 
+                        LOG.debug("Writing {} = {} to repository", parameter.value(), stringValue);
                         repository.write(parameter.value(), stringValue);
                     }
                 }
             }
         }
 
+        LOG.debug("Saving changes to repository {}", repository);
         repository.save();
     }
 
     private String convertFieldValue(Class<?> fieldType, Class<? extends Converter<?>> converterClass, Object fieldValue) {
         Converter converter = getConverter(fieldType, converterClass);
 
+        LOG.debug("Converting {} to type {} using converter {}", new Object[] { fieldValue, fieldType, converter });
         return converter.convertTo(fieldValue);
     }
 
