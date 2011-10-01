@@ -1,0 +1,24 @@
+-classpath
+'/home/joschi/src/JadConfig/target/classes:/home/joschi/.m2/repository/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar'
+-encoding
+'UTF-8'
+-protected
+-sourcepath
+'/home/joschi/src/JadConfig/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2011. All Rights Reserved.'
+-charset
+'UTF-8'
+-d
+'/home/joschi/src/JadConfig/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'JadConfig 0.2-SNAPSHOT API'
+-linkoffline
+'http://download.oracle.com/javase/6/docs/api' '/home/joschi/src/JadConfig/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'JadConfig 0.2-SNAPSHOT API'
