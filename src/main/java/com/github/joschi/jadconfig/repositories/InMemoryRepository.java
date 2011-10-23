@@ -15,6 +15,13 @@ public class InMemoryRepository implements Repository {
 
     private Map<String, String> properties = null;
 
+    public InMemoryRepository() {
+    }
+
+    public InMemoryRepository(Map<String, String> properties) {
+        this.properties = properties;
+    }
+
     @Override
     public void open() throws RepositoryException {
 

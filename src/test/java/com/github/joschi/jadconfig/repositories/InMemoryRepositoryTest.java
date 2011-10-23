@@ -5,6 +5,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.Assert.fail;
 
 /**
@@ -106,5 +109,20 @@ import static org.junit.Assert.fail;
         repository.write("Test", "Value");
 
         Assert.assertEquals(1, repository.size());
+    }
+
+    @Test
+    public void testConstructor() {
+
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("one", "one");
+        map.put("two", "two");
+        map.put("three", "three");
+
+        InMemoryRepository inMemoryRepository = new InMemoryRepository(map);
+
+        Assert.assertEquals("one", inMemoryRepository.read("one"));
+        Assert.assertEquals("two", inMemoryRepository.read("two"));
+        Assert.assertEquals("three", inMemoryRepository.read("three"));
     }
 }
