@@ -1,7 +1,13 @@
 JadConfig
 =========
 
-This is an annotation-driven configuration parsing framework for Java.
+JadConfig is an annotation-driven configuration parsing framework for Java.
+
+http://joschi.github.com/JadConfig/
+
+
+Example
+-------
 
 Here is a quick example:
 
@@ -12,7 +18,7 @@ Here is a quick example:
       @Parameter("my.integer")
       public int myInteger = 1;
 
-      @Parameter("my.uri", required = true)
+      @Parameter(value = "my.uri", required = true)
       public URI myURI;
     }
 
@@ -22,3 +28,18 @@ and how you use it:
     new JadConfig(new PropertiesRepository("my.properties"), bean).process();
 
     Assert.assertNotNull(bean.myList);
+
+
+To use JadConfig in your project using Maven add the following lines into the dependencies section of your pom.xml:
+
+    <dependency>
+        <groupId>com.github.joschi</groupId>
+        <artifactId>jadconfig</artifactId>
+        <version>0.2</version>
+    </dependency>
+
+
+License
+-------
+JadConfig is being released under the Apache License, Version 2.0. You can download the complete license text at
+http://www.apache.org/licenses/LICENSE-2.0.html
