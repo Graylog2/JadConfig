@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="4.2.5" timestamp="2011-10-23T20:36:22.707">
+<pmd version="4.2.5" timestamp="2011-10-23T20:47:53.689">
 <file name="/home/joschi/src/JadConfig/src/main/java/com/github/joschi/jadconfig/repositories/PropertiesRepository.java">
 <violation beginline="81" endline="83" begincolumn="19" endcolumn="17" rule="EmptyCatchBlock" ruleset="Basic Rules" package="com.github.joschi.jadconfig.repositories" class="PropertiesRepository" method="open" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks

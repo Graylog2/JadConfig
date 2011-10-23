@@ -1,6 +1,6 @@
+com.github.joschi.jadconfig
 com.github.joschi.jadconfig.converters
 com.github.joschi.jadconfig.repositories
 com.github.joschi.jadconfig.testbeans
-com.github.joschi.jadconfig.validators
 com.github.joschi.jadconfig.testconverters
-com.github.joschi.jadconfig
+com.github.joschi.jadconfig.validators
