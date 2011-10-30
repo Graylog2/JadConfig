@@ -18,6 +18,11 @@ public class BooleanConverter implements Converter<Boolean> {
      */
     @Override
     public Boolean convertFrom(String value) {
+        if (value == null) {
+            throw new ParameterException("Not converting null to Boolean.");
+        }
+
+        value = value.trim();
 
         if ("false".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value)) {
             return Boolean.valueOf(value);
