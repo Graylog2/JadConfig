@@ -23,9 +23,10 @@ public class PositiveIntegerValidator implements Validator {
     public void validate(String name, String value) throws ValidationException {
 
         int n;
+        String trimmedValue = value == null ? null : value.trim();
 
         try {
-            n = Integer.parseInt(value);
+            n = Integer.parseInt(trimmedValue);
         } catch (NumberFormatException ex) {
             throw new ValidationException("Parameter " + name + " should be a positive number (found " + value + ")", ex);
         }
