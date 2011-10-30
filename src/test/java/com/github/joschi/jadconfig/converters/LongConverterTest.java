@@ -69,4 +69,10 @@ public class LongConverterTest {
 
         converter.convertTo(null);
     }
+        
+    @Test
+    public void testConvertFromParameterWithTrailingOrLeadingWhitespaces() {
+        Assert.assertEquals(Long.valueOf(0L), converter.convertFrom(" 0"));
+        Assert.assertEquals(Long.valueOf(1L), converter.convertFrom("1 "));
+    }
 }

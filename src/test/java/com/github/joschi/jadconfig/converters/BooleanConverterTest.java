@@ -59,4 +59,10 @@ public class BooleanConverterTest {
 
         converter.convertTo(null);
     }
+    
+    @Test
+    public void testConvertFromParameterWithTrailingOrLeadingWhitespaces() {
+        Assert.assertTrue(converter.convertFrom(" true"));
+        Assert.assertFalse(converter.convertFrom("false "));
+    }
 }

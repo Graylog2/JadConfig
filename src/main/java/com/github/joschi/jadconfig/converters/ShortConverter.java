@@ -18,11 +18,14 @@ public class ShortConverter implements Converter<Short> {
      */
     @Override
     public Short convertFrom(String value) {
+        if (value == null) {
+            throw new ParameterException("Not converting null to Short.");
+        }
 
         Short result;
 
         try {
-            result = Short.valueOf(value);
+            result = Short.valueOf(value.trim());
         } catch (NumberFormatException ex) {
 
             throw new ParameterException("Couldn't convert value \"" + value + "\" to Short.", ex);

@@ -18,11 +18,14 @@ public class IntegerConverter implements Converter<Integer> {
      */
     @Override
     public Integer convertFrom(String value) {
+        if (value == null) {
+            throw new ParameterException("Not converting null to Integer.");
+        }
 
         Integer result;
 
         try {
-            result = Integer.valueOf(value);
+            result = Integer.valueOf(value.trim());
         } catch (NumberFormatException ex) {
 
             throw new ParameterException("Couldn't convert value \"" + value + "\" to Integer.", ex);

@@ -18,11 +18,14 @@ public class LongConverter implements Converter<Long> {
      */
     @Override
     public Long convertFrom(String value) {
+        if (value == null) {
+            throw new ParameterException("Not converting null to Long.");
+        }
 
         Long result;
 
         try {
-            result = Long.valueOf(value);
+            result = Long.valueOf(value.trim());
         } catch (NumberFormatException ex) {
 
             throw new ParameterException("Couldn't convert value \"" + value + "\" to Long.", ex);
