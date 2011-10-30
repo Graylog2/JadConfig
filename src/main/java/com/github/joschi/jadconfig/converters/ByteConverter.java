@@ -18,11 +18,14 @@ public class ByteConverter implements Converter<Byte> {
      */
     @Override
     public Byte convertFrom(String value) {
+        if (value == null) {
+            throw new ParameterException("Not converting null to Byte.");
+        }
 
         Byte result;
 
         try {
-            result = Byte.valueOf(value);
+            result = Byte.valueOf(value.trim());
         } catch (NumberFormatException ex) {
 
             throw new ParameterException("Couldn't convert value \"" + value + "\" to Byte.", ex);
