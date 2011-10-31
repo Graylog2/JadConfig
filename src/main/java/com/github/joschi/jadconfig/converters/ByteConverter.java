@@ -2,6 +2,7 @@ package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.Converter;
 import com.github.joschi.jadconfig.ParameterException;
+import com.github.joschi.jadconfig.Strings;
 
 /**
  * Converter for type {@link Byte}
@@ -18,15 +19,12 @@ public class ByteConverter implements Converter<Byte> {
      */
     @Override
     public Byte convertFrom(String value) {
-        if (value == null) {
-            throw new ParameterException("Not converting null to Byte.");
-        }
 
         Byte result;
 
         try {
-            result = Byte.valueOf(value.trim());
-        } catch (NumberFormatException ex) {
+            result = Byte.valueOf(Strings.trim(value));
+        } catch (Exception ex) {
 
             throw new ParameterException("Couldn't convert value \"" + value + "\" to Byte.", ex);
         }

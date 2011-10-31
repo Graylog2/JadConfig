@@ -2,6 +2,7 @@ package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.Converter;
 import com.github.joschi.jadconfig.ParameterException;
+import com.github.joschi.jadconfig.Strings;
 
 /**
  * Converter for type {@link Integer}
@@ -18,14 +19,11 @@ public class IntegerConverter implements Converter<Integer> {
      */
     @Override
     public Integer convertFrom(String value) {
-        if (value == null) {
-            throw new ParameterException("Not converting null to Integer.");
-        }
 
         Integer result;
 
         try {
-            result = Integer.valueOf(value.trim());
+            result = Integer.valueOf(Strings.trim(value));
         } catch (NumberFormatException ex) {
 
             throw new ParameterException("Couldn't convert value \"" + value + "\" to Integer.", ex);
