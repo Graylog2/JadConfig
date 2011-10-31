@@ -15,10 +15,10 @@
 -docencoding
 'UTF-8'
 -doctitle
-'JadConfig 0.3-SNAPSHOT API'
+'JadConfig 0.3 API'
 -linkoffline
 'http://download.oracle.com/javase/6/docs/api' '/home/joschi/src/JadConfig/target/javadoc-bundle-options'
 -use
 -version
 -windowtitle
-'JadConfig 0.3-SNAPSHOT API'
+'JadConfig 0.3 API'

@@ -8,8 +8,8 @@
     <language>en-us</language>
     <copyright>&#169;2011</copyright>
     <item>
-      <title>File: 29,
-             Errors: 389,
+      <title>File: 30,
+             Errors: 397,
              Warnings: 0,
              Infos: 0
       </title>
@@ -197,6 +197,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.DoubleConverter.java">com/github/joschi/jadconfig/converters/DoubleConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  12
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.ParameterException.java">com/github/joschi/jadconfig/ParameterException.java</a>
                 </td>
                 <td>
@@ -211,20 +225,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.DoubleConverter.java">com/github/joschi/jadconfig/converters/DoubleConverter.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  11
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.validators.NoValidator.java">com/github/joschi/jadconfig/validators/NoValidator.java</a>
                 </td>
                 <td>
@@ -234,7 +234,7 @@
                   0
                 </td>
                 <td>
-                  5
+                  6
                 </td>
               </tr>
                           <tr>
@@ -290,7 +290,7 @@
                   0
                 </td>
                 <td>
-                  11
+                  10
                 </td>
               </tr>
                           <tr>
@@ -337,6 +337,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.ShortConverter.java">com/github/joschi/jadconfig/converters/ShortConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  11
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.LongConverter.java">com/github/joschi/jadconfig/converters/LongConverter.java</a>
                 </td>
                 <td>
@@ -351,7 +365,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.ShortConverter.java">com/github/joschi/jadconfig/converters/ShortConverter.java</a>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.Strings.java">com/github/joschi/jadconfig/Strings.java</a>
                 </td>
                 <td>
                   0
@@ -360,7 +374,7 @@
                   0
                 </td>
                 <td>
-                  11
+                  7
                 </td>
               </tr>
                           <tr>
