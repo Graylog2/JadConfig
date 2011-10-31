@@ -1,5 +1,6 @@
 package com.github.joschi.jadconfig.validators;
 
+import com.github.joschi.jadconfig.Strings;
 import com.github.joschi.jadconfig.ValidationException;
 import com.github.joschi.jadconfig.Validator;
 
@@ -24,10 +25,9 @@ public class PositiveLongValidator implements Validator {
     public void validate(String name, String value) throws ValidationException {
 
         long n;
-        String trimmedValue = value == null ? null : value.trim();
 
         try {
-            n = Long.parseLong(trimmedValue);
+            n = Long.parseLong(Strings.trim(value));
         } catch (NumberFormatException ex) {
             throw new ValidationException("Parameter " + name + " should be a positive number (found " + value + ")", ex);
         }
