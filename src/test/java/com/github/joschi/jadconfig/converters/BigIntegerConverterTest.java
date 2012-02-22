@@ -28,7 +28,6 @@ public class BigIntegerConverterTest {
         Assert.assertEquals(BigInteger.ZERO, converter.convertFrom("0"));
         Assert.assertEquals(BigInteger.ONE, converter.convertFrom("1"));
         Assert.assertEquals(BigInteger.ONE.negate(), converter.convertFrom("-1"));
-        Assert.assertEquals(BigInteger.ONE, converter.convertFrom("+1"));
         Assert.assertEquals(new BigInteger("1234567890"), converter.convertFrom("1234567890"));
     }
 
