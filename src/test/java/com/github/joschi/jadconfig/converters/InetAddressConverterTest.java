@@ -26,7 +26,7 @@ public class InetAddressConverterTest {
     @Test
     public void testConvertFrom() throws UnknownHostException {
 
-        Assert.assertEquals(InetAddress.getLoopbackAddress(), converter.convertFrom("localhost"));
+        Assert.assertEquals(InetAddress.getByName("localhost"), converter.convertFrom("localhost"));
         Assert.assertEquals(InetAddress.getByName("127.0.0.1"), converter.convertFrom("127.0.0.1"));
         Assert.assertEquals(InetAddress.getByName("::1"), converter.convertFrom("::1"));
         Assert.assertEquals(InetAddress.getByName("example.com"), converter.convertFrom("example.com"));
@@ -47,10 +47,10 @@ public class InetAddressConverterTest {
     @Test
     public void testConvertTo() throws UnknownHostException {
 
-        String loopbackCanonicalHostName = InetAddress.getLoopbackAddress().getCanonicalHostName();
+        String loopbackCanonicalHostName = InetAddress.getLocalHost().getCanonicalHostName();
 
         Assert.assertEquals(InetAddress.getByName("example.com").getCanonicalHostName(), converter.convertTo(InetAddress.getByName("example.com")));
-        Assert.assertEquals(loopbackCanonicalHostName, converter.convertTo(InetAddress.getLoopbackAddress()));
+        Assert.assertEquals(loopbackCanonicalHostName, converter.convertTo(InetAddress.getLocalHost()));
         Assert.assertEquals(loopbackCanonicalHostName, converter.convertTo(InetAddress.getByName("")));
     }
 

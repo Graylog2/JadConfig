@@ -70,7 +70,7 @@ public class InetSocketAddressConverter implements Converter<InetSocketAddress> 
         if (value.getAddress() instanceof Inet6Address) {
             return String.format("[%s]%s%d", value.getAddress().getHostAddress(), SEPARATOR, value.getPort());
         } else {
-            return String.format("%s%s%d", value.getHostString(), SEPARATOR, value.getPort());
+            return String.format("%s%s%d", value.getHostName(), SEPARATOR, value.getPort());
         }
     }
 }
