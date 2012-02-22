@@ -18,21 +18,37 @@ public class LocaleConverter implements Converter<Locale> {
      *
      * @param value The configuration parameter's {@link String} value
      * @return A {@link Locale} instance representing the configuration parameter's value
-     * @see Locale#forLanguageTag(String)
      */
     @Override
     public Locale convertFrom(String value) {
 
-        Locale result;
+        Locale result = getLocale(Strings.trim(value));
 
-        try {
-            result = Locale.forLanguageTag(Strings.trim(value));
-        } catch (Exception ex) {
-
-            throw new ParameterException("Couldn't convert value \"" + value + "\" to Locale.", ex);
+        if (null == result) {
+            throw new ParameterException("Couldn't convert value \"" + value + "\" to Locale");
         }
 
         return result;
+    }
+
+    private Locale getLocale(String languageTag) {
+
+        if (null == languageTag) {
+            return null;
+        }
+
+        String[] components = languageTag.split("_", 3);
+
+        switch (components.length) {
+            case 1:
+                return new Locale(components[0]);
+            case 2:
+                return new Locale(components[0], components[1]);
+            case 3:
+                return new Locale(components[0], components[1], components[2]);
+            default:
+                return null;
+        }
     }
 
     /**
@@ -40,7 +56,6 @@ public class LocaleConverter implements Converter<Locale> {
      *
      * @param value The configuration parameter's {@link Locale} value
      * @return A {@link String} instance representing the configuration parameter's typed value
-     * @see Locale#toLanguageTag()
      */
     @Override
     public String convertTo(Locale value) {
@@ -49,6 +64,6 @@ public class LocaleConverter implements Converter<Locale> {
             throw new ParameterException("Couldn't convert \"null\" to String.");
         }
 
-        return value.toLanguageTag();
+        return value.toString();
     }
 }

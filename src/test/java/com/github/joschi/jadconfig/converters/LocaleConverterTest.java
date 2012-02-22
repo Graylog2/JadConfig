@@ -25,8 +25,10 @@ public class LocaleConverterTest {
     @Test
     public void testConvertFrom() {
 
-        Assert.assertEquals(Locale.GERMANY, converter.convertFrom("de-DE"));
-        Assert.assertEquals(Locale.US, converter.convertFrom("en-US"));
+        Assert.assertEquals(Locale.GERMAN, converter.convertFrom("de"));
+        Assert.assertEquals(Locale.GERMANY, converter.convertFrom("de_DE"));
+        Assert.assertEquals(Locale.US, converter.convertFrom("en_US"));
+        Assert.assertEquals(new Locale("es", "ES", "Traditional_WIN"), converter.convertFrom("es_ES_Traditional_WIN"));
     }
 
     @Test(expected = ParameterException.class)
@@ -38,8 +40,8 @@ public class LocaleConverterTest {
     @Test
     public void testConvertTo() {
 
-        Assert.assertEquals(Locale.GERMAN.toLanguageTag(), converter.convertTo(Locale.GERMAN));
-        Assert.assertEquals(Locale.US.toLanguageTag(), converter.convertTo(Locale.US));
+        Assert.assertEquals(Locale.GERMAN.toString(), converter.convertTo(Locale.GERMAN));
+        Assert.assertEquals(Locale.US.toString(), converter.convertTo(Locale.US));
     }
 
     @Test(expected = ParameterException.class)
