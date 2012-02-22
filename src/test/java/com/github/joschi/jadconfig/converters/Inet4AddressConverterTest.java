@@ -31,7 +31,7 @@ public class Inet4AddressConverterTest {
     @Test
     public void testConvertFrom() throws UnknownHostException {
 
-        Assert.assertEquals(InetAddress.getLocalHost(), converter.convertFrom(INET4ADDRESS_LOCALHOST));
+        Assert.assertEquals(InetAddress.getByName(INET4ADDRESS_LOCALHOST), converter.convertFrom(INET4ADDRESS_LOCALHOST));
         Assert.assertEquals(InetAddress.getByName(INET4ADDRESS_EXAMPLE_COM), converter.convertFrom(INET4ADDRESS_EXAMPLE_COM));
     }
 

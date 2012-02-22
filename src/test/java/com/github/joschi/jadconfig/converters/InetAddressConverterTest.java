@@ -51,7 +51,7 @@ public class InetAddressConverterTest {
 
         Assert.assertEquals(InetAddress.getByName("example.com").getCanonicalHostName(), converter.convertTo(InetAddress.getByName("example.com")));
         Assert.assertEquals(loopbackCanonicalHostName, converter.convertTo(InetAddress.getLocalHost()));
-        Assert.assertEquals(loopbackCanonicalHostName, converter.convertTo(InetAddress.getByName("")));
+        Assert.assertEquals(InetAddress.getByName("").getCanonicalHostName(), converter.convertTo(InetAddress.getByName("")));
     }
 
     @Test(expected = ParameterException.class)
