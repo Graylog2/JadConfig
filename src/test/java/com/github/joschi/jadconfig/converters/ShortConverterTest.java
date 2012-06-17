@@ -69,10 +69,4 @@ public class ShortConverterTest {
 
         converter.convertTo(null);
     }
-        
-    @Test
-    public void testConvertFromParameterWithTrailingOrLeadingWhitespaces() {
-        Assert.assertEquals(Short.valueOf((short) 0), converter.convertFrom("0 "));
-        Assert.assertEquals(Short.valueOf((short) 1), converter.convertFrom(" 1"));
-    }
 }

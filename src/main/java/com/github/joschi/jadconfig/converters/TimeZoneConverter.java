@@ -2,7 +2,6 @@ package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.Converter;
 import com.github.joschi.jadconfig.ParameterException;
-import com.github.joschi.jadconfig.Strings;
 
 import java.util.TimeZone;
 
@@ -26,7 +25,7 @@ public class TimeZoneConverter implements Converter<TimeZone> {
         TimeZone result;
 
         try {
-            result = TimeZone.getTimeZone(Strings.trim(value));
+            result = TimeZone.getTimeZone(value);
         } catch (Exception ex) {
 
             throw new ParameterException("Couldn't convert value \"" + value + "\" to TimeZone.", ex);

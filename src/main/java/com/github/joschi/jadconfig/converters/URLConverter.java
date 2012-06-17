@@ -2,7 +2,6 @@ package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.Converter;
 import com.github.joschi.jadconfig.ParameterException;
-import com.github.joschi.jadconfig.Strings;
 
 import java.net.URL;
 
@@ -25,7 +24,7 @@ public class URLConverter implements Converter<URL> {
         URL result;
 
         try {
-            result = new URL(Strings.trim(value));
+            result = new URL(value);
         } catch (Exception ex) {
 
             throw new ParameterException("Couldn't convert value \"" + value + "\" to URL.", ex);

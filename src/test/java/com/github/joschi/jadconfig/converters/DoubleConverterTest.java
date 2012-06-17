@@ -76,10 +76,4 @@ public class DoubleConverterTest {
 
         converter.convertTo(null);
     }
-    
-    @Test
-    public void testConvertFromParameterWithTrailingOrLeadingWhitespaces() {
-        Assert.assertEquals(Double.valueOf(0.0d), converter.convertFrom(" 0.0"));
-        Assert.assertEquals(Double.valueOf(1.0d), converter.convertFrom("1.0 "));
-    }
 }

@@ -2,7 +2,6 @@ package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.Converter;
 import com.github.joschi.jadconfig.ParameterException;
-import com.github.joschi.jadconfig.Strings;
 
 import java.nio.charset.Charset;
 
@@ -26,7 +25,7 @@ public class CharsetConverter implements Converter<Charset> {
         Charset result;
 
         try {
-            result = Charset.forName(Strings.trim(value));
+            result = Charset.forName(value);
         } catch (Exception ex) {
 
             throw new ParameterException("Couldn't convert value \"" + value + "\" to Charset.", ex);

@@ -2,7 +2,6 @@ package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.Converter;
 import com.github.joschi.jadconfig.ParameterException;
-import com.github.joschi.jadconfig.Strings;
 
 import java.math.BigInteger;
 
@@ -25,7 +24,7 @@ public class BigIntegerConverter implements Converter<BigInteger> {
         BigInteger result;
 
         try {
-            result = new BigInteger(Strings.trim(value));
+            result = new BigInteger(value);
         } catch (Exception ex) {
 
             throw new ParameterException("Couldn't convert value \"" + value + "\" to BigInteger.", ex);

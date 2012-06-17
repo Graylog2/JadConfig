@@ -57,11 +57,4 @@ public class BigIntegerConverterTest {
 
         converter.convertTo(null);
     }
-
-    @Test
-    public void testConvertFromParameterWithTrailingOrLeadingWhitespaces() {
-        Assert.assertEquals(BigInteger.ZERO, converter.convertFrom(" 0"));
-        Assert.assertEquals(BigInteger.ONE, converter.convertFrom("1 "));
-        Assert.assertEquals(BigInteger.TEN, converter.convertFrom(" 10 "));
-    }
 }

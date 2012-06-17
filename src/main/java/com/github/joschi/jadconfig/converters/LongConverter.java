@@ -2,7 +2,6 @@ package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.Converter;
 import com.github.joschi.jadconfig.ParameterException;
-import com.github.joschi.jadconfig.Strings;
 
 /**
  * Converter for type {@link Long}
@@ -23,7 +22,7 @@ public class LongConverter implements Converter<Long> {
         Long result;
 
         try {
-            result = Long.valueOf(Strings.trim(value));
+            result = Long.valueOf(value);
         } catch (NumberFormatException ex) {
 
             throw new ParameterException("Couldn't convert value \"" + value + "\" to Long.", ex);

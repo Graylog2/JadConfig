@@ -77,10 +77,4 @@ public class FloatConverterTest {
 
         converter.convertTo(null);
     }
-    
-    @Test
-    public void testConvertFromParameterWithTrailingOrLeadingWhitespaces() {
-        Assert.assertEquals(Float.valueOf(0.0f), converter.convertFrom(" 0.0"));
-        Assert.assertEquals(Float.valueOf(1.0f), converter.convertFrom("1.0 "));
-    }
 }

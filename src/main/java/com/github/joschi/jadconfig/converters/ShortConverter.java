@@ -2,7 +2,6 @@ package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.Converter;
 import com.github.joschi.jadconfig.ParameterException;
-import com.github.joschi.jadconfig.Strings;
 
 /**
  * Converter for type {@link Short}
@@ -23,7 +22,7 @@ public class ShortConverter implements Converter<Short> {
         Short result;
 
         try {
-            result = Short.valueOf(Strings.trim(value));
+            result = Short.valueOf(value);
         } catch (NumberFormatException ex) {
 
             throw new ParameterException("Couldn't convert value \"" + value + "\" to Short.", ex);

@@ -2,7 +2,6 @@ package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.Converter;
 import com.github.joschi.jadconfig.ParameterException;
-import com.github.joschi.jadconfig.Strings;
 
 /**
  * Converter for type {@link Boolean}
@@ -20,10 +19,8 @@ public class BooleanConverter implements Converter<Boolean> {
     @Override
     public Boolean convertFrom(String value) {
 
-        String trimmedValue = Strings.trim(value);
-
-        if ("false".equalsIgnoreCase(trimmedValue) || "true".equalsIgnoreCase(trimmedValue)) {
-            return Boolean.valueOf(trimmedValue);
+        if ("false".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value)) {
+            return Boolean.valueOf(value);
         } else {
             throw new ParameterException("Couldn't convert value \"" + value + "\" to Boolean.");
         }

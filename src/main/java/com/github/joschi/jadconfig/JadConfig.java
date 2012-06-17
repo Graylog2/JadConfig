@@ -100,6 +100,12 @@ public class JadConfig {
                 }
 
                 if (parameterValue != null) {
+
+                    if (parameter.trim()) {
+                        LOG.debug("Trimmed parameter value {}", parameterName);
+                        parameterValue = Strings.trim(parameterValue);
+                    }
+
                     LOG.debug("Validating parameter {}", parameterName);
                     validateParameter(parameter.validator(), parameterName, parameterValue);
 
@@ -261,7 +267,7 @@ public class JadConfig {
     private String convertFieldValue(Class<?> fieldType, Class<? extends Converter<?>> converterClass, Object fieldValue) {
         Converter converter = getConverter(fieldType, converterClass);
 
-        LOG.debug("Converting {} to type {} using converter {}", new Object[] { fieldValue, fieldType, converter });
+        LOG.debug("Converting {} to type {} using converter {}", new Object[]{fieldValue, fieldType, converter});
         return converter.convertTo(fieldValue);
     }
 

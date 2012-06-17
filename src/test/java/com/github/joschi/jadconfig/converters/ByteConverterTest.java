@@ -69,11 +69,4 @@ public class ByteConverterTest {
 
         converter.convertTo(null);
     }
-
-    @Test
-    public void testConvertFromParameterWithTrailingOrLeadingWhitespaces() {
-        Assert.assertEquals(Byte.valueOf((byte) 1), converter.convertFrom("1 "));
-        Assert.assertEquals(Byte.valueOf((byte) -1), converter.convertFrom(" -1"));
-    }
-
 }

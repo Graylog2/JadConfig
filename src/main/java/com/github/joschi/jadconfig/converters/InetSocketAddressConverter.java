@@ -2,7 +2,6 @@ package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.Converter;
 import com.github.joschi.jadconfig.ParameterException;
-import com.github.joschi.jadconfig.Strings;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -36,8 +35,8 @@ public class InetSocketAddressConverter implements Converter<InetSocketAddress> 
 
             int lastIndexSeparator = value.lastIndexOf(SEPARATOR);
 
-            String hostname = Strings.trim(value.substring(0, lastIndexSeparator));
-            String port = Strings.trim(value.substring(lastIndexSeparator + 1, value.length()));
+            String hostname = value.substring(0, lastIndexSeparator);
+            String port = value.substring(lastIndexSeparator + 1, value.length());
 
             if (null == hostname || hostname.isEmpty()) {
                 throw new UnknownHostException("hostname must not be empty!");

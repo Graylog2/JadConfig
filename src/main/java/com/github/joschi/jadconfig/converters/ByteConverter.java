@@ -2,7 +2,6 @@ package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.Converter;
 import com.github.joschi.jadconfig.ParameterException;
-import com.github.joschi.jadconfig.Strings;
 
 /**
  * Converter for type {@link Byte}
@@ -23,7 +22,7 @@ public class ByteConverter implements Converter<Byte> {
         Byte result;
 
         try {
-            result = Byte.valueOf(Strings.trim(value));
+            result = Byte.valueOf(value);
         } catch (Exception ex) {
 
             throw new ParameterException("Couldn't convert value \"" + value + "\" to Byte.", ex);

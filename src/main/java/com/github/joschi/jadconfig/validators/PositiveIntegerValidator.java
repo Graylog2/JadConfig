@@ -1,6 +1,5 @@
 package com.github.joschi.jadconfig.validators;
 
-import com.github.joschi.jadconfig.Strings;
 import com.github.joschi.jadconfig.ValidationException;
 import com.github.joschi.jadconfig.Validator;
 
@@ -26,7 +25,7 @@ public class PositiveIntegerValidator implements Validator {
         int n;
 
         try {
-            n = Integer.parseInt(Strings.trim(value));
+            n = Integer.parseInt(value);
         } catch (NumberFormatException ex) {
             throw new ValidationException("Parameter " + name + " should be a positive number (found " + value + ")", ex);
         }

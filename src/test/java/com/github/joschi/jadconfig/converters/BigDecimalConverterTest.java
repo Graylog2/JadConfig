@@ -61,11 +61,4 @@ public class BigDecimalConverterTest {
 
         converter.convertTo(null);
     }
-
-    @Test
-    public void testConvertFromParameterWithTrailingOrLeadingWhitespaces() {
-        Assert.assertEquals(BigDecimal.ZERO, converter.convertFrom(" 0"));
-        Assert.assertEquals(BigDecimal.ONE, converter.convertFrom("1 "));
-        Assert.assertEquals(BigDecimal.TEN, converter.convertFrom(" 10 "));
-    }
 }

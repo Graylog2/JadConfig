@@ -48,12 +48,6 @@ public class IntegerConverterTest {
         converter.convertFrom(null);
     }
 
-    @Test
-    public void testConvertFromParameterWithTrailingOrLeadingWhitespaces() {
-        Assert.assertEquals(Integer.valueOf(100), converter.convertFrom("100 "));
-        Assert.assertEquals(Integer.valueOf(100), converter.convertFrom(" 100"));
-    }
-
     @Test(expected = ParameterException.class)
     public void testConvertInvalid() {
 

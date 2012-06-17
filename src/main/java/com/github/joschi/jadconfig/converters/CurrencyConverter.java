@@ -2,7 +2,6 @@ package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.Converter;
 import com.github.joschi.jadconfig.ParameterException;
-import com.github.joschi.jadconfig.Strings;
 
 import java.util.Currency;
 
@@ -26,7 +25,7 @@ public class CurrencyConverter implements Converter<Currency> {
         Currency result;
 
         try {
-            result = Currency.getInstance(Strings.trim(value));
+            result = Currency.getInstance(value);
         } catch (Exception ex) {
 
             throw new ParameterException("Couldn't convert value \"" + value + "\" to Currency.", ex);

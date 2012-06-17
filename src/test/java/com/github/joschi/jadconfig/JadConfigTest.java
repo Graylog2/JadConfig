@@ -128,6 +128,20 @@ public class JadConfigTest {
     }
 
     @Test
+    public void testParameterTrimming() throws RepositoryException, ValidationException {
+
+        TrimBean configurationBean = new TrimBean();
+        jadConfig = new JadConfig(repository, configurationBean);
+
+        jadConfig.process();
+
+        Assert.assertEquals("Test", configurationBean.getTrimmedString());
+        Assert.assertEquals("Test ", configurationBean.getUntrimmedString());
+        Assert.assertEquals(123456, configurationBean.getMyInt());
+
+    }
+
+    @Test
     public void testProcessNoBean() throws RepositoryException, ValidationException {
 
         jadConfig = new JadConfig(repository);

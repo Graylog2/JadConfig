@@ -2,7 +2,6 @@ package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.Converter;
 import com.github.joschi.jadconfig.ParameterException;
-import com.github.joschi.jadconfig.Strings;
 
 import java.util.UUID;
 
@@ -25,7 +24,7 @@ public class UUIDConverter implements Converter<UUID> {
         UUID result;
 
         try {
-            result = UUID.fromString(Strings.trim(value));
+            result = UUID.fromString(value);
         } catch (Exception ex) {
 
             throw new ParameterException("Couldn't convert value \"" + value + "\" to UUID.", ex);

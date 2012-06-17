@@ -2,7 +2,6 @@ package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.Converter;
 import com.github.joschi.jadconfig.ParameterException;
-import com.github.joschi.jadconfig.Strings;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -31,7 +30,7 @@ public class Inet6AddressConverter implements Converter<Inet6Address> {
                 throw new NullPointerException("value must not be null!");
             }
 
-            InetAddress inetAddress = InetAddress.getByName(Strings.trim(value));
+            InetAddress inetAddress = InetAddress.getByName(value);
 
             if (inetAddress instanceof Inet6Address) {
                 result = (Inet6Address) inetAddress;

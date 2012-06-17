@@ -61,18 +61,4 @@ public class UUIDConverterTest {
 
         converter.convertTo(null);
     }
-
-    @Test
-    public void testConvertFromParameterWithTrailingOrLeadingWhitespaces() {
-
-        UUID uuid = UUID.randomUUID();
-
-        String leadingSpace = String.format(" %s", uuid.toString());
-        String trailingSpace = String.format("%s ", uuid.toString());
-        String leadingAndTrailingSpace = String.format(" %s ", uuid.toString());
-
-        Assert.assertEquals(uuid, converter.convertFrom(leadingSpace));
-        Assert.assertEquals(uuid, converter.convertFrom(trailingSpace));
-        Assert.assertEquals(uuid, converter.convertFrom(leadingAndTrailingSpace));
-    }
 }

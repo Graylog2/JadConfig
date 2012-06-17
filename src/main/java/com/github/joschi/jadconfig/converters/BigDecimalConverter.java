@@ -2,7 +2,6 @@ package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.Converter;
 import com.github.joschi.jadconfig.ParameterException;
-import com.github.joschi.jadconfig.Strings;
 
 import java.math.BigDecimal;
 
@@ -25,7 +24,7 @@ public class BigDecimalConverter implements Converter<BigDecimal> {
         BigDecimal result;
 
         try {
-            result = new BigDecimal(Strings.trim(value));
+            result = new BigDecimal(value);
         } catch (Exception ex) {
 
             throw new ParameterException("Couldn't convert value \"" + value + "\" to BigDecimal.", ex);

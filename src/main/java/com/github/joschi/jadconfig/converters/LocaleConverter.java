@@ -2,7 +2,6 @@ package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.Converter;
 import com.github.joschi.jadconfig.ParameterException;
-import com.github.joschi.jadconfig.Strings;
 
 import java.util.Locale;
 
@@ -22,7 +21,7 @@ public class LocaleConverter implements Converter<Locale> {
     @Override
     public Locale convertFrom(String value) {
 
-        Locale result = getLocale(Strings.trim(value));
+        Locale result = getLocale(value);
 
         if (null == result) {
             throw new ParameterException("Couldn't convert value \"" + value + "\" to Locale");

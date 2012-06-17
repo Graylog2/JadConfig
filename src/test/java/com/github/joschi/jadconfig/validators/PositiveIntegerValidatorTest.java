@@ -50,12 +50,4 @@ public class PositiveIntegerValidatorTest {
 
         validator.validate("Test", null);
     }
-
-    @Test
-    public void testValidateLeadingOrTrailingWhitespace() throws ValidationException {
-
-        validator.validate("Test", " 0");
-        validator.validate("Test", "1 ");
-        validator.validate("Test", " 2147483647 ");
-    }
 }
