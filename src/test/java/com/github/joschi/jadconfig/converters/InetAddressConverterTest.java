@@ -29,7 +29,6 @@ public class InetAddressConverterTest {
         Assert.assertEquals(InetAddress.getByName("localhost"), converter.convertFrom("localhost"));
         Assert.assertEquals(InetAddress.getByName("127.0.0.1"), converter.convertFrom("127.0.0.1"));
         Assert.assertEquals(InetAddress.getByName("::1"), converter.convertFrom("::1"));
-        Assert.assertEquals(InetAddress.getByName("example.com"), converter.convertFrom("example.com"));
     }
 
     @Test(expected = ParameterException.class)
@@ -49,7 +48,7 @@ public class InetAddressConverterTest {
 
         String loopbackCanonicalHostName = InetAddress.getLocalHost().getCanonicalHostName();
 
-        Assert.assertEquals(InetAddress.getByName("example.com").getCanonicalHostName(), converter.convertTo(InetAddress.getByName("example.com")));
+        Assert.assertEquals(InetAddress.getByName("localhost").getCanonicalHostName(), converter.convertTo(InetAddress.getByName("localhost")));
         Assert.assertEquals(loopbackCanonicalHostName, converter.convertTo(InetAddress.getLocalHost()));
         Assert.assertEquals(InetAddress.getByName("").getCanonicalHostName(), converter.convertTo(InetAddress.getByName("")));
     }
