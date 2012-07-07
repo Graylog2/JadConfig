@@ -7,6 +7,8 @@ package com.github.joschi.jadconfig;
  */
 public class RepositoryException extends Exception {
 
+    static final long serialVersionUID = -1L;
+
     public RepositoryException() {
 
         super();

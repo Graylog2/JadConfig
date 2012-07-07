@@ -7,6 +7,8 @@ package com.github.joschi.jadconfig;
  */
 public class ParameterException extends RuntimeException {
 
+    static final long serialVersionUID = -1L;
+
     public ParameterException() {
 
         super();

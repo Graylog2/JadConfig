@@ -7,6 +7,8 @@ package com.github.joschi.jadconfig;
  */
 public class ValidationException extends Exception {
 
+    static final long serialVersionUID = -1L;
+
     public ValidationException() {
 
         super();
