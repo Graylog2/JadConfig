@@ -1,7 +1,7 @@
 JadConfig
 =========
 
-JadConfig is an annotation-driven configuration parsing framework for Java.
+JadConfig is a small annotation-driven configuration parsing framework for Java with minimal dependencies.
 
 http://joschi.github.com/JadConfig/
 
