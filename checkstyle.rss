@@ -6,10 +6,10 @@
     <link>https://github.com/joschi/JadConfig</link>
     <description>JadConfig - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2011</copyright>
+    <copyright>&#169;2012</copyright>
     <item>
-      <title>File: 30,
-             Errors: 397,
+      <title>File: 50,
+             Errors: 609,
              Warnings: 0,
              Infos: 0
       </title>
@@ -57,6 +57,34 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.repositories.SystemPropertiesRepository.java">com/github/joschi/jadconfig/repositories/SystemPropertiesRepository.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.UUIDConverter.java">com/github/joschi/jadconfig/converters/UUIDConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  11
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.URIConverter.java">com/github/joschi/jadconfig/converters/URIConverter.java</a>
                 </td>
                 <td>
@@ -71,7 +99,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.ConverterFactory.java">com/github/joschi/jadconfig/ConverterFactory.java</a>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.DecimalFormatConverter.java">com/github/joschi/jadconfig/converters/DecimalFormatConverter.java</a>
                 </td>
                 <td>
                   0
@@ -80,12 +108,12 @@
                   0
                 </td>
                 <td>
-                  4
+                  12
                 </td>
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.NoConverter.java">com/github/joschi/jadconfig/converters/NoConverter.java</a>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.Inet4AddressConverter.java">com/github/joschi/jadconfig/converters/Inet4AddressConverter.java</a>
                 </td>
                 <td>
                   0
@@ -94,21 +122,7 @@
                   0
                 </td>
                 <td>
-                  9
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.StringListConverter.java">com/github/joschi/jadconfig/converters/StringListConverter.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  14
+                  12
                 </td>
               </tr>
                           <tr>
@@ -127,7 +141,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.Parameter.java">com/github/joschi/jadconfig/Parameter.java</a>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.CurrencyConverter.java">com/github/joschi/jadconfig/converters/CurrencyConverter.java</a>
                 </td>
                 <td>
                   0
@@ -136,7 +150,7 @@
                   0
                 </td>
                 <td>
-                  5
+                  11
                 </td>
               </tr>
                           <tr>
@@ -150,7 +164,7 @@
                   0
                 </td>
                 <td>
-                  85
+                  84
                 </td>
               </tr>
                           <tr>
@@ -197,7 +211,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.DoubleConverter.java">com/github/joschi/jadconfig/converters/DoubleConverter.java</a>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.TimeZoneConverter.java">com/github/joschi/jadconfig/converters/TimeZoneConverter.java</a>
                 </td>
                 <td>
                   0
@@ -206,12 +220,12 @@
                   0
                 </td>
                 <td>
-                  12
+                  11
                 </td>
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.ParameterException.java">com/github/joschi/jadconfig/ParameterException.java</a>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.validators.DirectoryReadableValidator.java">com/github/joschi/jadconfig/validators/DirectoryReadableValidator.java</a>
                 </td>
                 <td>
                   0
@@ -220,49 +234,7 @@
                   0
                 </td>
                 <td>
-                  8
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.validators.NoValidator.java">com/github/joschi/jadconfig/validators/NoValidator.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.RepositoryException.java">com/github/joschi/jadconfig/RepositoryException.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  9
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.DefaultConverterFactory.java">com/github/joschi/jadconfig/DefaultConverterFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  12
+                  7
                 </td>
               </tr>
                           <tr>
@@ -291,6 +263,384 @@
                 </td>
                 <td>
                   10
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.Inet6AddressConverter.java">com/github/joschi/jadconfig/converters/Inet6AddressConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  12
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.LongConverter.java">com/github/joschi/jadconfig/converters/LongConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  11
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.ShortConverter.java">com/github/joschi/jadconfig/converters/ShortConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  11
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.BooleanConverter.java">com/github/joschi/jadconfig/converters/BooleanConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  11
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.Strings.java">com/github/joschi/jadconfig/Strings.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.validators.PositiveIntegerValidator.java">com/github/joschi/jadconfig/validators/PositiveIntegerValidator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.InetSocketAddressConverter.java">com/github/joschi/jadconfig/converters/InetSocketAddressConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  17
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.FileConverter.java">com/github/joschi/jadconfig/converters/FileConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  11
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.validators.PositiveLongValidator.java">com/github/joschi/jadconfig/validators/PositiveLongValidator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.BigDecimalConverter.java">com/github/joschi/jadconfig/converters/BigDecimalConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  11
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.ConverterFactory.java">com/github/joschi/jadconfig/ConverterFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.NoConverter.java">com/github/joschi/jadconfig/converters/NoConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.validators.DirectoryWritableValidator.java">com/github/joschi/jadconfig/validators/DirectoryWritableValidator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.InetAddressConverter.java">com/github/joschi/jadconfig/converters/InetAddressConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  12
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.StringListConverter.java">com/github/joschi/jadconfig/converters/StringListConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  14
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.PatternConverter.java">com/github/joschi/jadconfig/converters/PatternConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  11
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.BigIntegerConverter.java">com/github/joschi/jadconfig/converters/BigIntegerConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  12
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.Parameter.java">com/github/joschi/jadconfig/Parameter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.CharsetConverter.java">com/github/joschi/jadconfig/converters/CharsetConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  11
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.validators.FileReadableValidator.java">com/github/joschi/jadconfig/validators/FileReadableValidator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.ParameterException.java">com/github/joschi/jadconfig/ParameterException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.DoubleConverter.java">com/github/joschi/jadconfig/converters/DoubleConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  12
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.validators.NoValidator.java">com/github/joschi/jadconfig/validators/NoValidator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.DefaultConverterFactory.java">com/github/joschi/jadconfig/DefaultConverterFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  12
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.RepositoryException.java">com/github/joschi/jadconfig/RepositoryException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  10
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.repositories.EnvironmentRepository.java">com/github/joschi/jadconfig/repositories/EnvironmentRepository.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.URLConverter.java">com/github/joschi/jadconfig/converters/URLConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  12
                 </td>
               </tr>
                           <tr>
@@ -332,105 +682,7 @@
                   0
                 </td>
                 <td>
-                  10
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.ShortConverter.java">com/github/joschi/jadconfig/converters/ShortConverter.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
                   11
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.LongConverter.java">com/github/joschi/jadconfig/converters/LongConverter.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  11
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.Strings.java">com/github/joschi/jadconfig/Strings.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  7
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.BooleanConverter.java">com/github/joschi/jadconfig/converters/BooleanConverter.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  12
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.validators.PositiveIntegerValidator.java">com/github/joschi/jadconfig/validators/PositiveIntegerValidator.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  9
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.FileConverter.java">com/github/joschi/jadconfig/converters/FileConverter.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  11
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.validators.PositiveLongValidator.java">com/github/joschi/jadconfig/validators/PositiveLongValidator.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  9
                 </td>
               </tr>
                           <tr>
@@ -445,6 +697,34 @@
                 </td>
                 <td>
                   21
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.converters.LocaleConverter.java">com/github/joschi/jadconfig/converters/LocaleConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  15
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/joschi/JadConfig/checkstyle.html#com.github.joschi.jadconfig.validators.FileWritableValidator.java">com/github/joschi/jadconfig/validators/FileWritableValidator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
                 </td>
               </tr>
                       </tbody>

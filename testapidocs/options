@@ -7,7 +7,7 @@
 '/home/joschi/src/JadConfig/src/test/java'
 -author
 -bottom
-'Copyright &#169; 2011. All Rights Reserved.'
+'Copyright &#169; 2012. All Rights Reserved.'
 -charset
 'UTF-8'
 -d
@@ -15,7 +15,7 @@
 -docencoding
 'UTF-8'
 -doctitle
-'JadConfig 0.3 Test API'
+'JadConfig 0.5-SNAPSHOT Test API'
 -link
 '../apidocs'
 -linkoffline
@@ -23,4 +23,4 @@
 -use
 -version
 -windowtitle
-'JadConfig 0.3 Test API'
+'JadConfig 0.5-SNAPSHOT Test API'
