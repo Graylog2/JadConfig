@@ -203,24 +203,6 @@
                 <plugins>
                     <plugin>
                         <groupId>com.github.github</groupId>
-                        <artifactId>downloads-maven-plugin</artifactId>
-                        <version>0.4</version>
-                        <configuration>
-                            <description>Official ${project.name} build of the ${project.version} release</description>
-                            <override>true</override>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>upload</goal>
-                                </goals>
-                                <phase>install</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>com.github.github</groupId>
                         <artifactId>site-maven-plugin</artifactId>
                         <version>0.4</version>
                         <configuration>
