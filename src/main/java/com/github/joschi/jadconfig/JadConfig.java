@@ -27,10 +27,8 @@ import java.util.List;
 public class JadConfig {
 
     private static final Logger LOG = LoggerFactory.getLogger(JadConfig.class);
-
     private LinkedList<ConverterFactory> converterFactories;
     private List<Object> configurationBeans;
-
     private Repository repository;
 
     /**
@@ -259,7 +257,7 @@ public class JadConfig {
         for (Object configurationBean : configurationBeans) {
             LOG.debug("Checking declared fields of {}", configurationBean);
 
-            for (Field field : configurationBean.getClass().getDeclaredFields()) {
+            for (Field field : getAllFields(configurationBean.getClass())) {
                 Parameter parameter = field.getAnnotation(Parameter.class);
 
                 LOG.debug("Checking declared field {} of {}", parameter, configurationBean);
