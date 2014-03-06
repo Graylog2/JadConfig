@@ -1,9 +1,9 @@
 JadConfig
 =========
 
-JadConfig is a small annotation-driven configuration parsing framework for Java with minimal dependencies.
+JadConfig is a minimalistic annotation-driven configuration parsing framework for Java with minimal dependencies.
 
-http://joschi.github.com/JadConfig/
+http://joschi.github.io/JadConfig/0.5.0
 
 
 Example
@@ -13,7 +13,7 @@ Here is a quick example:
 
     public class ConfigurationBean {
       @Parameter("my.stringList")
-      public List<String> myList = Lists.newArrayList();
+      public List<String> myList = new ArrayList<String>();
 
       @Parameter("my.integer")
       public int myInteger = 1;
@@ -35,7 +35,7 @@ To use JadConfig in your project using Maven add the following lines into the de
     <dependency>
         <groupId>com.github.joschi</groupId>
         <artifactId>jadconfig</artifactId>
-        <version>0.3</version>
+        <version>0.5.0</version>
     </dependency>
 
 
