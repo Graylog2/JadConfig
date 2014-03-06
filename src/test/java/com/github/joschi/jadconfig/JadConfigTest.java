@@ -240,4 +240,67 @@ public class JadConfigTest {
         Assert.assertEquals(new URI("http://example.com/"), otherBean.getMyUri());
         Assert.assertEquals(file.getCanonicalPath(), otherBean.getMyFile().getCanonicalPath());
     }
+
+    @Test
+    public void testInheritedBean() throws Exception {
+        InheritedBeanSubClass bean = new InheritedBeanSubClass();
+        jadConfig = new JadConfig(repository, bean);
+        jadConfig.process();
+
+        Assert.assertEquals("Test", bean.getMyString());
+        Assert.assertEquals(1234567890123L, bean.getMyInheritedLong());
+    }
+
+    @Test
+    public void testDoubleInheritedBean() throws Exception {
+        InheritedBeanSubSubClass bean = new InheritedBeanSubSubClass();
+        jadConfig = new JadConfig(repository, bean);
+        jadConfig.process();
+
+        Assert.assertEquals("Test", bean.getMyString());
+        Assert.assertEquals(1234567890123L, bean.getMyInheritedLong());
+        Assert.assertEquals(new URI("http://example.com/"), bean.getMyUri());
+    }
+
+    @Test
+    public void testSaveInheritedBean() throws Exception {
+        Repository inMemoryRepository = new InMemoryRepository();
+        InheritedBeanSubClass bean = new InheritedBeanSubClass();
+        jadConfig = new JadConfig(inMemoryRepository, bean);
+        jadConfig.process();
+
+        bean.setMyString("Foobar!");
+        bean.setMyInheritedLong(3210987654321L);
+
+        jadConfig.save();
+
+        InheritedBeanSubClass otherBean = new InheritedBeanSubClass();
+        JadConfig otherJadConfig = new JadConfig(inMemoryRepository, otherBean);
+        otherJadConfig.process();
+
+        Assert.assertEquals("Foobar!", otherBean.getMyString());
+        Assert.assertEquals(3210987654321L, otherBean.getMyInheritedLong());
+    }
+
+    @Test
+    public void testSaveDoubleInheritedBean() throws Exception {
+        Repository inMemoryRepository = new InMemoryRepository();
+        InheritedBeanSubSubClass bean = new InheritedBeanSubSubClass();
+        jadConfig = new JadConfig(inMemoryRepository, bean);
+        jadConfig.process();
+
+        bean.setMyString("Foobar!");
+        bean.setMyInheritedLong(3210987654321L);
+        bean.setMyUri(new URI("http://www.google.com"));
+
+        jadConfig.save();
+
+        InheritedBeanSubSubClass otherBean = new InheritedBeanSubSubClass();
+        JadConfig otherJadConfig = new JadConfig(inMemoryRepository, otherBean);
+        otherJadConfig.process();
+
+        Assert.assertEquals("Foobar!", otherBean.getMyString());
+        Assert.assertEquals(3210987654321L, otherBean.getMyInheritedLong());
+        Assert.assertEquals(new URI("http://www.google.com"), otherBean.getMyUri());
+    }
 }

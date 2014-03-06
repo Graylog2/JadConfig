@@ -27,10 +27,8 @@ import java.util.List;
 public class JadConfig {
 
     private static final Logger LOG = LoggerFactory.getLogger(JadConfig.class);
-
     private LinkedList<ConverterFactory> converterFactories;
     private List<Object> configurationBeans;
-
     private Repository repository;
 
     /**
@@ -77,9 +75,29 @@ public class JadConfig {
         for (Object configurationBean : configurationBeans) {
             LOG.info("Processing configuration bean {}", configurationBean);
 
-            processClassFields(configurationBean, configurationBean.getClass().getDeclaredFields());
-            invokeValidatorMethods(configurationBean, configurationBean.getClass().getMethods());
+            processClassFields(configurationBean, getAllFields(configurationBean.getClass()));
+            invokeValidatorMethods(configurationBean, getAllMethods(configurationBean.getClass() ));
         }
+    }
+
+    private Field[] getAllFields(Class<?> klass) {
+        List<Field> fields = new ArrayList<Field>();
+        for (Class<?> c = klass; c != null; c = c.getSuperclass()) {
+            fields.addAll(Arrays.asList(c.getDeclaredFields()));
+        }
+
+        Field[] result = new Field[fields.size()];
+        return fields.toArray(result);
+    }
+
+    private Method[] getAllMethods(Class<?> klass) {
+        List<Method> methods = new ArrayList<Method>();
+        for (Class<?> c = klass; c != null; c = c.getSuperclass()) {
+            methods.addAll(Arrays.asList(c.getDeclaredMethods()));
+        }
+
+        Method[] result = new Method[methods.size()];
+        return methods.toArray(result);
     }
 
     private void processClassFields(Object configurationBean, Field[] fields) throws ValidationException {
@@ -239,7 +257,7 @@ public class JadConfig {
         for (Object configurationBean : configurationBeans) {
             LOG.debug("Checking declared fields of {}", configurationBean);
 
-            for (Field field : configurationBean.getClass().getDeclaredFields()) {
+            for (Field field : getAllFields(configurationBean.getClass())) {
                 Parameter parameter = field.getAnnotation(Parameter.class);
 
                 LOG.debug("Checking declared field {} of {}", parameter, configurationBean);
