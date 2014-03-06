@@ -41,6 +41,11 @@
         <system>GitHub Issues</system>
     </issueManagement>
 
+    <ciManagement>
+        <system>Travis CI</system>
+        <url>https://travis-ci.org/joschi/JadConfig</url>
+    </ciManagement>
+
     <developers>
         <developer>
             <id>jschalanda</id>
