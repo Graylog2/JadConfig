@@ -47,6 +47,15 @@
         </developer>
     </developers>
 
+    <contributors>
+        <contributor>
+            <name>Dennis Oelkers</name>
+            <email>dennis@torch.sh</email>
+            <organization>TORCH GmbH</organization>
+            <organizationUrl>https://www.torch.sh/</organizationUrl>
+        </contributor>
+    </contributors>
+
     <properties>
         <slf4j.version>1.7.6</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
