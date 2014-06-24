@@ -1,6 +1,9 @@
 JadConfig
 =========
 
+[![Build Status](https://travis-ci.org/joschi/JadConfig.svg?branch=master)](https://travis-ci.org/joschi/JadConfig)
+[![Coverage Status](https://img.shields.io/coveralls/joschi/JadConfig.svg)](https://coveralls.io/r/joschi/JadConfig)
+
 JadConfig is a minimalistic annotation-driven configuration parsing framework for Java with minimal dependencies.
 
 http://joschi.github.io/JadConfig/0.5.0
@@ -41,5 +44,6 @@ To use JadConfig in your project using Maven add the following lines into the de
 
 License
 -------
+
 JadConfig is being released under the Apache License, Version 2.0. You can download the complete license text at
 http://www.apache.org/licenses/LICENSE-2.0.html
