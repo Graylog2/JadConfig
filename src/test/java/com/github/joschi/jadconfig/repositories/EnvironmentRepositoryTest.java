@@ -47,6 +47,28 @@ public class EnvironmentRepositoryTest {
     }
 
     @Test
+    public void testUpperCaseEnabledRead() throws RepositoryException {
+        final EnvironmentRepository testRepository = new EnvironmentRepository(true);
+
+        Assert.assertEquals(System.getenv("JAVA_HOME"), testRepository.read("jAvA_homE"));
+    }
+
+    @Test
+    public void testUpperCaseDisabledRead() throws RepositoryException {
+        final EnvironmentRepository testRepository = new EnvironmentRepository(false);
+
+        Assert.assertNull(testRepository.read("jAvA_homE"));
+        Assert.assertEquals(System.getenv("JAVA_HOME"), testRepository.read("JAVA_HOME"));
+    }
+
+    @Test
+    public void testPrefixedRead() throws RepositoryException {
+        final EnvironmentRepository testRepository = new EnvironmentRepository("JAVA_");
+
+        Assert.assertEquals(System.getenv("JAVA_HOME"), testRepository.read("HOME"));
+    }
+
+    @Test
     public void testWrite() throws RepositoryException {
 
         repository.write("Test", "Value");
