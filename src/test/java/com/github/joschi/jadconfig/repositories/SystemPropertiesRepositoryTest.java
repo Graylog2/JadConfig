@@ -5,8 +5,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Map;
-
 /**
  * Unit tests for {@link SystemPropertiesRepository}
  *
@@ -44,8 +42,14 @@ public class SystemPropertiesRepositoryTest {
     public void testRead() throws RepositoryException {
 
         Assert.assertNull(repository.read("This system property should not exist"));
-        Map m = System.getProperties();
         Assert.assertEquals(System.getProperty("java.version"), repository.read("java.version"));
+    }
+
+    @Test
+    public void testReadWithPrefix() throws RepositoryException {
+        final SystemPropertiesRepository testRepository = new SystemPropertiesRepository("java.");
+
+        Assert.assertEquals(System.getProperty("java.version"), testRepository.read("version"));
     }
 
     @Test
