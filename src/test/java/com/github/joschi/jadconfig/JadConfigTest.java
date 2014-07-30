@@ -2,7 +2,20 @@ package com.github.joschi.jadconfig;
 
 import com.github.joschi.jadconfig.repositories.InMemoryRepository;
 import com.github.joschi.jadconfig.repositories.PropertiesRepository;
-import com.github.joschi.jadconfig.testbeans.*;
+import com.github.joschi.jadconfig.testbeans.DefaultValueConfigurationBean;
+import com.github.joschi.jadconfig.testbeans.EmptyBean;
+import com.github.joschi.jadconfig.testbeans.FoobarConfigurationBean;
+import com.github.joschi.jadconfig.testbeans.InheritedBeanSubClass;
+import com.github.joschi.jadconfig.testbeans.InheritedBeanSubSubClass;
+import com.github.joschi.jadconfig.testbeans.Multi1ConfigurationBean;
+import com.github.joschi.jadconfig.testbeans.Multi2ConfigurationBean;
+import com.github.joschi.jadconfig.testbeans.NonExistingParameterBean;
+import com.github.joschi.jadconfig.testbeans.RequiredParameterBean;
+import com.github.joschi.jadconfig.testbeans.SaveMeBean;
+import com.github.joschi.jadconfig.testbeans.SimpleConfigurationBean;
+import com.github.joschi.jadconfig.testbeans.TrimBean;
+import com.github.joschi.jadconfig.testbeans.ValidatorMethodConfigurationBean;
+import com.github.joschi.jadconfig.testbeans.VoidConfigurationBean;
 import com.github.joschi.jadconfig.testconverters.FoobarConverterFactory;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,6 +26,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -42,6 +57,38 @@ public class JadConfigTest {
         jadConfig.process();
 
         Assert.assertEquals("Test", configurationBean.getMyString());
+        Assert.assertEquals(123, configurationBean.getMyByte());
+        Assert.assertEquals(1234, configurationBean.getMyShort());
+        Assert.assertEquals(123456, configurationBean.getMyInt());
+        Assert.assertEquals(1234567890123L, configurationBean.getMyLong());
+        Assert.assertEquals(5.432E-1f, configurationBean.getMyFloat(), 0.0f);
+        Assert.assertEquals(1.23E45d, configurationBean.getMyDouble(), 0.0d);
+        Assert.assertTrue(configurationBean.isMyBoolean());
+
+        List<String> stringList = new ArrayList<String>();
+        stringList.add("one");
+        stringList.add("two");
+        stringList.add("three");
+        stringList.add("four");
+        stringList.add("five");
+
+        Assert.assertEquals(stringList, configurationBean.getStringList());
+        Assert.assertEquals(URI.create("http://example.com/"), configurationBean.getUri());
+        Assert.assertEquals(new File("testConfiguration.properties"), configurationBean.getFile());
+    }
+
+    @Test
+    public void testProcessWithMultipleRepositories() throws RepositoryException, ValidationException {
+
+        final SimpleConfigurationBean configurationBean = new SimpleConfigurationBean();
+        final Repository inMemoryRepository = new InMemoryRepository(new HashMap<String, String>(1) {{
+            put("test.string", "Override");
+        }});
+
+        jadConfig = new JadConfig(Arrays.asList(inMemoryRepository, repository), configurationBean);
+        jadConfig.process();
+
+        Assert.assertEquals("Override", configurationBean.getMyString());
         Assert.assertEquals(123, configurationBean.getMyByte());
         Assert.assertEquals(1234, configurationBean.getMyShort());
         Assert.assertEquals(123456, configurationBean.getMyInt());
@@ -138,7 +185,6 @@ public class JadConfigTest {
         Assert.assertEquals("Test", configurationBean.getTrimmedString());
         Assert.assertEquals("Test ", configurationBean.getUntrimmedString());
         Assert.assertEquals(123456, configurationBean.getMyInt());
-
     }
 
     @Test
@@ -239,6 +285,44 @@ public class JadConfigTest {
         Assert.assertEquals(Integer.valueOf(123), otherBean.getMyInteger());
         Assert.assertEquals(new URI("http://example.com/"), otherBean.getMyUri());
         Assert.assertEquals(file.getCanonicalPath(), otherBean.getMyFile().getCanonicalPath());
+    }
+
+    @Test
+    public void testSaveMultipleRepositories() throws RepositoryException, ValidationException, URISyntaxException, IOException {
+
+        Repository repo1 = new InMemoryRepository();
+        Repository repo2 = new InMemoryRepository();
+
+        SaveMeBean bean = new SaveMeBean();
+        jadConfig = new JadConfig(Arrays.asList(repo1, repo2), bean);
+        jadConfig.process();
+
+        File file = File.createTempFile("JadConfigTest-testSave", "");
+
+        bean.setMyString("Test");
+        bean.setMyInteger(123);
+        bean.setMyUri(new URI("http://example.com/"));
+        bean.setMyFile(file);
+
+        jadConfig.save();
+
+        SaveMeBean repo1Bean = new SaveMeBean();
+        JadConfig repo1Config = new JadConfig(repo1, repo1Bean);
+        repo1Config.process();
+
+        Assert.assertEquals("Test", repo1Bean.getMyString());
+        Assert.assertEquals(Integer.valueOf(123), repo1Bean.getMyInteger());
+        Assert.assertEquals(new URI("http://example.com/"), repo1Bean.getMyUri());
+        Assert.assertEquals(file.getCanonicalPath(), repo1Bean.getMyFile().getCanonicalPath());
+
+        SaveMeBean repo2Bean = new SaveMeBean();
+        JadConfig repo2Config = new JadConfig(repo1, repo2Bean);
+        repo2Config.process();
+
+        Assert.assertEquals("Test", repo2Bean.getMyString());
+        Assert.assertEquals(Integer.valueOf(123), repo2Bean.getMyInteger());
+        Assert.assertEquals(new URI("http://example.com/"), repo2Bean.getMyUri());
+        Assert.assertEquals(file.getCanonicalPath(), repo2Bean.getMyFile().getCanonicalPath());
     }
 
     @Test

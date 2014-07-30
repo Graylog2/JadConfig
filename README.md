@@ -6,8 +6,6 @@ JadConfig
 
 JadConfig is a minimalistic annotation-driven configuration parsing framework for Java with minimal dependencies.
 
-http://joschi.github.io/JadConfig/0.5.0
-
 
 Example
 -------
@@ -29,6 +27,20 @@ and how you use it:
 
     ConfigurationBean bean = new ConfigurationBean();
     new JadConfig(new PropertiesRepository("my.properties"), bean).process();
+
+    Assert.assertNotNull(bean.myList);
+
+
+You can also use multiple repositories as source for your configuration (first match wins):
+
+    ConfigurationBean bean = new ConfigurationBean();
+    new JadConfig(
+            Arrays.asList(
+                new EnvironmentRepository(),
+                new PropertiesRepository("my.properties")
+            ),
+            bean)
+        .process();
 
     Assert.assertNotNull(bean.myList);
 

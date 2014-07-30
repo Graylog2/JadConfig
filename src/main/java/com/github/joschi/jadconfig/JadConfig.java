@@ -9,6 +9,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,23 +29,22 @@ import java.util.List;
 public class JadConfig {
 
     private static final Logger LOG = LoggerFactory.getLogger(JadConfig.class);
-    private LinkedList<ConverterFactory> converterFactories;
+    private final LinkedList<ConverterFactory> converterFactories = new LinkedList<ConverterFactory>();
     private List<Object> configurationBeans;
-    private Repository repository;
+    private List<Repository> repositories;
 
     /**
      * Creates a new (empty) instance of JadConfig.
      * <p/>
      * Configuration beans will have to be added with {@link #addConfigurationBean(Object)} and a {@link Repository}
-     * will have to be set with {@link #setRepository(Repository)}.
+     * will have to be set with {@link #setRepository(Repository)} or {@link #setRepositories(Collection)}.
      *
      * @see #addConfigurationBean(Object)
+     * @see #setRepository(Repository)
+     * @see #setRepositories(Collection)
      */
     public JadConfig() {
-        configurationBeans = new ArrayList<Object>();
-
-        converterFactories = new LinkedList<ConverterFactory>();
-        converterFactories.add(new DefaultConverterFactory());
+        this(Collections.<Repository>emptyList(), new ArrayList<Object>());
     }
 
     /**
@@ -54,11 +55,23 @@ public class JadConfig {
      * @param configurationBeans One or more objects annotated with JadConfig annotations
      */
     public JadConfig(Repository repository, Object... configurationBeans) {
-        this();
-
-        this.configurationBeans.addAll(Arrays.asList(configurationBeans));
-        this.repository = repository;
+        this(Collections.singletonList(repository), configurationBeans);
     }
+
+    /**
+     * Creates a new instance of JadConfig backed by the provided {@link Repository}s and filling the provided
+     * {@literal configurationBeans}.
+     *
+     * @param repositories       A collection of {@link Repository}s for interfacing with the configuration data
+     * @param configurationBeans One or more objects annotated with JadConfig annotations
+     */
+    public JadConfig(Collection<Repository> repositories, Object... configurationBeans) {
+        this.configurationBeans = new ArrayList<Object>(Arrays.asList(configurationBeans));
+        this.repositories = new ArrayList<Repository>(repositories);
+
+        converterFactories.add(new DefaultConverterFactory());
+    }
+
 
     /**
      * Processes the configuration provided by the configured {@link Repository} and filling the provided configuration
@@ -69,14 +82,16 @@ public class JadConfig {
      */
     public void process() throws RepositoryException, ValidationException {
 
-        LOG.info("Opening repository {}", repository);
-        repository.open();
+        for (Repository repository : repositories) {
+            LOG.debug("Opening repository {}", repository);
+            repository.open();
+        }
 
         for (Object configurationBean : configurationBeans) {
-            LOG.info("Processing configuration bean {}", configurationBean);
+            LOG.debug("Processing configuration bean {}", configurationBean);
 
             processClassFields(configurationBean, getAllFields(configurationBean.getClass()));
-            invokeValidatorMethods(configurationBean, getAllMethods(configurationBean.getClass() ));
+            invokeValidatorMethods(configurationBean, getAllMethods(configurationBean.getClass()));
         }
     }
 
@@ -110,10 +125,18 @@ public class JadConfig {
                 Object fieldValue = getFieldValue(field, configurationBean);
 
                 String parameterName = parameter.value();
-                String parameterValue = repository.read(parameterName);
+                String parameterValue = null;
+
+                for (Repository repository : repositories) {
+                    LOG.debug("Looking up parameter {} in repository {}", parameterName, repository);
+                    parameterValue = repository.read(parameterName);
+
+                    if (null != parameterValue) {
+                        break;
+                    }
+                }
 
                 if (parameterValue == null && fieldValue == null && parameter.required()) {
-                    LOG.warn("Required parameter {} not found", parameterName);
                     throw new ParameterException("Required parameter \"" + parameterName + "\" not found.");
                 }
 
@@ -127,7 +150,7 @@ public class JadConfig {
                     LOG.debug("Validating parameter {}", parameterName);
                     validateParameter(parameter.validator(), parameterName, parameterValue);
 
-                    LOG.debug("Converting parameter value {}: ", parameterName, parameterValue);
+                    LOG.debug("Converting parameter value {}", parameterName);
                     fieldValue = convertStringValue(field.getType(), parameter.converter(), parameterValue);
                 }
 
@@ -143,7 +166,7 @@ public class JadConfig {
     }
 
     private Object convertStringValue(Class<?> fieldType, Class<? extends Converter<?>> converterClass, String stringValue) {
-        Converter converter = getConverter(fieldType, converterClass);
+        final Converter converter = getConverter(fieldType, converterClass);
 
         LOG.debug("Loaded converter class for type {}: {}", fieldType, converter);
 
@@ -271,15 +294,19 @@ public class JadConfig {
                     if (fieldValue != null) {
                         String stringValue = convertFieldValue(field.getType(), parameter.converter(), fieldValue);
 
-                        LOG.debug("Writing {} = {} to repository", parameter.value(), stringValue);
-                        repository.write(parameter.value(), stringValue);
+                        for (Repository repository : repositories) {
+                            LOG.debug("Writing {} = {} to repository {}", parameter.value(), stringValue, repository);
+                            repository.write(parameter.value(), stringValue);
+                        }
                     }
                 }
             }
         }
 
-        LOG.debug("Saving changes to repository {}", repository);
-        repository.save();
+        for (Repository repository : repositories) {
+            LOG.debug("Saving changes to repository {}", repository);
+            repository.save();
+        }
     }
 
     private String convertFieldValue(Class<?> fieldType, Class<? extends Converter<?>> converterClass, Object fieldValue) {
@@ -294,7 +321,16 @@ public class JadConfig {
      *
      * @param repository A {@link Repository} instance
      */
-    public void setRepository(Repository repository) {
-        this.repository = repository;
+    public void setRepository(final Repository repository) {
+        this.repositories = Collections.singletonList(repository);
+    }
+
+    /**
+     * Set the (sorted) list of {@link Repository}s to load configuration data from.
+     *
+     * @param repositories A collection of {@link Repository} instances
+     */
+    public void setRepositories(final Collection<Repository> repositories) {
+        this.repositories = new ArrayList<Repository>(repositories);
     }
 }
