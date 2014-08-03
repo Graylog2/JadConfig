@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import static com.github.joschi.jadconfig.ReflectionUtils.getAllFields;
 import static com.github.joschi.jadconfig.ReflectionUtils.getAllMethods;
@@ -284,6 +286,30 @@ public class JadConfig {
             LOG.debug("Saving changes to repository {}", repository);
             repository.save();
         }
+    }
+
+    /**
+     * Dumps all configuration parameters as a {@link java.util.Map} of {@link String}.
+     *
+     * If being called before {@link #process()} it will return the default values of the configuration beans.
+     *
+     * @return All configuration parameters as {@link String}
+     */
+    public Map<String, String> dump() {
+        final Map<String, String> configurationDump = new HashMap<String, String>();
+
+        for (Object configurationBean : configurationBeans) {
+            for (Field field : getAllFields(configurationBean.getClass())) {
+                final Parameter parameter = field.getAnnotation(Parameter.class);
+
+                if (parameter != null) {
+                    final Object fieldValue = getFieldValue(field, configurationBean);
+                    configurationDump.put(parameter.value(), convertFieldValue(field.getType(), parameter.converter(), fieldValue));
+                }
+            }
+        }
+
+        return configurationDump;
     }
 
     private String convertFieldValue(Class<?> fieldType, Class<? extends Converter<?>> converterClass, Object fieldValue) {

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Unit tests for {@link JadConfig}
@@ -141,6 +142,18 @@ public class JadConfigTest {
         Assert.assertEquals(1234, configurationBean.getMyShort());
     }
 
+@Test
+    public void testDumpDefaultPropertiesWithoutProcess() throws RepositoryException, ValidationException {
+
+        DefaultValueConfigurationBean configurationBean = new DefaultValueConfigurationBean();
+        jadConfig = new JadConfig(repository, configurationBean);
+
+        final Map<String, String> configDump = jadConfig.dump();
+        Assert.assertEquals("Will be overwritten", configDump.get("test.string"));
+        Assert.assertEquals("123", configDump.get("test.does-not-exist"));
+        Assert.assertEquals("0", configDump.get("test.short"));
+    }
+
     @Test
     public void testProcessValidatorMethod() throws RepositoryException, ValidationException {
 
@@ -196,6 +209,15 @@ public class JadConfigTest {
     }
 
     @Test
+    public void testDumpNoBean() throws RepositoryException, ValidationException {
+
+        jadConfig = new JadConfig(repository);
+
+        jadConfig.process();
+        Assert.assertTrue(jadConfig.dump().isEmpty());
+    }
+
+    @Test
     public void testProcessMultipleBeans() throws RepositoryException, ValidationException {
 
         Multi1ConfigurationBean bean1 = new Multi1ConfigurationBean();
@@ -224,6 +246,24 @@ public class JadConfigTest {
 
         Assert.assertEquals("Test", bean1.getMyString());
         Assert.assertEquals(123, bean2.getMyByte());
+    }
+
+    @Test
+    public void testDumpMultipleBeans() throws RepositoryException, ValidationException {
+
+        Multi1ConfigurationBean bean1 = new Multi1ConfigurationBean();
+        Multi2ConfigurationBean bean2 = new Multi2ConfigurationBean();
+
+        jadConfig = new JadConfig(repository);
+
+        jadConfig.addConfigurationBean(bean1);
+        jadConfig.addConfigurationBean(bean2);
+
+        jadConfig.process();
+        final Map<String, String> configDump = jadConfig.dump();
+
+        Assert.assertEquals("Test", configDump.get("test.string"));
+        Assert.assertEquals("123", configDump.get("test.byte"));
     }
 
     @Test
@@ -260,6 +300,18 @@ public class JadConfigTest {
     }
 
     @Test
+    public void testDumpEmptyBean() throws RepositoryException, ValidationException {
+
+        Repository repository = new InMemoryRepository();
+        EmptyBean configurationBean = new EmptyBean();
+        jadConfig = new JadConfig(repository, configurationBean);
+        jadConfig.process();
+
+        final Map<String, String> configDump = jadConfig.dump();
+        Assert.assertTrue(configDump.isEmpty());
+    }
+
+    @Test
     public void testSave() throws RepositoryException, ValidationException, URISyntaxException, IOException {
 
         Repository inMemoryRepository = new InMemoryRepository();
@@ -285,6 +337,30 @@ public class JadConfigTest {
         Assert.assertEquals(Integer.valueOf(123), otherBean.getMyInteger());
         Assert.assertEquals(new URI("http://example.com/"), otherBean.getMyUri());
         Assert.assertEquals(file.getCanonicalPath(), otherBean.getMyFile().getCanonicalPath());
+    }
+
+    @Test
+    public void testDump() throws RepositoryException, ValidationException, URISyntaxException, IOException {
+
+        Repository inMemoryRepository = new InMemoryRepository();
+
+        SaveMeBean bean = new SaveMeBean();
+        jadConfig = new JadConfig(inMemoryRepository, bean);
+        jadConfig.process();
+
+        File file = File.createTempFile("JadConfigTest-testDump", "");
+
+        bean.setMyString("Test");
+        bean.setMyInteger(123);
+        bean.setMyUri(new URI("http://example.com/"));
+        bean.setMyFile(file);
+
+        final Map<String, String> configDump = jadConfig.dump();
+
+        Assert.assertEquals("Test", configDump.get("save.me.string"));
+        Assert.assertEquals("123", configDump.get("save.me.integer"));
+        Assert.assertEquals("http://example.com/", configDump.get("save.me.uri"));
+        Assert.assertEquals(file.getCanonicalPath(), configDump.get("save.me.file"));
     }
 
     @Test
@@ -367,6 +443,20 @@ public class JadConfigTest {
     }
 
     @Test
+    public void testDumpInheritedBean() throws Exception {
+        InheritedBeanSubClass bean = new InheritedBeanSubClass();
+        jadConfig = new JadConfig(repository, bean);
+        jadConfig.process();
+
+        final Map<String, String> configDump = jadConfig.dump();
+
+        Assert.assertEquals(2, configDump.size());
+        Assert.assertEquals("Test", configDump.get("test.string"));
+        Assert.assertEquals("1234567890123", configDump.get("test.long"));
+    }
+
+
+    @Test
     public void testSaveDoubleInheritedBean() throws Exception {
         Repository inMemoryRepository = new InMemoryRepository();
         InheritedBeanSubSubClass bean = new InheritedBeanSubSubClass();
@@ -386,5 +476,19 @@ public class JadConfigTest {
         Assert.assertEquals("Foobar!", otherBean.getMyString());
         Assert.assertEquals(3210987654321L, otherBean.getMyInheritedLong());
         Assert.assertEquals(new URI("http://www.google.com"), otherBean.getMyUri());
+    }
+
+    @Test
+    public void testDumpDoubleInheritedBean() throws Exception {
+        InheritedBeanSubSubClass bean = new InheritedBeanSubSubClass();
+        jadConfig = new JadConfig(repository, bean);
+        jadConfig.process();
+
+        final Map<String, String> configDump = jadConfig.dump();
+
+        Assert.assertEquals(3, configDump.size());
+        Assert.assertEquals("Test", configDump.get("test.string"));
+        Assert.assertEquals("1234567890123", configDump.get("test.long"));
+        Assert.assertEquals("http://example.com/", configDump.get("test.uri"));
     }
 }
