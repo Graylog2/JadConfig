@@ -14,6 +14,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.github.joschi.jadconfig.ReflectionUtils.getAllFields;
+import static com.github.joschi.jadconfig.ReflectionUtils.getAllMethods;
+import static com.github.joschi.jadconfig.ReflectionUtils.invokeMethodsWithAnnotation;
+
 /**
  * The main class for JadConfig. It's responsible for parsing the configuration bean(s) that contain(s) the annotated
  * fields, use a {@link Repository} to read the raw configuration and assign the fields with the correct values.
@@ -95,25 +99,6 @@ public class JadConfig {
         }
     }
 
-    private Field[] getAllFields(Class<?> klass) {
-        List<Field> fields = new ArrayList<Field>();
-        for (Class<?> c = klass; c != null; c = c.getSuperclass()) {
-            fields.addAll(Arrays.asList(c.getDeclaredFields()));
-        }
-
-        Field[] result = new Field[fields.size()];
-        return fields.toArray(result);
-    }
-
-    private Method[] getAllMethods(Class<?> klass) {
-        List<Method> methods = new ArrayList<Method>();
-        for (Class<?> c = klass; c != null; c = c.getSuperclass()) {
-            methods.addAll(Arrays.asList(c.getDeclaredMethods()));
-        }
-
-        Method[] result = new Method[methods.size()];
-        return methods.toArray(result);
-    }
 
     private void processClassFields(Object configurationBean, Field[] fields) throws ValidationException {
         for (Field field : fields) {
@@ -174,10 +159,8 @@ public class JadConfig {
     }
 
     private Object getFieldValue(Field field, Object bean) {
-        field.setAccessible(true);
-
         try {
-            return field.get(bean);
+            return ReflectionUtils.getFieldValue(bean, field);
         } catch (IllegalAccessException e) {
             throw new ParameterException("Couldn't obtain value of field " + field.getName(), e);
         }
@@ -222,16 +205,10 @@ public class JadConfig {
     }
 
     private void invokeValidatorMethods(Object configurationBean, Method[] methods) throws ValidationException {
-        for (Method method : methods) {
-            if (method.isAnnotationPresent(ValidatorMethod.class)) {
-                LOG.debug("Invoking validator method {} in {}", method, configurationBean);
-
-                try {
-                    method.invoke(configurationBean);
-                } catch (Exception e) {
-                    throw new ValidationException("Couldn't run validator method " + method.getName(), e);
-                }
-            }
+        try {
+            invokeMethodsWithAnnotation(configurationBean, ValidatorMethod.class, methods);
+        } catch (Exception e) {
+            throw new ValidationException("Couldn't run validator method", e);
         }
     }
 
@@ -310,10 +287,14 @@ public class JadConfig {
     }
 
     private String convertFieldValue(Class<?> fieldType, Class<? extends Converter<?>> converterClass, Object fieldValue) {
-        Converter converter = getConverter(fieldType, converterClass);
+        if (null != fieldValue) {
+            final Converter converter = getConverter(fieldType, converterClass);
 
-        LOG.debug("Converting {} to type {} using converter {}", new Object[]{fieldValue, fieldType, converter});
-        return converter.convertTo(fieldValue);
+            LOG.debug("Converting {} to type {} using converter {}", new Object[]{fieldValue, fieldType, converter});
+            return converter.convertTo(fieldValue);
+        } else {
+            return "null";
+        }
     }
 
     /**
