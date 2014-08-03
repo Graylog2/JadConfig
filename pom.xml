@@ -8,7 +8,7 @@
 
     <groupId>com.github.joschi</groupId>
     <artifactId>jadconfig</artifactId>
-    <version>0.6.1-SNAPSHOT</version>
+    <version>0.7.0</version>
     <packaging>jar</packaging>
 
     <name>JadConfig</name>
