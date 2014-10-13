@@ -1,6 +1,35 @@
 package com.github.joschi.jadconfig;
 
-import com.github.joschi.jadconfig.converters.*;
+import com.github.joschi.jadconfig.converters.BigDecimalConverter;
+import com.github.joschi.jadconfig.converters.BigIntegerConverter;
+import com.github.joschi.jadconfig.converters.BooleanConverter;
+import com.github.joschi.jadconfig.converters.ByteConverter;
+import com.github.joschi.jadconfig.converters.CharsetConverter;
+import com.github.joschi.jadconfig.converters.CurrencyConverter;
+import com.github.joschi.jadconfig.converters.DecimalFormatConverter;
+import com.github.joschi.jadconfig.converters.DoubleConverter;
+import com.github.joschi.jadconfig.converters.DurationConverter;
+import com.github.joschi.jadconfig.converters.FileConverter;
+import com.github.joschi.jadconfig.converters.FloatConverter;
+import com.github.joschi.jadconfig.converters.Inet4AddressConverter;
+import com.github.joschi.jadconfig.converters.Inet6AddressConverter;
+import com.github.joschi.jadconfig.converters.InetAddressConverter;
+import com.github.joschi.jadconfig.converters.InetSocketAddressConverter;
+import com.github.joschi.jadconfig.converters.IntegerConverter;
+import com.github.joschi.jadconfig.converters.LocaleConverter;
+import com.github.joschi.jadconfig.converters.LongConverter;
+import com.github.joschi.jadconfig.converters.PatternConverter;
+import com.github.joschi.jadconfig.converters.ShortConverter;
+import com.github.joschi.jadconfig.converters.SizeConverter;
+import com.github.joschi.jadconfig.converters.SizeUnitConverter;
+import com.github.joschi.jadconfig.converters.StringConverter;
+import com.github.joschi.jadconfig.converters.TimeZoneConverter;
+import com.github.joschi.jadconfig.converters.URIConverter;
+import com.github.joschi.jadconfig.converters.URLConverter;
+import com.github.joschi.jadconfig.converters.UUIDConverter;
+import com.github.joschi.jadconfig.util.Duration;
+import com.github.joschi.jadconfig.util.Size;
+import com.github.joschi.jadconfig.util.SizeUnit;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -23,8 +52,7 @@ import java.util.regex.Pattern;
 
 /**
  * {@link ConverterFactory} for holding the default {@link Converter} classes.
- * <p/>
- * Supported {@link Converter} types are:
+ * <p></p>Supported {@link Converter} types are:
  * <ul>
  * <li>{@link String} through {@link StringConverter}</li>
  * <li>{@link Byte} and {@literal byte} through {@link ByteConverter}</li>
@@ -50,7 +78,11 @@ import java.util.regex.Pattern;
  * <li>{@link Pattern} through {@link PatternConverter}</li>
  * <li>{@link TimeZone} through {@link TimeZoneConverter}</li>
  * <li>{@link UUID} through {@link UUIDConverter}</li>
+ * <li>{@link Duration} through {@link DurationConverter}</li>
+ * <li>{@link Size} through {@link SizeConverter}</li>
+ * <li>{@link SizeUnit} through {@link SizeUnitConverter}</li>
  * </ul>
+ * </p>
  *
  * @author jschalanda
  */
@@ -91,6 +123,9 @@ public class DefaultConverterFactory implements ConverterFactory {
         DEFAULT_CONVERTERS.put(Pattern.class, PatternConverter.class);
         DEFAULT_CONVERTERS.put(TimeZone.class, TimeZoneConverter.class);
         DEFAULT_CONVERTERS.put(UUID.class, UUIDConverter.class);
+        DEFAULT_CONVERTERS.put(Duration.class, DurationConverter.class);
+        DEFAULT_CONVERTERS.put(Size.class, SizeConverter.class);
+        DEFAULT_CONVERTERS.put(SizeUnit.class, SizeUnitConverter.class);
     }
 
     /**
@@ -99,6 +134,7 @@ public class DefaultConverterFactory implements ConverterFactory {
      * @param classType The class type for which to find and return a {@link Converter}
      * @return A {@link Converter} for the requested class type
      */
+    @SuppressWarnings("unchecked")
     public <T> Class<? extends Converter<T>> getConverter(Class<T> classType) {
         return (Class<? extends Converter<T>>) DEFAULT_CONVERTERS.get(classType);
     }
