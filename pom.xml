@@ -67,6 +67,7 @@
 
     <properties>
         <slf4j.version>1.7.7</slf4j.version>
+        <findbugs.version>2.5.5</findbugs.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -195,7 +196,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
-                <version>2.5.5</version>
+                <version>${findbugs.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -219,12 +220,12 @@
             </properties>
         </profile>
         <profile>
-            <id>java8-disable-maven-findbugs-plugin</id>
+            <id>findbugs-compatible</id>
             <activation>
-                <jdk>[1.8,)</jdk>
+                <jdk>[1.7,)</jdk>
             </activation>
             <properties>
-                <findbugs.skip>true</findbugs.skip>
+                <findbugs.version>3.0.0</findbugs.version>
             </properties>
         </profile>
     </profiles>
