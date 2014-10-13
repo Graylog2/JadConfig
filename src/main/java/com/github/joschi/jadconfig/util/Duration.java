@@ -13,21 +13,28 @@ public class Duration {
 
     static {
         SUFFIXES.put("ns", TimeUnit.NANOSECONDS);
+        SUFFIXES.put("nanos", TimeUnit.NANOSECONDS);
         SUFFIXES.put("nanosecond", TimeUnit.NANOSECONDS);
         SUFFIXES.put("nanoseconds", TimeUnit.NANOSECONDS);
         SUFFIXES.put("us", TimeUnit.MICROSECONDS);
+        SUFFIXES.put("micros", TimeUnit.MICROSECONDS);
         SUFFIXES.put("microsecond", TimeUnit.MICROSECONDS);
         SUFFIXES.put("microseconds", TimeUnit.MICROSECONDS);
         SUFFIXES.put("ms", TimeUnit.MILLISECONDS);
+        SUFFIXES.put("millis", TimeUnit.MILLISECONDS);
         SUFFIXES.put("millisecond", TimeUnit.MILLISECONDS);
         SUFFIXES.put("milliseconds", TimeUnit.MILLISECONDS);
         SUFFIXES.put("s", TimeUnit.SECONDS);
+        SUFFIXES.put("sec", TimeUnit.SECONDS);
+        SUFFIXES.put("secs", TimeUnit.SECONDS);
         SUFFIXES.put("second", TimeUnit.SECONDS);
         SUFFIXES.put("seconds", TimeUnit.SECONDS);
         SUFFIXES.put("m", TimeUnit.MINUTES);
+        SUFFIXES.put("min", TimeUnit.MINUTES);
         SUFFIXES.put("minute", TimeUnit.MINUTES);
         SUFFIXES.put("minutes", TimeUnit.MINUTES);
         SUFFIXES.put("h", TimeUnit.HOURS);
+        SUFFIXES.put("hr", TimeUnit.HOURS);
         SUFFIXES.put("hour", TimeUnit.HOURS);
         SUFFIXES.put("hours", TimeUnit.HOURS);
         SUFFIXES.put("d", TimeUnit.DAYS);
