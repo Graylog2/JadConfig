@@ -47,18 +47,6 @@ public class SystemPropertiesRepository implements Repository {
     }
 
     @Override
-    public void write(String name, String value) throws RepositoryException {
-
-        // NOP
-    }
-
-    @Override
-    public void save() throws RepositoryException {
-
-        // NOP
-    }
-
-    @Override
     public void close() throws RepositoryException {
 
         // NOP

@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,12 +40,6 @@ import static org.junit.Assert.fail;
     }
 
     @Test
-    public void testSave() throws RepositoryException {
-
-        repository.save();
-    }
-
-    @Test
     public void testClose() throws RepositoryException {
 
         repository.open();
@@ -68,31 +63,15 @@ import static org.junit.Assert.fail;
     @Test
     public void testRead() throws RepositoryException {
 
-        repository.open();
+        final InMemoryRepository emptyRepository = new InMemoryRepository();
+        emptyRepository.open();
+        Assert.assertNull(emptyRepository.read("Test"));
 
-        Assert.assertNull(repository.read("Test"));
-
-        repository.write("Test", "Value");
-        Assert.assertEquals("Value", repository.read("Test"));
+        final InMemoryRepository inMemoryRepository = new InMemoryRepository(Collections.singletonMap("Test", "Value"));
+        inMemoryRepository.open();
+        Assert.assertEquals("Value", inMemoryRepository.read("Test"));
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void testWriteWithoutOpen() throws RepositoryException {
-
-        repository.write("Test", "Value");
-    }
-
-    @Test
-    public void testWrite() throws RepositoryException {
-
-        repository.open();
-
-        Assert.assertEquals(0, repository.size());
-        repository.write("Test", "Value");
-
-        Assert.assertEquals(1, repository.size());
-        Assert.assertEquals("Value", repository.read("Test"));
-    }
 
     @Test(expected = IllegalStateException.class)
     public void testSizeWithoutOpen() {
@@ -103,12 +82,13 @@ import static org.junit.Assert.fail;
     @Test
     public void testSize() throws RepositoryException {
 
-        repository.open();
+        final InMemoryRepository emptyRepository = new InMemoryRepository();
+        emptyRepository.open();
+        Assert.assertEquals(0, emptyRepository.size());
 
-        Assert.assertEquals(0, repository.size());
-        repository.write("Test", "Value");
-
-        Assert.assertEquals(1, repository.size());
+        final InMemoryRepository inMemoryRepository = new InMemoryRepository(Collections.singletonMap("Test", "Value"));
+        inMemoryRepository.open();
+        Assert.assertEquals(1, inMemoryRepository.size());
     }
 
     @Test

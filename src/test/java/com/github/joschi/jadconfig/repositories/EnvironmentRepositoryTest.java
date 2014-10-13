@@ -27,12 +27,6 @@ public class EnvironmentRepositoryTest {
     }
 
     @Test
-    public void testSave() throws RepositoryException {
-
-        repository.save();
-    }
-
-    @Test
     public void testClose() throws RepositoryException {
 
         repository.close();
@@ -66,12 +60,6 @@ public class EnvironmentRepositoryTest {
         final EnvironmentRepository testRepository = new EnvironmentRepository("JAVA_");
 
         Assert.assertEquals(System.getenv("JAVA_HOME"), testRepository.read("HOME"));
-    }
-
-    @Test
-    public void testWrite() throws RepositoryException {
-
-        repository.write("Test", "Value");
     }
 
     @Test

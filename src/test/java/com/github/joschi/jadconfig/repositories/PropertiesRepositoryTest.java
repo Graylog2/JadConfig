@@ -6,9 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.Properties;
 
 import static org.junit.Assert.fail;
 
@@ -98,33 +96,5 @@ public class PropertiesRepositoryTest {
 
         repository.open();
         repository.close();
-    }
-
-    @Test
-    public void testWrite() throws RepositoryException {
-
-        repository.open();
-        repository.write("Adhoc", "Value");
-
-        Assert.assertEquals("Value", repository.read("Adhoc"));
-    }
-
-    @Test
-    public void testSave() throws RepositoryException, IOException {
-
-        File file = File.createTempFile("PropertiesRepositoryTest-testSave", ".properties");
-        file.deleteOnExit();
-
-        repository = new PropertiesRepository(file);
-
-        repository.open();
-        repository.write("Adhoc", "Value");
-        repository.save();
-        repository.close();
-
-        Properties properties = new Properties();
-        properties.load(new FileReader(file));
-
-        Assert.assertEquals("Value", properties.getProperty("Adhoc"));
     }
 }

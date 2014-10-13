@@ -249,46 +249,6 @@ public class JadConfig {
     }
 
     /**
-     * Saves all configuration parameters to the configured {@link Repository}.
-     *
-     * @throws RepositoryException If an error occurred while writing to or saving the configured {@link Repository}
-     */
-    public void save() throws RepositoryException {
-        LOG.info("Saving changed configuration parameters");
-
-        for (Object configurationBean : configurationBeans) {
-            LOG.debug("Checking declared fields of {}", configurationBean);
-
-            for (Field field : getAllFields(configurationBean.getClass())) {
-                Parameter parameter = field.getAnnotation(Parameter.class);
-
-                LOG.debug("Checking declared field {} of {}", parameter, configurationBean);
-
-                if (parameter != null) {
-
-                    Object fieldValue = getFieldValue(field, configurationBean);
-
-                    LOG.debug("Retrieved field value {} = {}", field, fieldValue);
-
-                    if (fieldValue != null) {
-                        String stringValue = convertFieldValue(field.getType(), parameter.converter(), fieldValue);
-
-                        for (Repository repository : repositories) {
-                            LOG.debug("Writing {} = {} to repository {}", parameter.value(), stringValue, repository);
-                            repository.write(parameter.value(), stringValue);
-                        }
-                    }
-                }
-            }
-        }
-
-        for (Repository repository : repositories) {
-            LOG.debug("Saving changes to repository {}", repository);
-            repository.save();
-        }
-    }
-
-    /**
      * Dumps all configuration parameters as a {@link java.util.Map} of {@link String}.
      *
      * If being called before {@link #process()} it will return the default values of the configuration beans.
@@ -316,7 +276,7 @@ public class JadConfig {
         if (null != fieldValue) {
             final Converter converter = getConverter(fieldType, converterClass);
 
-            LOG.debug("Converting {} to type {} using converter {}", new Object[]{fieldValue, fieldType, converter});
+            LOG.debug("Converting {} to type {} using converter {}", fieldValue, fieldType, converter);
             return converter.convertTo(fieldValue);
         } else {
             return "null";

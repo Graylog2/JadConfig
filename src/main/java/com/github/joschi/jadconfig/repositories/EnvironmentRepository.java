@@ -76,16 +76,6 @@ public class EnvironmentRepository implements Repository {
     }
 
     @Override
-    public void write(final String name, final String value) throws RepositoryException {
-        // NOP
-    }
-
-    @Override
-    public void save() throws RepositoryException {
-        // NOP
-    }
-
-    @Override
     public void close() throws RepositoryException {
         // NOP
     }

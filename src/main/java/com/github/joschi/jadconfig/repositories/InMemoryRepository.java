@@ -43,22 +43,6 @@ public class InMemoryRepository implements Repository {
     }
 
     @Override
-    public void write(String name, String value) throws RepositoryException {
-
-        if (properties == null) {
-
-            throw new IllegalStateException("Repository has already been closed or has never been opened");
-        }
-
-        properties.put(name, value);
-    }
-
-    @Override
-    public void save() throws RepositoryException {
-        // NOP
-    }
-
-    @Override
     public void close() throws RepositoryException {
 
         if (properties == null) {

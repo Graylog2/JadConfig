@@ -27,12 +27,6 @@ public class SystemPropertiesRepositoryTest {
     }
 
     @Test
-    public void testSave() throws RepositoryException {
-
-        repository.save();
-    }
-
-    @Test
     public void testClose() throws RepositoryException {
 
         repository.close();
@@ -50,12 +44,6 @@ public class SystemPropertiesRepositoryTest {
         final SystemPropertiesRepository testRepository = new SystemPropertiesRepository("java.");
 
         Assert.assertEquals(System.getProperty("java.version"), testRepository.read("version"));
-    }
-
-    @Test
-    public void testWrite() throws RepositoryException {
-
-        repository.write("Test", "Value");
     }
 
     @Test
