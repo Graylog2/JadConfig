@@ -1,6 +1,5 @@
 JadConfig
 =========
-
 [![Build Status](https://travis-ci.org/joschi/JadConfig.svg?branch=master)](https://travis-ci.org/joschi/JadConfig)
 [![Coverage Status](https://img.shields.io/coveralls/joschi/JadConfig.svg)](https://coveralls.io/r/joschi/JadConfig)
 
@@ -45,13 +44,36 @@ You can also use multiple repositories as source for your configuration (first m
     Assert.assertNotNull(bean.myList);
 
 
-To use JadConfig in your project using Maven add the following lines into the dependencies section of your pom.xml:
+To use JadConfig in your project using Maven add the following lines into the dependencies section of your `pom.xml`:
 
     <dependency>
         <groupId>com.github.joschi</groupId>
         <artifactId>jadconfig</artifactId>
-        <version>0.6.0</version>
+        <version>0.8.0</version>
     </dependency>
+
+
+JadConfig optionally supports [Joda-Time](http://www.joda.org/joda-time/). In order to use it just add the Joda-Time
+dependency to your `pom.xml`:
+
+	<dependency>
+		<groupId>joda-time</groupId>
+		<artifactId>joda-time</artifactId>
+		<version>2.5</version>
+    </dependency>
+
+
+And register `JodaTimeConverterFactory` with the JadConfig instance:
+
+    JadConfig jadConfig = new JadConfig(repository, configurationBean);
+    jadConfig.addConverterFactory(new JodaTimeConverterFactory());
+    jadConfig.process();
+
+
+Support
+-------
+
+Please file bug reports and feature requests in [GitHub issues](https://github.com/joschi/JadConfig/issues).
 
 
 License
