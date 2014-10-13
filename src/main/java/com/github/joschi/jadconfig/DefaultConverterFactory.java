@@ -23,6 +23,7 @@ import com.github.joschi.jadconfig.converters.ShortConverter;
 import com.github.joschi.jadconfig.converters.SizeConverter;
 import com.github.joschi.jadconfig.converters.SizeUnitConverter;
 import com.github.joschi.jadconfig.converters.StringConverter;
+import com.github.joschi.jadconfig.converters.TimeUnitConverter;
 import com.github.joschi.jadconfig.converters.TimeZoneConverter;
 import com.github.joschi.jadconfig.converters.URIConverter;
 import com.github.joschi.jadconfig.converters.URLConverter;
@@ -48,6 +49,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /**
@@ -81,6 +83,7 @@ import java.util.regex.Pattern;
  * <li>{@link Duration} through {@link DurationConverter}</li>
  * <li>{@link Size} through {@link SizeConverter}</li>
  * <li>{@link SizeUnit} through {@link SizeUnitConverter}</li>
+ * <li>{@link TimeUnit} through {@link TimeUnitConverter}</li>
  * </ul>
  * </p>
  *
@@ -126,6 +129,7 @@ public class DefaultConverterFactory implements ConverterFactory {
         DEFAULT_CONVERTERS.put(Duration.class, DurationConverter.class);
         DEFAULT_CONVERTERS.put(Size.class, SizeConverter.class);
         DEFAULT_CONVERTERS.put(SizeUnit.class, SizeUnitConverter.class);
+        DEFAULT_CONVERTERS.put(TimeUnit.class, TimeUnitConverter.class);
     }
 
     /**
