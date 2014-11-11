@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Size {
+public class Size implements Comparable<Size> {
     private static final Pattern SIZE_PATTERN = Pattern.compile("(\\d+)\\s*(\\S+)");
     private static final Map<String, SizeUnit> SUFFIXES = new HashMap<String, SizeUnit>();
 
@@ -157,4 +157,13 @@ public class Size {
         }
         return Long.toString(count) + ' ' + units;
     }
+
+    @Override
+        public int compareTo(Size other) {
+            if (unit == other.unit) {
+                return Long.compare(count, other.count);
+            }
+
+            return Long.compare(toBytes(), other.toBytes());
+        }
 }
