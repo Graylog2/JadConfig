@@ -38,6 +38,9 @@ public class SizeTest {
 
     @Test
     public void parsesPetabytes() throws Exception {
+        assertEquals(Size.petabytes(2), Size.parse("2p"));
+        assertEquals(Size.petabytes(2), Size.parse("2P"));
+        assertEquals(Size.petabytes(2), Size.parse("2pb"));
         assertEquals(Size.petabytes(2), Size.parse("2PB"));
         assertEquals(Size.petabytes(2), Size.parse("2PiB"));
         assertEquals(Size.petabytes(1), Size.parse("1 petabyte"));
@@ -47,6 +50,9 @@ public class SizeTest {
 
     @Test
     public void parsesTerabytes() throws Exception {
+        assertEquals(Size.terabytes(2), Size.parse("2t"));
+        assertEquals(Size.terabytes(2), Size.parse("2T"));
+        assertEquals(Size.terabytes(2), Size.parse("2tb"));
         assertEquals(Size.terabytes(2), Size.parse("2TB"));
         assertEquals(Size.terabytes(2), Size.parse("2TiB"));
         assertEquals(Size.terabytes(1), Size.parse("1 terabyte"));
@@ -55,6 +61,9 @@ public class SizeTest {
 
     @Test
     public void parsesGigabytes() throws Exception {
+        assertEquals(Size.gigabytes(2), Size.parse("2g"));
+        assertEquals(Size.gigabytes(2), Size.parse("2G"));
+        assertEquals(Size.gigabytes(2), Size.parse("2gb"));
         assertEquals(Size.gigabytes(2), Size.parse("2GB"));
         assertEquals(Size.gigabytes(2), Size.parse("2GiB"));
         assertEquals(Size.gigabytes(1), Size.parse("1 gigabyte"));
@@ -63,6 +72,9 @@ public class SizeTest {
 
     @Test
     public void parsesMegabytes() throws Exception {
+        assertEquals(Size.megabytes(2), Size.parse("2m"));
+        assertEquals(Size.megabytes(2), Size.parse("2M"));
+        assertEquals(Size.megabytes(2), Size.parse("2mb"));
         assertEquals(Size.megabytes(2), Size.parse("2MB"));
         assertEquals(Size.megabytes(2), Size.parse("2MiB"));
         assertEquals(Size.megabytes(1), Size.parse("1 megabyte"));
@@ -71,6 +83,9 @@ public class SizeTest {
 
     @Test
     public void parsesKilobytes() throws Exception {
+        assertEquals(Size.kilobytes(2), Size.parse("2k"));
+        assertEquals(Size.kilobytes(2), Size.parse("2K"));
+        assertEquals(Size.kilobytes(2), Size.parse("2kb"));
         assertEquals(Size.kilobytes(2), Size.parse("2KB"));
         assertEquals(Size.kilobytes(2), Size.parse("2KiB"));
         assertEquals(Size.kilobytes(1), Size.parse("1 kilobyte"));
@@ -79,6 +94,7 @@ public class SizeTest {
 
     @Test
     public void parsesBytes() throws Exception {
+        assertEquals(Size.bytes(2), Size.parse("2b"));
         assertEquals(Size.bytes(2), Size.parse("2B"));
         assertEquals(Size.bytes(1), Size.parse("1 byte"));
         assertEquals(Size.bytes(2), Size.parse("2 bytes"));
