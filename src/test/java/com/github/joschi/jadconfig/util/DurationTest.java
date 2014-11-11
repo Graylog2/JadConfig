@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DurationTest {
     @Test
@@ -127,4 +128,630 @@ public class DurationTest {
     public void hasAUnit() throws Exception {
         assertEquals(TimeUnit.MICROSECONDS, Duration.microseconds(1).getUnit());
     }
+    
+    @Test
+        public void isComparable() throws Exception {
+            // both zero
+            assertEquals(0, Duration.nanoseconds(0).compareTo(Duration.nanoseconds(0)));;
+            assertEquals(0, Duration.nanoseconds(0).compareTo(Duration.microseconds(0)));;
+            assertEquals(0, Duration.nanoseconds(0).compareTo(Duration.milliseconds(0)));;
+            assertEquals(0, Duration.nanoseconds(0).compareTo(Duration.seconds(0)));;
+            assertEquals(0, Duration.nanoseconds(0).compareTo(Duration.minutes(0)));;
+            assertEquals(0, Duration.nanoseconds(0).compareTo(Duration.hours(0)));;
+            assertEquals(0, Duration.nanoseconds(0).compareTo(Duration.days(0)));;
+    
+            assertEquals(0, Duration.microseconds(0).compareTo(Duration.nanoseconds(0)));;
+            assertEquals(0, Duration.microseconds(0).compareTo(Duration.microseconds(0)));;
+            assertEquals(0, Duration.microseconds(0).compareTo(Duration.milliseconds(0)));;
+            assertEquals(0, Duration.microseconds(0).compareTo(Duration.seconds(0)));;
+            assertEquals(0, Duration.microseconds(0).compareTo(Duration.minutes(0)));;
+            assertEquals(0, Duration.microseconds(0).compareTo(Duration.hours(0)));;
+            assertEquals(0, Duration.microseconds(0).compareTo(Duration.days(0)));;
+    
+            assertEquals(0, Duration.milliseconds(0).compareTo(Duration.nanoseconds(0)));;
+            assertEquals(0, Duration.milliseconds(0).compareTo(Duration.microseconds(0)));;
+            assertEquals(0, Duration.milliseconds(0).compareTo(Duration.milliseconds(0)));;
+            assertEquals(0, Duration.milliseconds(0).compareTo(Duration.seconds(0)));;
+            assertEquals(0, Duration.milliseconds(0).compareTo(Duration.minutes(0)));;
+            assertEquals(0, Duration.milliseconds(0).compareTo(Duration.hours(0)));;
+            assertEquals(0, Duration.milliseconds(0).compareTo(Duration.days(0)));;
+    
+            assertEquals(0, Duration.seconds(0).compareTo(Duration.nanoseconds(0)));;
+            assertEquals(0, Duration.seconds(0).compareTo(Duration.microseconds(0)));;
+            assertEquals(0, Duration.seconds(0).compareTo(Duration.milliseconds(0)));;
+            assertEquals(0, Duration.seconds(0).compareTo(Duration.seconds(0)));;
+            assertEquals(0, Duration.seconds(0).compareTo(Duration.minutes(0)));;
+            assertEquals(0, Duration.seconds(0).compareTo(Duration.hours(0)));;
+            assertEquals(0, Duration.seconds(0).compareTo(Duration.days(0)));;
+    
+            assertEquals(0, Duration.minutes(0).compareTo(Duration.nanoseconds(0)));;
+            assertEquals(0, Duration.minutes(0).compareTo(Duration.microseconds(0)));;
+            assertEquals(0, Duration.minutes(0).compareTo(Duration.milliseconds(0)));;
+            assertEquals(0, Duration.minutes(0).compareTo(Duration.seconds(0)));;
+            assertEquals(0, Duration.minutes(0).compareTo(Duration.minutes(0)));;
+            assertEquals(0, Duration.minutes(0).compareTo(Duration.hours(0)));;
+            assertEquals(0, Duration.minutes(0).compareTo(Duration.days(0)));;
+    
+            assertEquals(0, Duration.hours(0).compareTo(Duration.nanoseconds(0)));;
+            assertEquals(0, Duration.hours(0).compareTo(Duration.microseconds(0)));;
+            assertEquals(0, Duration.hours(0).compareTo(Duration.milliseconds(0)));;
+            assertEquals(0, Duration.hours(0).compareTo(Duration.seconds(0)));;
+            assertEquals(0, Duration.hours(0).compareTo(Duration.minutes(0)));;
+            assertEquals(0, Duration.hours(0).compareTo(Duration.hours(0)));;
+            assertEquals(0, Duration.hours(0).compareTo(Duration.days(0)));;
+    
+            assertEquals(0, Duration.days(0).compareTo(Duration.nanoseconds(0)));;
+            assertEquals(0, Duration.days(0).compareTo(Duration.microseconds(0)));;
+            assertEquals(0, Duration.days(0).compareTo(Duration.milliseconds(0)));;
+            assertEquals(0, Duration.days(0).compareTo(Duration.seconds(0)));;
+            assertEquals(0, Duration.days(0).compareTo(Duration.minutes(0)));;
+            assertEquals(0, Duration.days(0).compareTo(Duration.hours(0)));;
+            assertEquals(0, Duration.days(0).compareTo(Duration.days(0)));;
+    
+            // one zero, one negative
+        
+            assertTrue(Duration.nanoseconds(0).compareTo(Duration.nanoseconds(-1)) > 0);
+            assertTrue(Duration.nanoseconds(0).compareTo(Duration.microseconds(-1)) > 0);
+            assertTrue(Duration.nanoseconds(0).compareTo(Duration.milliseconds(-1)) > 0);
+            assertTrue(Duration.nanoseconds(0).compareTo(Duration.seconds(-1)) > 0);
+            assertTrue(Duration.nanoseconds(0).compareTo(Duration.minutes(-1)) > 0);
+            assertTrue(Duration.nanoseconds(0).compareTo(Duration.hours(-1)) > 0);
+            assertTrue(Duration.nanoseconds(0).compareTo(Duration.days(-1)) > 0);
+    
+            assertTrue(Duration.microseconds(0).compareTo(Duration.nanoseconds(-1)) > 0);
+            assertTrue(Duration.microseconds(0).compareTo(Duration.microseconds(-1)) > 0);
+            assertTrue(Duration.microseconds(0).compareTo(Duration.milliseconds(-1)) > 0);
+            assertTrue(Duration.microseconds(0).compareTo(Duration.seconds(-1)) > 0);
+            assertTrue(Duration.microseconds(0).compareTo(Duration.minutes(-1)) > 0);
+            assertTrue(Duration.microseconds(0).compareTo(Duration.hours(-1)) > 0);
+            assertTrue(Duration.microseconds(0).compareTo(Duration.days(-1)) > 0);
+    
+            assertTrue(Duration.milliseconds(0).compareTo(Duration.nanoseconds(-1)) > 0);
+            assertTrue(Duration.milliseconds(0).compareTo(Duration.microseconds(-1)) > 0);
+            assertTrue(Duration.milliseconds(0).compareTo(Duration.milliseconds(-1)) > 0);
+            assertTrue(Duration.milliseconds(0).compareTo(Duration.seconds(-1)) > 0);
+            assertTrue(Duration.milliseconds(0).compareTo(Duration.minutes(-1)) > 0);
+            assertTrue(Duration.milliseconds(0).compareTo(Duration.hours(-1)) > 0);
+            assertTrue(Duration.milliseconds(0).compareTo(Duration.days(-1)) > 0);
+    
+            assertTrue(Duration.seconds(0).compareTo(Duration.nanoseconds(-1)) > 0);
+            assertTrue(Duration.seconds(0).compareTo(Duration.microseconds(-1)) > 0);
+            assertTrue(Duration.seconds(0).compareTo(Duration.milliseconds(-1)) > 0);
+            assertTrue(Duration.seconds(0).compareTo(Duration.seconds(-1)) > 0);
+            assertTrue(Duration.seconds(0).compareTo(Duration.minutes(-1)) > 0);
+            assertTrue(Duration.seconds(0).compareTo(Duration.hours(-1)) > 0);
+            assertTrue(Duration.seconds(0).compareTo(Duration.days(-1)) > 0);
+    
+            assertTrue(Duration.minutes(0).compareTo(Duration.nanoseconds(-1)) > 0);
+            assertTrue(Duration.minutes(0).compareTo(Duration.microseconds(-1)) > 0);
+            assertTrue(Duration.minutes(0).compareTo(Duration.milliseconds(-1)) > 0);
+            assertTrue(Duration.minutes(0).compareTo(Duration.seconds(-1)) > 0);
+            assertTrue(Duration.minutes(0).compareTo(Duration.minutes(-1)) > 0);
+            assertTrue(Duration.minutes(0).compareTo(Duration.hours(-1)) > 0);
+            assertTrue(Duration.minutes(0).compareTo(Duration.days(-1)) > 0);
+    
+            assertTrue(Duration.hours(0).compareTo(Duration.nanoseconds(-1)) > 0);
+            assertTrue(Duration.hours(0).compareTo(Duration.microseconds(-1)) > 0);
+            assertTrue(Duration.hours(0).compareTo(Duration.milliseconds(-1)) > 0);
+            assertTrue(Duration.hours(0).compareTo(Duration.seconds(-1)) > 0);
+            assertTrue(Duration.hours(0).compareTo(Duration.minutes(-1)) > 0);
+            assertTrue(Duration.hours(0).compareTo(Duration.hours(-1)) > 0);
+            assertTrue(Duration.hours(0).compareTo(Duration.days(-1)) > 0);
+    
+            assertTrue(Duration.days(0).compareTo(Duration.nanoseconds(-1)) > 0);
+            assertTrue(Duration.days(0).compareTo(Duration.microseconds(-1)) > 0);
+            assertTrue(Duration.days(0).compareTo(Duration.milliseconds(-1)) > 0);
+            assertTrue(Duration.days(0).compareTo(Duration.seconds(-1)) > 0);
+            assertTrue(Duration.days(0).compareTo(Duration.minutes(-1)) > 0);
+            assertTrue(Duration.days(0).compareTo(Duration.hours(-1)) > 0);
+            assertTrue(Duration.days(0).compareTo(Duration.days(-1)) > 0);
+    
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.nanoseconds(0)) < 0);
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.microseconds(0)) < 0);
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.milliseconds(0)) < 0);
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.seconds(0)) < 0);
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.minutes(0)) < 0);
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.hours(0)) < 0);
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.days(0)) < 0);
+    
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.nanoseconds(0)) < 0);
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.microseconds(0)) < 0);
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.milliseconds(0)) < 0);
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.seconds(0)) < 0);
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.minutes(0)) < 0);
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.hours(0)) < 0);
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.days(0)) < 0);
+    
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.nanoseconds(0)) < 0);
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.microseconds(0)) < 0);
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.milliseconds(0)) < 0);
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.seconds(0)) < 0);
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.minutes(0)) < 0);
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.hours(0)) < 0);
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.days(0)) < 0);
+    
+            assertTrue(Duration.seconds(-1).compareTo(Duration.nanoseconds(0)) < 0);
+            assertTrue(Duration.seconds(-1).compareTo(Duration.microseconds(0)) < 0);
+            assertTrue(Duration.seconds(-1).compareTo(Duration.milliseconds(0)) < 0);
+            assertTrue(Duration.seconds(-1).compareTo(Duration.seconds(0)) < 0);
+            assertTrue(Duration.seconds(-1).compareTo(Duration.minutes(0)) < 0);
+            assertTrue(Duration.seconds(-1).compareTo(Duration.hours(0)) < 0);
+            assertTrue(Duration.seconds(-1).compareTo(Duration.days(0)) < 0);
+    
+            assertTrue(Duration.minutes(-1).compareTo(Duration.nanoseconds(0)) < 0);
+            assertTrue(Duration.minutes(-1).compareTo(Duration.microseconds(0)) < 0);
+            assertTrue(Duration.minutes(-1).compareTo(Duration.milliseconds(0)) < 0);
+            assertTrue(Duration.minutes(-1).compareTo(Duration.seconds(0)) < 0);
+            assertTrue(Duration.minutes(-1).compareTo(Duration.minutes(0)) < 0);
+            assertTrue(Duration.minutes(-1).compareTo(Duration.hours(0)) < 0);
+            assertTrue(Duration.minutes(-1).compareTo(Duration.days(0)) < 0);
+    
+            assertTrue(Duration.hours(-1).compareTo(Duration.nanoseconds(0)) < 0);
+            assertTrue(Duration.hours(-1).compareTo(Duration.microseconds(0)) < 0);
+            assertTrue(Duration.hours(-1).compareTo(Duration.milliseconds(0)) < 0);
+            assertTrue(Duration.hours(-1).compareTo(Duration.seconds(0)) < 0);
+            assertTrue(Duration.hours(-1).compareTo(Duration.minutes(0)) < 0);
+            assertTrue(Duration.hours(-1).compareTo(Duration.hours(0)) < 0);
+            assertTrue(Duration.hours(-1).compareTo(Duration.days(0)) < 0);
+    
+            assertTrue(Duration.days(-1).compareTo(Duration.nanoseconds(0)) < 0);
+            assertTrue(Duration.days(-1).compareTo(Duration.microseconds(0)) < 0);
+            assertTrue(Duration.days(-1).compareTo(Duration.milliseconds(0)) < 0);
+            assertTrue(Duration.days(-1).compareTo(Duration.seconds(0)) < 0);
+            assertTrue(Duration.days(-1).compareTo(Duration.minutes(0)) < 0);
+            assertTrue(Duration.days(-1).compareTo(Duration.hours(0)) < 0);
+            assertTrue(Duration.days(-1).compareTo(Duration.days(0)) < 0);
+    
+            // one zero, one positive
+            assertTrue(Duration.nanoseconds(0).compareTo(Duration.nanoseconds(1)) < 0);
+            assertTrue(Duration.nanoseconds(0).compareTo(Duration.microseconds(1)) < 0);
+            assertTrue(Duration.nanoseconds(0).compareTo(Duration.milliseconds(1)) < 0);
+            assertTrue(Duration.nanoseconds(0).compareTo(Duration.seconds(1)) < 0);
+            assertTrue(Duration.nanoseconds(0).compareTo(Duration.minutes(1)) < 0);
+            assertTrue(Duration.nanoseconds(0).compareTo(Duration.hours(1)) < 0);
+            assertTrue(Duration.nanoseconds(0).compareTo(Duration.days(1)) < 0);
+    
+            assertTrue(Duration.microseconds(0).compareTo(Duration.nanoseconds(1)) < 0);
+            assertTrue(Duration.microseconds(0).compareTo(Duration.microseconds(1)) < 0);
+            assertTrue(Duration.microseconds(0).compareTo(Duration.milliseconds(1)) < 0);
+            assertTrue(Duration.microseconds(0).compareTo(Duration.seconds(1)) < 0);
+            assertTrue(Duration.microseconds(0).compareTo(Duration.minutes(1)) < 0);
+            assertTrue(Duration.microseconds(0).compareTo(Duration.hours(1)) < 0);
+            assertTrue(Duration.microseconds(0).compareTo(Duration.days(1)) < 0);
+    
+            assertTrue(Duration.milliseconds(0).compareTo(Duration.nanoseconds(1)) < 0);
+            assertTrue(Duration.milliseconds(0).compareTo(Duration.microseconds(1)) < 0);
+            assertTrue(Duration.milliseconds(0).compareTo(Duration.milliseconds(1)) < 0);
+            assertTrue(Duration.milliseconds(0).compareTo(Duration.seconds(1)) < 0);
+            assertTrue(Duration.milliseconds(0).compareTo(Duration.minutes(1)) < 0);
+            assertTrue(Duration.milliseconds(0).compareTo(Duration.hours(1)) < 0);
+            assertTrue(Duration.milliseconds(0).compareTo(Duration.days(1)) < 0);
+    
+            assertTrue(Duration.seconds(0).compareTo(Duration.nanoseconds(1)) < 0);
+            assertTrue(Duration.seconds(0).compareTo(Duration.microseconds(1)) < 0);
+            assertTrue(Duration.seconds(0).compareTo(Duration.milliseconds(1)) < 0);
+            assertTrue(Duration.seconds(0).compareTo(Duration.seconds(1)) < 0);
+            assertTrue(Duration.seconds(0).compareTo(Duration.minutes(1)) < 0);
+            assertTrue(Duration.seconds(0).compareTo(Duration.hours(1)) < 0);
+            assertTrue(Duration.seconds(0).compareTo(Duration.days(1)) < 0);
+    
+            assertTrue(Duration.minutes(0).compareTo(Duration.nanoseconds(1)) < 0);
+            assertTrue(Duration.minutes(0).compareTo(Duration.microseconds(1)) < 0);
+            assertTrue(Duration.minutes(0).compareTo(Duration.milliseconds(1)) < 0);
+            assertTrue(Duration.minutes(0).compareTo(Duration.seconds(1)) < 0);
+            assertTrue(Duration.minutes(0).compareTo(Duration.minutes(1)) < 0);
+            assertTrue(Duration.minutes(0).compareTo(Duration.hours(1)) < 0);
+            assertTrue(Duration.minutes(0).compareTo(Duration.days(1)) < 0);
+    
+            assertTrue(Duration.hours(0).compareTo(Duration.nanoseconds(1)) < 0);
+            assertTrue(Duration.hours(0).compareTo(Duration.microseconds(1)) < 0);
+            assertTrue(Duration.hours(0).compareTo(Duration.milliseconds(1)) < 0);
+            assertTrue(Duration.hours(0).compareTo(Duration.seconds(1)) < 0);
+            assertTrue(Duration.hours(0).compareTo(Duration.minutes(1)) < 0);
+            assertTrue(Duration.hours(0).compareTo(Duration.hours(1)) < 0);
+            assertTrue(Duration.hours(0).compareTo(Duration.days(1)) < 0);
+    
+            assertTrue(Duration.days(0).compareTo(Duration.nanoseconds(1)) < 0);
+            assertTrue(Duration.days(0).compareTo(Duration.microseconds(1)) < 0);
+            assertTrue(Duration.days(0).compareTo(Duration.milliseconds(1)) < 0);
+            assertTrue(Duration.days(0).compareTo(Duration.seconds(1)) < 0);
+            assertTrue(Duration.days(0).compareTo(Duration.minutes(1)) < 0);
+            assertTrue(Duration.days(0).compareTo(Duration.hours(1)) < 0);
+            assertTrue(Duration.days(0).compareTo(Duration.days(1)) < 0);
+    
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.nanoseconds(0)) > 0);
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.microseconds(0)) > 0);
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.milliseconds(0)) > 0);
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.seconds(0)) > 0);
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.minutes(0)) > 0);
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.hours(0)) > 0);
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.days(0)) > 0);
+    
+            assertTrue(Duration.microseconds(1).compareTo(Duration.nanoseconds(0)) > 0);
+            assertTrue(Duration.microseconds(1).compareTo(Duration.microseconds(0)) > 0);
+            assertTrue(Duration.microseconds(1).compareTo(Duration.milliseconds(0)) > 0);
+            assertTrue(Duration.microseconds(1).compareTo(Duration.seconds(0)) > 0);
+            assertTrue(Duration.microseconds(1).compareTo(Duration.minutes(0)) > 0);
+            assertTrue(Duration.microseconds(1).compareTo(Duration.hours(0)) > 0);
+            assertTrue(Duration.microseconds(1).compareTo(Duration.days(0)) > 0);
+    
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.nanoseconds(0)) > 0);
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.microseconds(0)) > 0);
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.milliseconds(0)) > 0);
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.seconds(0)) > 0);
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.minutes(0)) > 0);
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.hours(0)) > 0);
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.days(0)) > 0);
+    
+            assertTrue(Duration.seconds(1).compareTo(Duration.nanoseconds(0)) > 0);
+            assertTrue(Duration.seconds(1).compareTo(Duration.microseconds(0)) > 0);
+            assertTrue(Duration.seconds(1).compareTo(Duration.milliseconds(0)) > 0);
+            assertTrue(Duration.seconds(1).compareTo(Duration.seconds(0)) > 0);
+            assertTrue(Duration.seconds(1).compareTo(Duration.minutes(0)) > 0);
+            assertTrue(Duration.seconds(1).compareTo(Duration.hours(0)) > 0);
+            assertTrue(Duration.seconds(1).compareTo(Duration.days(0)) > 0);
+    
+            assertTrue(Duration.minutes(1).compareTo(Duration.nanoseconds(0)) > 0);
+            assertTrue(Duration.minutes(1).compareTo(Duration.microseconds(0)) > 0);
+            assertTrue(Duration.minutes(1).compareTo(Duration.milliseconds(0)) > 0);
+            assertTrue(Duration.minutes(1).compareTo(Duration.seconds(0)) > 0);
+            assertTrue(Duration.minutes(1).compareTo(Duration.minutes(0)) > 0);
+            assertTrue(Duration.minutes(1).compareTo(Duration.hours(0)) > 0);
+            assertTrue(Duration.minutes(1).compareTo(Duration.days(0)) > 0);
+    
+            assertTrue(Duration.hours(1).compareTo(Duration.nanoseconds(0)) > 0);
+            assertTrue(Duration.hours(1).compareTo(Duration.microseconds(0)) > 0);
+            assertTrue(Duration.hours(1).compareTo(Duration.milliseconds(0)) > 0);
+            assertTrue(Duration.hours(1).compareTo(Duration.seconds(0)) > 0);
+            assertTrue(Duration.hours(1).compareTo(Duration.minutes(0)) > 0);
+            assertTrue(Duration.hours(1).compareTo(Duration.hours(0)) > 0);
+            assertTrue(Duration.hours(1).compareTo(Duration.days(0)) > 0);
+    
+            assertTrue(Duration.days(1).compareTo(Duration.nanoseconds(0)) > 0);
+            assertTrue(Duration.days(1).compareTo(Duration.microseconds(0)) > 0);
+            assertTrue(Duration.days(1).compareTo(Duration.milliseconds(0)) > 0);
+            assertTrue(Duration.days(1).compareTo(Duration.seconds(0)) > 0);
+            assertTrue(Duration.days(1).compareTo(Duration.minutes(0)) > 0);
+            assertTrue(Duration.days(1).compareTo(Duration.hours(0)) > 0);
+            assertTrue(Duration.days(1).compareTo(Duration.days(0)) > 0);
+    
+            // both negative
+            assertTrue(Duration.nanoseconds(-2).compareTo(Duration.nanoseconds(-1)) < 0);
+            assertTrue(Duration.nanoseconds(-2).compareTo(Duration.microseconds(-1)) > 0);
+            assertTrue(Duration.nanoseconds(-2).compareTo(Duration.milliseconds(-1)) > 0);
+            assertTrue(Duration.nanoseconds(-2).compareTo(Duration.seconds(-1)) > 0);
+            assertTrue(Duration.nanoseconds(-2).compareTo(Duration.minutes(-1)) > 0);
+            assertTrue(Duration.nanoseconds(-2).compareTo(Duration.hours(-1)) > 0);
+            assertTrue(Duration.nanoseconds(-2).compareTo(Duration.days(-1)) > 0);
+    
+            assertTrue(Duration.microseconds(-2).compareTo(Duration.nanoseconds(-1)) < 0);
+            assertTrue(Duration.microseconds(-2).compareTo(Duration.microseconds(-1)) < 0);
+            assertTrue(Duration.microseconds(-2).compareTo(Duration.milliseconds(-1)) > 0);
+            assertTrue(Duration.microseconds(-2).compareTo(Duration.seconds(-1)) > 0);
+            assertTrue(Duration.microseconds(-2).compareTo(Duration.minutes(-1)) > 0);
+            assertTrue(Duration.microseconds(-2).compareTo(Duration.hours(-1)) > 0);
+            assertTrue(Duration.microseconds(-2).compareTo(Duration.days(-1)) > 0);
+    
+            assertTrue(Duration.milliseconds(-2).compareTo(Duration.nanoseconds(-1)) < 0);
+            assertTrue(Duration.milliseconds(-2).compareTo(Duration.microseconds(-1)) < 0);
+            assertTrue(Duration.milliseconds(-2).compareTo(Duration.milliseconds(-1)) < 0);
+            assertTrue(Duration.milliseconds(-2).compareTo(Duration.seconds(-1)) > 0);
+            assertTrue(Duration.milliseconds(-2).compareTo(Duration.minutes(-1)) > 0);
+            assertTrue(Duration.milliseconds(-2).compareTo(Duration.hours(-1)) > 0);
+            assertTrue(Duration.milliseconds(-2).compareTo(Duration.days(-1)) > 0);
+    
+            assertTrue(Duration.seconds(-2).compareTo(Duration.nanoseconds(-1)) < 0);
+            assertTrue(Duration.seconds(-2).compareTo(Duration.microseconds(-1)) < 0);
+            assertTrue(Duration.seconds(-2).compareTo(Duration.milliseconds(-1)) < 0);
+            assertTrue(Duration.seconds(-2).compareTo(Duration.seconds(-1)) < 0);
+            assertTrue(Duration.seconds(-2).compareTo(Duration.minutes(-1)) > 0);
+            assertTrue(Duration.seconds(-2).compareTo(Duration.hours(-1)) > 0);
+            assertTrue(Duration.seconds(-2).compareTo(Duration.days(-1)) > 0);
+    
+            assertTrue(Duration.minutes(-2).compareTo(Duration.nanoseconds(-1)) < 0);
+            assertTrue(Duration.minutes(-2).compareTo(Duration.microseconds(-1)) < 0);
+            assertTrue(Duration.minutes(-2).compareTo(Duration.milliseconds(-1)) < 0);
+            assertTrue(Duration.minutes(-2).compareTo(Duration.seconds(-1)) < 0);
+            assertTrue(Duration.minutes(-2).compareTo(Duration.minutes(-1)) < 0);
+            assertTrue(Duration.minutes(-2).compareTo(Duration.hours(-1)) > 0);
+            assertTrue(Duration.minutes(-2).compareTo(Duration.days(-1)) > 0);
+    
+            assertTrue(Duration.hours(-2).compareTo(Duration.nanoseconds(-1)) < 0);
+            assertTrue(Duration.hours(-2).compareTo(Duration.microseconds(-1)) < 0);
+            assertTrue(Duration.hours(-2).compareTo(Duration.milliseconds(-1)) < 0);
+            assertTrue(Duration.hours(-2).compareTo(Duration.seconds(-1)) < 0);
+            assertTrue(Duration.hours(-2).compareTo(Duration.minutes(-1)) < 0);
+            assertTrue(Duration.hours(-2).compareTo(Duration.hours(-1)) < 0);
+            assertTrue(Duration.hours(-2).compareTo(Duration.days(-1)) > 0);
+    
+            assertTrue(Duration.days(-2).compareTo(Duration.nanoseconds(-1)) < 0);
+            assertTrue(Duration.days(-2).compareTo(Duration.microseconds(-1)) < 0);
+            assertTrue(Duration.days(-2).compareTo(Duration.milliseconds(-1)) < 0);
+            assertTrue(Duration.days(-2).compareTo(Duration.seconds(-1)) < 0);
+            assertTrue(Duration.days(-2).compareTo(Duration.minutes(-1)) < 0);
+            assertTrue(Duration.days(-2).compareTo(Duration.hours(-1)) < 0);
+            assertTrue(Duration.days(-2).compareTo(Duration.days(-1)) < 0);
+    
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.nanoseconds(-2)) > 0);
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.microseconds(-2)) > 0);
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.milliseconds(-2)) > 0);
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.seconds(-2)) > 0);
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.minutes(-2)) > 0);
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.hours(-2)) > 0);
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.days(-2)) > 0);
+    
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.nanoseconds(-2)) < 0);
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.microseconds(-2)) > 0);
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.milliseconds(-2)) > 0);
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.seconds(-2)) > 0);
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.minutes(-2)) > 0);
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.hours(-2)) > 0);
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.days(-2)) > 0);
+    
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.nanoseconds(-2)) < 0);
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.microseconds(-2)) < 0);
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.milliseconds(-2)) > 0);
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.seconds(-2)) > 0);
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.minutes(-2)) > 0);
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.hours(-2)) > 0);
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.days(-2)) > 0);
+    
+            assertTrue(Duration.seconds(-1).compareTo(Duration.nanoseconds(-2)) < 0);
+            assertTrue(Duration.seconds(-1).compareTo(Duration.microseconds(-2)) < 0);
+            assertTrue(Duration.seconds(-1).compareTo(Duration.milliseconds(-2)) < 0);
+            assertTrue(Duration.seconds(-1).compareTo(Duration.seconds(-2)) > 0);
+            assertTrue(Duration.seconds(-1).compareTo(Duration.minutes(-2)) > 0);
+            assertTrue(Duration.seconds(-1).compareTo(Duration.hours(-2)) > 0);
+            assertTrue(Duration.seconds(-1).compareTo(Duration.days(-2)) > 0);
+    
+            assertTrue(Duration.minutes(-1).compareTo(Duration.nanoseconds(-2)) < 0);
+            assertTrue(Duration.minutes(-1).compareTo(Duration.microseconds(-2)) < 0);
+            assertTrue(Duration.minutes(-1).compareTo(Duration.milliseconds(-2)) < 0);
+            assertTrue(Duration.minutes(-1).compareTo(Duration.seconds(-2)) < 0);
+            assertTrue(Duration.minutes(-1).compareTo(Duration.minutes(-2)) > 0);
+            assertTrue(Duration.minutes(-1).compareTo(Duration.hours(-2)) > 0);
+            assertTrue(Duration.minutes(-1).compareTo(Duration.days(-2)) > 0);
+    
+            assertTrue(Duration.hours(-1).compareTo(Duration.nanoseconds(-2)) < 0);
+            assertTrue(Duration.hours(-1).compareTo(Duration.microseconds(-2)) < 0);
+            assertTrue(Duration.hours(-1).compareTo(Duration.milliseconds(-2)) < 0);
+            assertTrue(Duration.hours(-1).compareTo(Duration.seconds(-2)) < 0);
+            assertTrue(Duration.hours(-1).compareTo(Duration.minutes(-2)) < 0);
+            assertTrue(Duration.hours(-1).compareTo(Duration.hours(-2)) > 0);
+            assertTrue(Duration.hours(-1).compareTo(Duration.days(-2)) > 0);
+    
+            assertTrue(Duration.days(-1).compareTo(Duration.nanoseconds(-2)) < 0);
+            assertTrue(Duration.days(-1).compareTo(Duration.microseconds(-2)) < 0);
+            assertTrue(Duration.days(-1).compareTo(Duration.milliseconds(-2)) < 0);
+            assertTrue(Duration.days(-1).compareTo(Duration.seconds(-2)) < 0);
+            assertTrue(Duration.days(-1).compareTo(Duration.minutes(-2)) < 0);
+            assertTrue(Duration.days(-1).compareTo(Duration.hours(-2)) < 0);
+            assertTrue(Duration.days(-1).compareTo(Duration.days(-2)) > 0);
+    
+            // both positive
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.nanoseconds((2))) < 0);
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.microseconds((2))) < 0);
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.milliseconds((2))) < 0);
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.seconds((2))) < 0);
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.minutes((2))) < 0);
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.hours((2))) < 0);
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.days((2))) < 0);
+    
+            assertTrue(Duration.microseconds(1).compareTo(Duration.nanoseconds((2))) > 0);
+            assertTrue(Duration.microseconds(1).compareTo(Duration.microseconds((2))) < 0);
+            assertTrue(Duration.microseconds(1).compareTo(Duration.milliseconds((2))) < 0);
+            assertTrue(Duration.microseconds(1).compareTo(Duration.seconds((2))) < 0);
+            assertTrue(Duration.microseconds(1).compareTo(Duration.minutes((2))) < 0);
+            assertTrue(Duration.microseconds(1).compareTo(Duration.hours((2))) < 0);
+            assertTrue(Duration.microseconds(1).compareTo(Duration.days((2))) < 0);
+    
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.nanoseconds((2))) > 0);
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.microseconds((2))) > 0);
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.milliseconds((2))) < 0);
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.seconds((2))) < 0);
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.minutes((2))) < 0);
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.hours((2))) < 0);
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.days((2))) < 0);
+    
+            assertTrue(Duration.seconds(1).compareTo(Duration.nanoseconds((2))) > 0);
+            assertTrue(Duration.seconds(1).compareTo(Duration.microseconds((2))) > 0);
+            assertTrue(Duration.seconds(1).compareTo(Duration.milliseconds((2))) > 0);
+            assertTrue(Duration.seconds(1).compareTo(Duration.seconds((2))) < 0);
+            assertTrue(Duration.seconds(1).compareTo(Duration.minutes((2))) < 0);
+            assertTrue(Duration.seconds(1).compareTo(Duration.hours((2))) < 0);
+            assertTrue(Duration.seconds(1).compareTo(Duration.days((2))) < 0);
+    
+            assertTrue(Duration.minutes(1).compareTo(Duration.nanoseconds((2))) > 0);
+            assertTrue(Duration.minutes(1).compareTo(Duration.microseconds((2))) > 0);
+            assertTrue(Duration.minutes(1).compareTo(Duration.milliseconds((2))) > 0);
+            assertTrue(Duration.minutes(1).compareTo(Duration.seconds((2))) > 0);
+            assertTrue(Duration.minutes(1).compareTo(Duration.minutes((2))) < 0);
+            assertTrue(Duration.minutes(1).compareTo(Duration.hours((2))) < 0);
+            assertTrue(Duration.minutes(1).compareTo(Duration.days((2))) < 0);
+    
+            assertTrue(Duration.hours(1).compareTo(Duration.nanoseconds((2))) > 0);
+            assertTrue(Duration.hours(1).compareTo(Duration.microseconds((2))) > 0);
+            assertTrue(Duration.hours(1).compareTo(Duration.milliseconds((2))) > 0);
+            assertTrue(Duration.hours(1).compareTo(Duration.seconds((2))) > 0);
+            assertTrue(Duration.hours(1).compareTo(Duration.minutes((2))) > 0);
+            assertTrue(Duration.hours(1).compareTo(Duration.hours((2))) < 0);
+            assertTrue(Duration.hours(1).compareTo(Duration.days((2))) < 0);
+    
+            assertTrue(Duration.days(1).compareTo(Duration.nanoseconds((2))) > 0);
+            assertTrue(Duration.days(1).compareTo(Duration.microseconds((2))) > 0);
+            assertTrue(Duration.days(1).compareTo(Duration.milliseconds((2))) > 0);
+            assertTrue(Duration.days(1).compareTo(Duration.seconds((2))) > 0);
+            assertTrue(Duration.days(1).compareTo(Duration.minutes((2))) > 0);
+            assertTrue(Duration.days(1).compareTo(Duration.hours((2))) > 0);
+            assertTrue(Duration.days(1).compareTo(Duration.days((2))) < 0);
+    
+            assertTrue(Duration.nanoseconds(2).compareTo(Duration.nanoseconds((1))) > 0);
+            assertTrue(Duration.nanoseconds(2).compareTo(Duration.microseconds((1))) < 0);
+            assertTrue(Duration.nanoseconds(2).compareTo(Duration.milliseconds((1))) < 0);
+            assertTrue(Duration.nanoseconds(2).compareTo(Duration.seconds((1))) < 0);
+            assertTrue(Duration.nanoseconds(2).compareTo(Duration.minutes((1))) < 0);
+            assertTrue(Duration.nanoseconds(2).compareTo(Duration.hours((1))) < 0);
+            assertTrue(Duration.nanoseconds(2).compareTo(Duration.days((1))) < 0);
+    
+            assertTrue(Duration.microseconds(2).compareTo(Duration.nanoseconds((1))) > 0);
+            assertTrue(Duration.microseconds(2).compareTo(Duration.microseconds((1))) > 0);
+            assertTrue(Duration.microseconds(2).compareTo(Duration.milliseconds((1))) < 0);
+            assertTrue(Duration.microseconds(2).compareTo(Duration.seconds((1))) < 0);
+            assertTrue(Duration.microseconds(2).compareTo(Duration.minutes((1))) < 0);
+            assertTrue(Duration.microseconds(2).compareTo(Duration.hours((1))) < 0);
+            assertTrue(Duration.microseconds(2).compareTo(Duration.days((1))) < 0);
+    
+            assertTrue(Duration.milliseconds(2).compareTo(Duration.nanoseconds((1))) > 0);
+            assertTrue(Duration.milliseconds(2).compareTo(Duration.microseconds((1))) > 0);
+            assertTrue(Duration.milliseconds(2).compareTo(Duration.milliseconds((1))) > 0);
+            assertTrue(Duration.milliseconds(2).compareTo(Duration.seconds((1))) < 0);
+            assertTrue(Duration.milliseconds(2).compareTo(Duration.minutes((1))) < 0);
+            assertTrue(Duration.milliseconds(2).compareTo(Duration.hours((1))) < 0);
+            assertTrue(Duration.milliseconds(2).compareTo(Duration.days((1))) < 0);
+    
+            assertTrue(Duration.seconds(2).compareTo(Duration.nanoseconds((1))) > 0);
+            assertTrue(Duration.seconds(2).compareTo(Duration.microseconds((1))) > 0);
+            assertTrue(Duration.seconds(2).compareTo(Duration.milliseconds((1))) > 0);
+            assertTrue(Duration.seconds(2).compareTo(Duration.seconds((1))) > 0);
+            assertTrue(Duration.seconds(2).compareTo(Duration.minutes((1))) < 0);
+            assertTrue(Duration.seconds(2).compareTo(Duration.hours((1))) < 0);
+            assertTrue(Duration.seconds(2).compareTo(Duration.days((1))) < 0);
+    
+            assertTrue(Duration.minutes(2).compareTo(Duration.nanoseconds((1))) > 0);
+            assertTrue(Duration.minutes(2).compareTo(Duration.microseconds((1))) > 0);
+            assertTrue(Duration.minutes(2).compareTo(Duration.milliseconds((1))) > 0);
+            assertTrue(Duration.minutes(2).compareTo(Duration.seconds((1))) > 0);
+            assertTrue(Duration.minutes(2).compareTo(Duration.minutes((1))) > 0);
+            assertTrue(Duration.minutes(2).compareTo(Duration.hours((1))) < 0);
+            assertTrue(Duration.minutes(2).compareTo(Duration.days((1))) < 0);
+    
+            assertTrue(Duration.hours(2).compareTo(Duration.nanoseconds((1))) > 0);
+            assertTrue(Duration.hours(2).compareTo(Duration.microseconds((1))) > 0);
+            assertTrue(Duration.hours(2).compareTo(Duration.milliseconds((1))) > 0);
+            assertTrue(Duration.hours(2).compareTo(Duration.seconds((1))) > 0);
+            assertTrue(Duration.hours(2).compareTo(Duration.minutes((1))) > 0);
+            assertTrue(Duration.hours(2).compareTo(Duration.hours((1))) > 0);
+            assertTrue(Duration.hours(2).compareTo(Duration.days((1))) < 0);
+    
+            assertTrue(Duration.days(2).compareTo(Duration.nanoseconds((1))) > 0);
+            assertTrue(Duration.days(2).compareTo(Duration.microseconds((1))) > 0);
+            assertTrue(Duration.days(2).compareTo(Duration.milliseconds((1))) > 0);
+            assertTrue(Duration.days(2).compareTo(Duration.seconds((1))) > 0);
+            assertTrue(Duration.days(2).compareTo(Duration.minutes((1))) > 0);
+            assertTrue(Duration.days(2).compareTo(Duration.hours((1))) > 0);
+            assertTrue(Duration.days(2).compareTo(Duration.days((1))) > 0);
+    
+            // one negative, one positive
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.nanoseconds(1)) < 0);
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.microseconds(1)) < 0);
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.milliseconds(1)) < 0);
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.seconds(1)) < 0);
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.minutes(1)) < 0);
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.hours(1)) < 0);
+            assertTrue(Duration.nanoseconds(-1).compareTo(Duration.days(1)) < 0);
+    
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.nanoseconds(1)) < 0);
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.microseconds(1)) < 0);
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.milliseconds(1)) < 0);
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.seconds(1)) < 0);
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.minutes(1)) < 0);
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.hours(1)) < 0);
+            assertTrue(Duration.microseconds(-1).compareTo(Duration.days(1)) < 0);
+    
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.nanoseconds(1)) < 0);
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.microseconds(1)) < 0);
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.milliseconds(1)) < 0);
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.seconds(1)) < 0);
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.minutes(1)) < 0);
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.hours(1)) < 0);
+            assertTrue(Duration.milliseconds(-1).compareTo(Duration.days(1)) < 0);
+    
+            assertTrue(Duration.seconds(-1).compareTo(Duration.nanoseconds(1)) < 0);
+            assertTrue(Duration.seconds(-1).compareTo(Duration.microseconds(1)) < 0);
+            assertTrue(Duration.seconds(-1).compareTo(Duration.milliseconds(1)) < 0);
+            assertTrue(Duration.seconds(-1).compareTo(Duration.seconds(1)) < 0);
+            assertTrue(Duration.seconds(-1).compareTo(Duration.minutes(1)) < 0);
+            assertTrue(Duration.seconds(-1).compareTo(Duration.hours(1)) < 0);
+            assertTrue(Duration.seconds(-1).compareTo(Duration.days(1)) < 0);
+    
+            assertTrue(Duration.minutes(-1).compareTo(Duration.nanoseconds(1)) < 0);
+            assertTrue(Duration.minutes(-1).compareTo(Duration.microseconds(1)) < 0);
+            assertTrue(Duration.minutes(-1).compareTo(Duration.milliseconds(1)) < 0);
+            assertTrue(Duration.minutes(-1).compareTo(Duration.seconds(1)) < 0);
+            assertTrue(Duration.minutes(-1).compareTo(Duration.minutes(1)) < 0);
+            assertTrue(Duration.minutes(-1).compareTo(Duration.hours(1)) < 0);
+            assertTrue(Duration.minutes(-1).compareTo(Duration.days(1)) < 0);
+    
+            assertTrue(Duration.hours(-1).compareTo(Duration.nanoseconds(1)) < 0);
+            assertTrue(Duration.hours(-1).compareTo(Duration.microseconds(1)) < 0);
+            assertTrue(Duration.hours(-1).compareTo(Duration.milliseconds(1)) < 0);
+            assertTrue(Duration.hours(-1).compareTo(Duration.seconds(1)) < 0);
+            assertTrue(Duration.hours(-1).compareTo(Duration.minutes(1)) < 0);
+            assertTrue(Duration.hours(-1).compareTo(Duration.hours(1)) < 0);
+            assertTrue(Duration.hours(-1).compareTo(Duration.days(1)) < 0);
+    
+            assertTrue(Duration.days(-1).compareTo(Duration.nanoseconds(1)) < 0);
+            assertTrue(Duration.days(-1).compareTo(Duration.microseconds(1)) < 0);
+            assertTrue(Duration.days(-1).compareTo(Duration.milliseconds(1)) < 0);
+            assertTrue(Duration.days(-1).compareTo(Duration.seconds(1)) < 0);
+            assertTrue(Duration.days(-1).compareTo(Duration.minutes(1)) < 0);
+            assertTrue(Duration.days(-1).compareTo(Duration.hours(1)) < 0);
+            assertTrue(Duration.days(-1).compareTo(Duration.days(1)) < 0);
+    
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.nanoseconds(-1)) > 0);
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.microseconds(-1)) > 0);
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.milliseconds(-1)) > 0);
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.seconds(-1)) > 0);
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.minutes(-1)) > 0);
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.hours(-1)) > 0);
+            assertTrue(Duration.nanoseconds(1).compareTo(Duration.days(-1)) > 0);
+    
+            assertTrue(Duration.microseconds(1).compareTo(Duration.nanoseconds(-1)) > 0);
+            assertTrue(Duration.microseconds(1).compareTo(Duration.microseconds(-1)) > 0);
+            assertTrue(Duration.microseconds(1).compareTo(Duration.milliseconds(-1)) > 0);
+            assertTrue(Duration.microseconds(1).compareTo(Duration.seconds(-1)) > 0);
+            assertTrue(Duration.microseconds(1).compareTo(Duration.minutes(-1)) > 0);
+            assertTrue(Duration.microseconds(1).compareTo(Duration.hours(-1)) > 0);
+            assertTrue(Duration.microseconds(1).compareTo(Duration.days(-1)) > 0);
+    
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.nanoseconds(-1)) > 0);
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.microseconds(-1)) > 0);
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.milliseconds(-1)) > 0);
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.seconds(-1)) > 0);
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.minutes(-1)) > 0);
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.hours(-1)) > 0);
+            assertTrue(Duration.milliseconds(1).compareTo(Duration.days(-1)) > 0);
+    
+            assertTrue(Duration.seconds(1).compareTo(Duration.nanoseconds(-1)) > 0);
+            assertTrue(Duration.seconds(1).compareTo(Duration.microseconds(-1)) > 0);
+            assertTrue(Duration.seconds(1).compareTo(Duration.milliseconds(-1)) > 0);
+            assertTrue(Duration.seconds(1).compareTo(Duration.seconds(-1)) > 0);
+            assertTrue(Duration.seconds(1).compareTo(Duration.minutes(-1)) > 0);
+            assertTrue(Duration.seconds(1).compareTo(Duration.hours(-1)) > 0);
+            assertTrue(Duration.seconds(1).compareTo(Duration.days(-1)) > 0);
+    
+            assertTrue(Duration.minutes(1).compareTo(Duration.nanoseconds(-1)) > 0);
+            assertTrue(Duration.minutes(1).compareTo(Duration.microseconds(-1)) > 0);
+            assertTrue(Duration.minutes(1).compareTo(Duration.milliseconds(-1)) > 0);
+            assertTrue(Duration.minutes(1).compareTo(Duration.seconds(-1)) > 0);
+            assertTrue(Duration.minutes(1).compareTo(Duration.minutes(-1)) > 0);
+            assertTrue(Duration.minutes(1).compareTo(Duration.hours(-1)) > 0);
+            assertTrue(Duration.minutes(1).compareTo(Duration.days(-1)) > 0);
+    
+            assertTrue(Duration.hours(1).compareTo(Duration.nanoseconds(-1)) > 0);
+            assertTrue(Duration.hours(1).compareTo(Duration.microseconds(-1)) > 0);
+            assertTrue(Duration.hours(1).compareTo(Duration.milliseconds(-1)) > 0);
+            assertTrue(Duration.hours(1).compareTo(Duration.seconds(-1)) > 0);
+            assertTrue(Duration.hours(1).compareTo(Duration.minutes(-1)) > 0);
+            assertTrue(Duration.hours(1).compareTo(Duration.hours(-1)) > 0);
+            assertTrue(Duration.hours(1).compareTo(Duration.days(-1)) > 0);
+    
+            assertTrue(Duration.days(1).compareTo(Duration.nanoseconds(-1)) > 0);
+            assertTrue(Duration.days(1).compareTo(Duration.microseconds(-1)) > 0);
+            assertTrue(Duration.days(1).compareTo(Duration.milliseconds(-1)) > 0);
+            assertTrue(Duration.days(1).compareTo(Duration.seconds(-1)) > 0);
+            assertTrue(Duration.days(1).compareTo(Duration.minutes(-1)) > 0);
+            assertTrue(Duration.days(1).compareTo(Duration.hours(-1)) > 0);
+            assertTrue(Duration.days(1).compareTo(Duration.days(-1)) > 0);
+        }
 }

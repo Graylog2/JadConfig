@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Duration {
+public class Duration implements Comparable<Duration> {
     private static final Pattern DURATION_PATTERN = Pattern.compile("(\\d+)\\s*(\\S+)");
     private static final Map<String, TimeUnit> SUFFIXES = new HashMap<String, TimeUnit>();
 
@@ -160,5 +160,14 @@ public class Duration {
             units = units.substring(0, units.length() - 1);
         }
         return Long.toString(count) + ' ' + units;
+    }
+
+    @Override
+    public int compareTo(final Duration other) {
+        if (unit == other.unit) {
+            return Long.compare(count, other.count);
+        }
+
+        return Long.compare(toNanoseconds(), other.toNanoseconds());
     }
 }
