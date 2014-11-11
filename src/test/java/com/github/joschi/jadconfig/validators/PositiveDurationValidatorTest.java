@@ -1,6 +1,7 @@
 package com.github.joschi.jadconfig.validators;
 
 import com.github.joschi.jadconfig.ValidationException;
+import com.github.joschi.jadconfig.util.Duration;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,24 +20,14 @@ public class PositiveDurationValidatorTest {
 
     @Test
     public void testValidate() throws ValidationException {
-        validator.validate("Test", "0s");
-        validator.validate("Test", "1ns");
-        validator.validate("Test", "2147483647m");
+        validator.validate("Test", Duration.nanoseconds(0l));
+        validator.validate("Test", Duration.nanoseconds(1l));
+        validator.validate("Test", Duration.nanoseconds(Long.MAX_VALUE));
     }
 
     @Test(expected = ValidationException.class)
     public void testValidateNegative() throws ValidationException {
-        validator.validate("Test", "-1s");
-    }
-
-    @Test(expected = ValidationException.class)
-    public void testValidateInvalidDuration() throws ValidationException {
-        validator.validate("Test", "Not a valid Duration");
-    }
-
-    @Test(expected = ValidationException.class)
-    public void testValidateEmpty() throws ValidationException {
-        validator.validate("Test", "");
+        validator.validate("Test", Duration.nanoseconds(-1l));
     }
 
     @Test(expected = ValidationException.class)

@@ -1,6 +1,7 @@
 package com.github.joschi.jadconfig.validators;
 
 import com.github.joschi.jadconfig.ValidationException;
+import com.github.joschi.jadconfig.util.Size;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,24 +20,14 @@ public class PositiveSizeValidatorTest {
 
     @Test
     public void testValidate() throws ValidationException {
-        validator.validate("Test", "0mb");
-        validator.validate("Test", "1gb");
-        validator.validate("Test", "2147483647kb");
+        validator.validate("Test", Size.bytes(0l));
+        validator.validate("Test", Size.bytes(1l));
+        validator.validate("Test", Size.bytes(Long.MAX_VALUE));
     }
 
     @Test(expected = ValidationException.class)
     public void testValidateNegative() throws ValidationException {
-        validator.validate("Test", "-1mb");
-    }
-
-    @Test(expected = ValidationException.class)
-    public void testValidateInvalidSize() throws ValidationException {
-        validator.validate("Test", "Not a valid Size");
-    }
-
-    @Test(expected = ValidationException.class)
-    public void testValidateEmpty() throws ValidationException {
-        validator.validate("Test", "");
+        validator.validate("Test", Size.bytes(-1l));
     }
 
     @Test(expected = ValidationException.class)

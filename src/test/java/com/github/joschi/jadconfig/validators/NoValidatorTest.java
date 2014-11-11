@@ -15,13 +15,16 @@ public class NoValidatorTest {
 
     @Before
     public void setUp() {
-
         validator = new NoValidator();
     }
 
     @Test
     public void testValidate() throws ValidationException {
-
         validator.validate("Test", "test");
+    }
+
+    @Test
+    public void testValidateNull() throws ValidationException {
+        validator.validate("Test", null);
     }
 }

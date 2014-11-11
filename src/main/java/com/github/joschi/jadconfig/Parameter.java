@@ -46,5 +46,5 @@ public @interface Parameter {
     /**
      * Specific {@link Validator} to use for this parameter.
      */
-    Class<? extends Validator> validator() default NoValidator.class;
+    Class<? extends Validator<?>> validator() default NoValidator.class;
 }

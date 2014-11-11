@@ -9,7 +9,7 @@ import com.github.joschi.jadconfig.util.Size;
  *
  * @author jschalanda
  */
-public class PositiveSizeValidator implements Validator {
+public class PositiveSizeValidator implements Validator<Size> {
 
     /**
      * Validates if the value {@literal value} the of provided configuration parameter {@literal name} is a positive
@@ -21,18 +21,8 @@ public class PositiveSizeValidator implements Validator {
      *                             as an {@link Size} or is negative.
      */
     @Override
-    public void validate(final String name, final String value) throws ValidationException {
-        Size size;
-
-        try {
-            size = Size.parse(value);
-        } catch (IllegalArgumentException ex) {
-            throw new ValidationException("Parameter " + name + " should be a positive size (found " + value + ")", ex);
-        } catch (NullPointerException ex) {
-            throw new ValidationException("Parameter " + name + " should be a positive size (found " + value + ")", ex);
-        }
-
-        if (size.getQuantity() < 0l) {
+    public void validate(final String name, final Size value) throws ValidationException {
+        if (value == null || value.getQuantity() < 0l) {
             throw new ValidationException("Parameter " + name + " should be positive (found " + value + ")");
         }
     }

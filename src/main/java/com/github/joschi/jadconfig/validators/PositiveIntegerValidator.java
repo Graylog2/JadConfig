@@ -8,7 +8,7 @@ import com.github.joschi.jadconfig.Validator;
  *
  * @author jschalanda
  */
-public class PositiveIntegerValidator implements Validator {
+public class PositiveIntegerValidator implements Validator<Integer> {
 
     /**
      * Validates if the value {@literal value} the of provided configuration parameter {@literal name} is a positive
@@ -20,17 +20,8 @@ public class PositiveIntegerValidator implements Validator {
      *                             as an {@literal int} or is negative.
      */
     @Override
-    public void validate(String name, String value) throws ValidationException {
-
-        int n;
-
-        try {
-            n = Integer.parseInt(value);
-        } catch (NumberFormatException ex) {
-            throw new ValidationException("Parameter " + name + " should be a positive number (found " + value + ")", ex);
-        }
-
-        if (n < 0) {
+    public void validate(String name, Integer value) throws ValidationException {
+        if (value == null || value < 0) {
             throw new ValidationException("Parameter " + name + " should be positive (found " + value + ")");
         }
     }

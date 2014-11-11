@@ -21,22 +21,19 @@ public class FileWritableValidatorTest {
 
     @Before
     public void setUp() {
-
         validator = new FileWritableValidator();
     }
 
     @Test
     public void testExistingFile() throws ValidationException, IOException {
-
         File tempFile = File.createTempFile("FileWritableValidatorTest-testExistingFile", ".tmp");
         tempFile.deleteOnExit();
 
-        validator.validate("Test", tempFile.getAbsolutePath());
+        validator.validate("Test", tempFile);
     }
 
     @Test(expected = ValidationException.class)
     public void testMissingPermissions() throws ValidationException, IOException {
-
         File tempFile = File.createTempFile("FileWritableValidatorTest-testMissingPermissions", ".tmp");
         tempFile.deleteOnExit();
 
@@ -44,30 +41,22 @@ public class FileWritableValidatorTest {
             fail("Couldn't set file " + tempFile.getCanonicalPath() + " unwritable");
         }
 
-        validator.validate("Test", tempFile.getAbsolutePath());
+        validator.validate("Test", tempFile);
     }
 
     @Test(expected = ValidationException.class)
     public void testMissingFile() throws ValidationException, IOException {
-
         File tempFile = File.createTempFile("FileWritableValidatorTest-testMissingFile", ".tmp");
 
         if (!tempFile.delete()) {
             fail("Couldn't delete temporary file " + tempFile.getCanonicalPath());
         }
 
-        validator.validate("Test", tempFile.getAbsolutePath());
+        validator.validate("Test", tempFile);
     }
 
     @Test(expected = ValidationException.class)
     public void testNull() throws ValidationException, IOException {
-
         validator.validate("Test", null);
-    }
-
-    @Test(expected = ValidationException.class)
-    public void testEmpty() throws ValidationException, IOException {
-
-        validator.validate("Test", "");
     }
 }

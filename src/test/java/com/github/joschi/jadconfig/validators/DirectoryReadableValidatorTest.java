@@ -20,13 +20,11 @@ public class DirectoryReadableValidatorTest {
 
     @Before
     public void setUp() {
-
         validator = new DirectoryReadableValidator();
     }
 
     @Test
     public void testExistingDirectory() throws ValidationException, IOException {
-
         File tempDir = File.createTempFile("DirectoryReadableValidatorTest-testExistingDirectory", ".dir");
         if (!tempDir.delete()) {
             fail("Couldn't delete temporary file " + tempDir.getCanonicalPath());
@@ -38,21 +36,19 @@ public class DirectoryReadableValidatorTest {
 
         tempDir.deleteOnExit();
 
-        validator.validate("Test", tempDir.getAbsolutePath());
+        validator.validate("Test", tempDir);
     }
 
     @Test(expected = ValidationException.class)
     public void testExistingFile() throws ValidationException, IOException {
-
         File tmpFile = File.createTempFile("DirectoryReadableValidatorTest-testExistingFile", ".tmp");
         tmpFile.deleteOnExit();
 
-        validator.validate("Test", tmpFile.getAbsolutePath());
+        validator.validate("Test", tmpFile);
     }
 
     @Test(expected = ValidationException.class)
     public void testUnreadableDirectory() throws ValidationException, IOException {
-
         File tempDir = File.createTempFile("DirectoryReadableValidatorTest-testUnreadableDirectory", ".dir");
         if (!tempDir.delete()) {
             fail("Couldn't delete temporary file " + tempDir.getCanonicalPath());
@@ -66,30 +62,22 @@ public class DirectoryReadableValidatorTest {
             fail("Couldn't set directory " + tempDir.getCanonicalPath() + " unreadable");
         }
 
-        validator.validate("Test", tempDir.getAbsolutePath());
+        validator.validate("Test", tempDir);
     }
 
     @Test(expected = ValidationException.class)
     public void testMissingDirectory() throws ValidationException, IOException {
-
         File tempFile = File.createTempFile("DirectoryReadableValidatorTest-testMissingDirectory", ".tmp");
 
         if (!tempFile.delete()) {
             fail("Couldn't delete temporary file " + tempFile.getCanonicalPath());
         }
 
-        validator.validate("Test", tempFile.getAbsolutePath());
+        validator.validate("Test", tempFile);
     }
 
     @Test(expected = ValidationException.class)
     public void testNull() throws ValidationException, IOException {
-
         validator.validate("Test", null);
-    }
-
-    @Test(expected = ValidationException.class)
-    public void testEmpty() throws ValidationException, IOException {
-
-        validator.validate("Test", "");
     }
 }

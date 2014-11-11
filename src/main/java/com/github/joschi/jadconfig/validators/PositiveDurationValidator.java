@@ -9,7 +9,7 @@ import com.github.joschi.jadconfig.util.Duration;
  *
  * @author jschalanda
  */
-public class PositiveDurationValidator implements Validator {
+public class PositiveDurationValidator implements Validator<Duration> {
 
     /**
      * Validates if the value {@literal value} the of provided configuration parameter {@literal name} is a positive
@@ -21,18 +21,8 @@ public class PositiveDurationValidator implements Validator {
      *                             as an {@link Duration} or is negative.
      */
     @Override
-    public void validate(final String name, final String value) throws ValidationException {
-        Duration duration;
-
-        try {
-            duration = Duration.parse(value);
-        } catch (IllegalArgumentException ex) {
-            throw new ValidationException("Parameter " + name + " should be a positive duration (found " + value + ")", ex);
-        } catch (NullPointerException ex) {
-            throw new ValidationException("Parameter " + name + " should be a positive duration (found " + value + ")", ex);
-        }
-
-        if (duration.getQuantity() < 0l) {
+    public void validate(final String name, final Duration value) throws ValidationException {
+        if (value == null || value.getQuantity() < 0l) {
             throw new ValidationException("Parameter " + name + " should be positive (found " + value + ")");
         }
     }

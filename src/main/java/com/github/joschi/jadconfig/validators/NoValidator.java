@@ -8,16 +8,16 @@ import com.github.joschi.jadconfig.Validator;
  *
  * @author jschalanda
  */
-public class NoValidator implements Validator {
+public class NoValidator implements Validator<Object> {
 
     /**
-     * Does nothing and is being used as default {@link Validator#validate(String, String)} method
+     * Does nothing and is being used as default {@link Validator#validate(String, Object)} method
      *
      * @param name  The name of the configuration parameter
      * @param value The value of the configuration validator
      * @throws ValidationException Never
      */
     @Override
-    public void validate(String name, String value) throws ValidationException {
+    public void validate(String name, Object value) throws ValidationException {
     }
 }

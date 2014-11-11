@@ -134,11 +134,11 @@ public class JadConfig {
                         parameterValue = Strings.trim(parameterValue);
                     }
 
-                    LOG.debug("Validating parameter {}", parameterName);
-                    validateParameter(parameter.validator(), parameterName, parameterValue);
-
                     LOG.debug("Converting parameter value {}", parameterName);
                     fieldValue = convertStringValue(field.getType(), parameter.converter(), parameterValue);
+
+                    LOG.debug("Validating parameter {}", parameterName);
+                    validateParameter(parameter.validator(), parameterName, fieldValue);
                 }
 
                 LOG.debug("Setting parameter {} to {}", parameterName, parameterValue);
@@ -192,7 +192,8 @@ public class JadConfig {
         }
     }
 
-    private void validateParameter(Class<? extends Validator> validatorClass, String name, String value) throws ValidationException {
+    @SuppressWarnings("unchecked")
+    private void validateParameter(Class<? extends Validator<?>> validatorClass, String name, Object value) throws ValidationException {
         Validator validator;
 
         LOG.debug("Validating parameter {} with value {}", name, value);
@@ -250,8 +251,9 @@ public class JadConfig {
 
     /**
      * Dumps all configuration parameters as a {@link java.util.Map} of {@link String}.
-     *
+     * <p>
      * If being called before {@link #process()} it will return the default values of the configuration beans.
+     * </p>
      *
      * @return All configuration parameters as {@link String}
      */
@@ -272,6 +274,7 @@ public class JadConfig {
         return configurationDump;
     }
 
+    @SuppressWarnings("unchecked")
     private String convertFieldValue(Class<?> fieldType, Class<? extends Converter<?>> converterClass, Object fieldValue) {
         if (null != fieldValue) {
             final Converter converter = getConverter(fieldType, converterClass);
