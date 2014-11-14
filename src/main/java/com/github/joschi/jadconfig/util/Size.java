@@ -135,6 +135,9 @@ public class Size implements Comparable<Size> {
         return SizeUnit.PETABYTES.convert(count, unit);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -149,11 +152,17 @@ public class Size implements Comparable<Size> {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         return (31 * (int) (count ^ (count >>> 32))) + unit.hashCode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         String units = unit.toString().toLowerCase(Locale.ENGLISH);
@@ -163,12 +172,15 @@ public class Size implements Comparable<Size> {
         return Long.toString(count) + ' ' + units;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-        public int compareTo(Size other) {
-            if (unit == other.unit) {
-                return Long.compare(count, other.count);
-            }
-
-            return Long.compare(toBytes(), other.toBytes());
+    public int compareTo(Size other) {
+        if (unit == other.unit) {
+            return Long.valueOf(count).compareTo(other.count);
         }
+
+        return Long.valueOf(toBytes()).compareTo(other.toBytes());
+    }
 }

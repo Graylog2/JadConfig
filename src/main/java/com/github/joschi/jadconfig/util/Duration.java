@@ -134,6 +134,9 @@ public class Duration implements Comparable<Duration> {
         return TimeUnit.DAYS.convert(count, unit);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -148,6 +151,9 @@ public class Duration implements Comparable<Duration> {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         return (31 * (int) (count ^ (count >>> 32))) + unit.hashCode();
@@ -162,12 +168,15 @@ public class Duration implements Comparable<Duration> {
         return Long.toString(count) + ' ' + units;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int compareTo(final Duration other) {
         if (unit == other.unit) {
-            return Long.compare(count, other.count);
+            return Long.valueOf(count).compareTo(other.count);
         }
 
-        return Long.compare(toNanoseconds(), other.toNanoseconds());
+        return Long.valueOf(toNanoseconds()).compareTo(other.toNanoseconds());
     }
 }
