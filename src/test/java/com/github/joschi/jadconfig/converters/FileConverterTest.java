@@ -30,7 +30,7 @@ public class FileConverterTest {
         tmpFile.deleteOnExit();
 
         Assert.assertEquals(new File(""), converter.convertFrom(""));
-        Assert.assertEquals(tmpFile, converter.convertFrom(tmpFile.getCanonicalPath()));
+        Assert.assertEquals(tmpFile, converter.convertFrom(tmpFile.getPath()));
     }
 
     @Test(expected = ParameterException.class)
@@ -46,7 +46,7 @@ public class FileConverterTest {
         tmpFile.deleteOnExit();
 
         Assert.assertEquals("", converter.convertTo(new File("")));
-        Assert.assertEquals(tmpFile.getCanonicalPath(), converter.convertTo(tmpFile));
+        Assert.assertEquals(tmpFile.getPath(), converter.convertTo(tmpFile));
     }
 
     @Test(expected = ParameterException.class)

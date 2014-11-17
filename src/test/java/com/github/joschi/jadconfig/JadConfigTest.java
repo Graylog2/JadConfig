@@ -322,7 +322,7 @@ public class JadConfigTest {
         Assert.assertEquals("Test", configDump.get("save.me.string"));
         Assert.assertEquals("123", configDump.get("save.me.integer"));
         Assert.assertEquals("http://example.com/", configDump.get("save.me.uri"));
-        Assert.assertEquals(file.getCanonicalPath(), configDump.get("save.me.file"));
+        Assert.assertEquals(file.getPath(), configDump.get("save.me.file"));
     }
 
     @Test
