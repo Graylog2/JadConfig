@@ -3,6 +3,7 @@ package com.github.joschi.jadconfig.guice;
 import com.github.joschi.jadconfig.Parameter;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
+import com.google.inject.util.Providers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +75,12 @@ public class NamedConfigParametersModule extends AbstractModule {
                 try {
                     final TypeLiteral typeLiteral = TypeLiteral.get(field.getGenericType());
                     final Object value = getFieldValue(bean, field);
-                    bind(typeLiteral).annotatedWith(named(parameter.value())).toInstance(value);
+
+                    if (value == null) {
+                        bind(typeLiteral).annotatedWith(named(parameter.value())).toProvider(Providers.of(null));
+                    } else {
+                        bind(typeLiteral).annotatedWith(named(parameter.value())).toInstance(value);
+                    }
                 } catch (IllegalAccessException e) {
                     LOG.warn("Couldn't bind \"" + field.getName() + "\"", e);
                 }

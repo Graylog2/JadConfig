@@ -130,6 +130,9 @@ Example:
     // MyClass will be instantiated with the value of customConfig from the MyConfigBean instance.
     MyClass myClass = injector.getInstance(MyClass.class);
 
+Please note that nullable properties which should be injected by Guice have to be annotated with `@Nullable`,
+see [UseNullable](https://github.com/google/guice/wiki/UseNullable) in the Guice wiki for details.
+
 
 ## Maven
 

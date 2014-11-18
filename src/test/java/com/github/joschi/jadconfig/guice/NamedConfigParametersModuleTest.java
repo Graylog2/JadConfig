@@ -1,6 +1,7 @@
 package com.github.joschi.jadconfig.guice;
 
 import com.github.joschi.jadconfig.JadConfig;
+import com.github.joschi.jadconfig.Parameter;
 import com.github.joschi.jadconfig.Repository;
 import com.github.joschi.jadconfig.RepositoryException;
 import com.github.joschi.jadconfig.ValidationException;
@@ -13,6 +14,7 @@ import com.google.inject.Injector;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.File;
@@ -22,6 +24,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
 public class NamedConfigParametersModuleTest {
@@ -66,6 +69,36 @@ public class NamedConfigParametersModuleTest {
         final NamedParametersBean namedParametersBean = injector.getInstance(NamedParametersBean.class);
 
         assertEquals(bean.getMyString(), namedParametersBean.myString);
+    }
+
+    @Test
+    public void testNullValuedParameters() throws ValidationException, RepositoryException {
+        NullValueBean bean = new NullValueBean();
+        new JadConfig(repository, bean).process();
+
+        final Injector injector = Guice.createInjector(new NamedConfigParametersModule(Collections.singleton(bean)),
+                new AbstractModule() {
+                    @Override
+                    protected void configure() {
+                        bind(NullTargetBean.class);
+                    }
+                });
+
+        final NullTargetBean nullTargetBean = injector.getInstance(NullTargetBean.class);
+
+        assertNull(nullTargetBean.target);
+    }
+
+    public static final class NullValueBean {
+        @Parameter("null-test")
+        public Object source = null;
+    }
+
+    public static final class NullTargetBean {
+        @Inject
+        @Named("null-test")
+        @Nullable
+        public Object target = new Object();
     }
 
     public static final class NamedParametersBean {
