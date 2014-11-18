@@ -166,6 +166,7 @@
                     <path>${project.version}</path>
                     <message>Creating site for ${project.name} ${project.version}</message>
                     <merge>true</merge>
+                    <skip>true</skip>
                 </configuration>
                 <executions>
                     <execution>
