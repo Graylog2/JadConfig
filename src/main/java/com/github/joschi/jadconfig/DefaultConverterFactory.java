@@ -5,6 +5,7 @@ import com.github.joschi.jadconfig.converters.BigIntegerConverter;
 import com.github.joschi.jadconfig.converters.BooleanConverter;
 import com.github.joschi.jadconfig.converters.ByteConverter;
 import com.github.joschi.jadconfig.converters.CharsetConverter;
+import com.github.joschi.jadconfig.converters.ClassConverter;
 import com.github.joschi.jadconfig.converters.CurrencyConverter;
 import com.github.joschi.jadconfig.converters.DecimalFormatConverter;
 import com.github.joschi.jadconfig.converters.DoubleConverter;
@@ -84,6 +85,7 @@ import java.util.regex.Pattern;
  * <li>{@link Size} through {@link SizeConverter}</li>
  * <li>{@link SizeUnit} through {@link SizeUnitConverter}</li>
  * <li>{@link TimeUnit} through {@link TimeUnitConverter}</li>
+ * <li>{@link Class} through {@link ClassConverter}</li>
  * </ul>
  * </p>
  *
@@ -130,6 +132,7 @@ public class DefaultConverterFactory implements ConverterFactory {
         DEFAULT_CONVERTERS.put(Size.class, SizeConverter.class);
         DEFAULT_CONVERTERS.put(SizeUnit.class, SizeUnitConverter.class);
         DEFAULT_CONVERTERS.put(TimeUnit.class, TimeUnitConverter.class);
+        DEFAULT_CONVERTERS.put(Class.class, ClassConverter.class);
     }
 
     /**
