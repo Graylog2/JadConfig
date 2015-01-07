@@ -27,6 +27,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -404,6 +406,31 @@ public class JadConfigTest {
         final List<Repository> repositories = jadConfig.getRepositories();
         Assert.assertEquals(1, repositories.size());
         Assert.assertTrue(repositories.contains(repository));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetRepositoryThrowsExceptionWhenNull(){
+        new JadConfig(repository).setRepository(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetRepositoriesThrowsExceptionWhenArrayIsNull(){
+        new JadConfig(repository).setRepositories((Repository[]) null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetRepositoriesThrowsExceptionWhenCollectionIsNull(){
+        new JadConfig(repository).setRepositories((Collection<Repository>) null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetRepositoriesThrowsExceptionWhenArrayIsEmpty(){
+        new JadConfig(repository).setRepositories();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetRepositoriesThrowsExceptionWhenCollectionIsEmpty(){
+        new JadConfig(repository).setRepositories(Collections.<Repository>emptyList());
     }
 }
 

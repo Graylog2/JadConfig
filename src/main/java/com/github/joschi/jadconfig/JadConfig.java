@@ -230,22 +230,26 @@ public class JadConfig {
      * Adds a {@link ConverterFactory} for processing additional types
      *
      * @param converterFactory The {@link ConverterFactory} to be added
+     * @return the JadConfig instance
      */
-    public void addConverterFactory(ConverterFactory converterFactory) {
+    public JadConfig addConverterFactory(ConverterFactory converterFactory) {
         converterFactories.addFirst(converterFactory);
 
         LOG.info("Added converter factory {}", converterFactory);
+        return this;
     }
 
     /**
      * Adds a configuration bean annotated with JadConfig annotations.
      *
      * @param configurationBean An object annotated with JadConfig annotations
+     * @return the JadConfig instance
      */
-    public void addConfigurationBean(Object configurationBean) {
+    public JadConfig addConfigurationBean(Object configurationBean) {
         configurationBeans.add(configurationBean);
 
         LOG.info("Added configuration bean {}", configurationBean);
+        return this;
     }
 
     /**
@@ -289,18 +293,44 @@ public class JadConfig {
      * Set the {@link Repository} to load configuration data from.
      *
      * @param repository A {@link Repository} instance
+     * @return the JadConfig instance
      */
-    public void setRepository(final Repository repository) {
+    public JadConfig setRepository(final Repository repository) {
+        if(repository == null) {
+            throw new IllegalArgumentException("The repository must not be null.");
+        }
+
         this.repositories = Collections.singletonList(repository);
+        return this;
     }
 
     /**
      * Set the (sorted) list of {@link Repository}s to load configuration data from.
      *
      * @param repositories A collection of {@link Repository} instances
+     * @return the JadConfig instance
      */
-    public void setRepositories(final Collection<Repository> repositories) {
+    public JadConfig setRepositories(final Collection<Repository> repositories) {
+        if(repositories == null || repositories.isEmpty()) {
+            throw new IllegalArgumentException("At least 1 repository is required.");
+        }
         this.repositories = new ArrayList<Repository>(repositories);
+        return this;
+    }
+
+    /**
+     * Set the (sorted) list of {@link Repository}s to load configuration data from.
+     *
+     * @param repositories A collection of {@link Repository} instances
+     * @return the JadConfig instance
+     */
+    public JadConfig setRepositories(Repository... repositories) {
+        if(repositories == null || repositories.length < 1) {
+            throw new IllegalArgumentException("At least 1 repository is required.");
+        }
+
+        this.repositories = new ArrayList<Repository>(Arrays.asList(repositories));
+        return this;
     }
 
     /**
