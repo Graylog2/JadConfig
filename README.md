@@ -46,10 +46,10 @@ You can also use multiple repositories as source for your configuration (first m
 JadConfig optionally supports [Joda-Time](http://www.joda.org/joda-time/). In order to use it just add the Joda-Time
 dependency to your `pom.xml`:
 
-	<dependency>
-		<groupId>joda-time</groupId>
-		<artifactId>joda-time</artifactId>
-		<version>2.5</version>
+    <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>2.5</version>
     </dependency>
 
 
@@ -141,7 +141,7 @@ To use JadConfig in your project using Maven add the following lines into the de
     <dependency>
         <groupId>com.github.joschi</groupId>
         <artifactId>jadconfig</artifactId>
-        <version>0.9.1</version>
+        <version>0.10.0</version>
     </dependency>
 
 
