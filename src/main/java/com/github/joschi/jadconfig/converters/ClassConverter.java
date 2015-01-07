@@ -3,8 +3,6 @@ package com.github.joschi.jadconfig.converters;
 import com.github.joschi.jadconfig.Converter;
 import com.github.joschi.jadconfig.ParameterException;
 
-import java.lang.Class;
-
 /**
  * Class to convert from a given FQCN (fully qualified class name) to a {@link java.lang.Class} object
  */

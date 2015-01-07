@@ -3,7 +3,10 @@ package com.github.joschi.jadconfig.repositories;
 import com.github.joschi.jadconfig.Repository;
 import com.github.joschi.jadconfig.RepositoryException;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.Properties;
 
 /**
