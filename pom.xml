@@ -158,7 +158,7 @@
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.4</version>
             </plugin>
-            <plugin>
+            <!--plugin>
                 <groupId>com.github.github</groupId>
                 <artifactId>site-maven-plugin</artifactId>
                 <version>0.10</version>
@@ -176,7 +176,7 @@
                         <phase>site</phase>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin-->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
