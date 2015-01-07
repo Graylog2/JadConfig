@@ -33,7 +33,6 @@ import static com.github.joschi.jadconfig.ReflectionUtils.invokeMethodsWithAnnot
  * @author jschalanda
  */
 public class JadConfig {
-
     private static final Logger LOG = LoggerFactory.getLogger(JadConfig.class);
     private final LinkedList<ConverterFactory> converterFactories = new LinkedList<ConverterFactory>();
     private List<Object> configurationBeans;
@@ -302,5 +301,32 @@ public class JadConfig {
      */
     public void setRepositories(final Collection<Repository> repositories) {
         this.repositories = new ArrayList<Repository>(repositories);
+    }
+
+    /**
+     * Get an unmodifiable list of registered converter factories.
+     *
+     * @return the list of registered converter factories
+     */
+    public List<ConverterFactory> getConverterFactories() {
+        return Collections.unmodifiableList(converterFactories);
+    }
+
+    /**
+     * Get an unmodifiable list of registered configuration beans.
+     *
+     * @return the list of registered configuration beans
+     */
+    public List<Object> getConfigurationBeans() {
+        return Collections.unmodifiableList(configurationBeans);
+    }
+
+    /**
+     * Get an unmodifiable list of registered repositories.
+     *
+     * @return the list of registered repositories
+     */
+    public List<Repository> getRepositories() {
+        return Collections.unmodifiableList(repositories);
     }
 }

@@ -372,4 +372,38 @@ public class JadConfigTest {
         Assert.assertEquals("1234567890123", configDump.get("test.long"));
         Assert.assertEquals("http://example.com/", configDump.get("test.uri"));
     }
+
+    @Test
+    public void testGetConverterFactories() throws ValidationException, RepositoryException {
+        final FoobarConverterFactory converterFactory = new FoobarConverterFactory();
+        jadConfig = new JadConfig();
+        jadConfig.addConverterFactory(converterFactory);
+
+        final List<ConverterFactory> converterFactories = jadConfig.getConverterFactories();
+        Assert.assertEquals(2, converterFactories.size());
+        Assert.assertTrue(converterFactories.contains(converterFactory));
+    }
+
+    @Test
+    public void testGetConfigurationBeans() throws ValidationException, RepositoryException {
+        final EmptyBean bean1 = new EmptyBean();
+        final EmptyBean bean2 = new EmptyBean();
+        jadConfig = new JadConfig(repository, bean1, bean2);
+
+        final List<Object> beans = jadConfig.getConfigurationBeans();
+        Assert.assertEquals(2, beans.size());
+        Assert.assertTrue(beans.contains(bean1));
+        Assert.assertTrue(beans.contains(bean2));
+    }
+
+    @Test
+    public void testGetRepositories() throws ValidationException, RepositoryException {
+        final InMemoryRepository repository = new InMemoryRepository();
+        jadConfig = new JadConfig(repository);
+
+        final List<Repository> repositories = jadConfig.getRepositories();
+        Assert.assertEquals(1, repositories.size());
+        Assert.assertTrue(repositories.contains(repository));
+    }
 }
+
