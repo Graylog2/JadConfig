@@ -49,7 +49,7 @@ public class JadConfig {
      * @see #setRepositories(Collection)
      */
     public JadConfig() {
-        this(Collections.<Repository>emptyList(), new ArrayList<Object>());
+        this(Collections.<Repository>emptyList());
     }
 
     /**

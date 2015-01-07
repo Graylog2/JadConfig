@@ -432,5 +432,14 @@ public class JadConfigTest {
     public void testSetRepositoriesThrowsExceptionWhenCollectionIsEmpty(){
         new JadConfig(repository).setRepositories(Collections.<Repository>emptyList());
     }
+
+    @Test
+    public void testArgumentLessConstructor() {
+        jadConfig = new JadConfig();
+
+        Assert.assertTrue(jadConfig.getConfigurationBeans().isEmpty());
+        Assert.assertTrue(jadConfig.getRepositories().isEmpty());
+        Assert.assertEquals(1, jadConfig.getConverterFactories().size());
+    }
 }
 
