@@ -45,7 +45,7 @@ public class ValidatorMethodConfigurationBean {
     public void validate() throws ValidationException {
 
         if (!"Test".equals(myString)) {
-            throw new ValidationException();
+            throw new ValidationException("BOOM");
         }
 
         if (myByte > myShort || myShort > myInt || myInt > myLong) {

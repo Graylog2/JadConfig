@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -209,6 +210,12 @@ public class JadConfig {
     private void invokeValidatorMethods(Object configurationBean, Method[] methods) throws ValidationException {
         try {
             invokeMethodsWithAnnotation(configurationBean, ValidatorMethod.class, methods);
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof ValidationException) {
+                throw (ValidationException)e.getTargetException();
+            }
+
+            throw new ValidationException("Couldn't run validator method", e);
         } catch (Exception e) {
             throw new ValidationException("Couldn't run validator method", e);
         }

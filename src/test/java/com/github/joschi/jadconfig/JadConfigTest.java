@@ -19,7 +19,9 @@ import com.github.joschi.jadconfig.testbeans.VoidConfigurationBean;
 import com.github.joschi.jadconfig.testconverters.FoobarConverterFactory;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,6 +43,9 @@ import java.util.Map;
 public class JadConfigTest {
 
     private static final String PROPERTIES_FILE = PropertiesRepository.class.getResource("/testConfiguration.properties").getFile();
+    
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     private JadConfig jadConfig;
     private Repository repository;
@@ -158,7 +163,6 @@ public class JadConfigTest {
 
     @Test
     public void testProcessValidatorMethod() throws RepositoryException, ValidationException {
-
         ValidatorMethodConfigurationBean configurationBean = new ValidatorMethodConfigurationBean();
         jadConfig = new JadConfig(repository, configurationBean);
 
@@ -169,6 +173,19 @@ public class JadConfigTest {
         Assert.assertEquals(1234, configurationBean.getMyShort());
         Assert.assertEquals(123456, configurationBean.getMyInt());
         Assert.assertEquals(1234567890123L, configurationBean.getMyLong());
+    }
+
+    @Test
+    public void testProcessValidatorMethodThrowsException() throws RepositoryException, ValidationException {
+        expectedException.expect(ValidationException.class);
+        expectedException.expectMessage("BOOM");
+
+        Map<String, String> properties = Collections.singletonMap("test.string", "Not Test");
+        ValidatorMethodConfigurationBean configurationBean = new ValidatorMethodConfigurationBean();
+        jadConfig = new JadConfig(new InMemoryRepository(properties), configurationBean);
+
+
+        jadConfig.process();
     }
 
     @Test
