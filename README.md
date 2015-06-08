@@ -49,7 +49,7 @@ dependency to your `pom.xml`:
     <dependency>
         <groupId>joda-time</groupId>
         <artifactId>joda-time</artifactId>
-        <version>2.5</version>
+        <version>2.8</version>
     </dependency>
 
 
