@@ -99,7 +99,7 @@ to use it just add the Google Guice dependency to your `pom.xml`:
     <dependency>
         <groupId>com.google.inject</groupId>
         <artifactId>guice</artifactId>
-        <version>3.0</version>
+        <version>4.0</version>
     </dependency>
 
 
