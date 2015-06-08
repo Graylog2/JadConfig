@@ -2,6 +2,7 @@ package com.github.joschi.jadconfig;
 
 import com.github.joschi.jadconfig.repositories.InMemoryRepository;
 import com.github.joschi.jadconfig.repositories.PropertiesRepository;
+import com.github.joschi.jadconfig.testbeans.ConverterFailureBean;
 import com.github.joschi.jadconfig.testbeans.DefaultValueConfigurationBean;
 import com.github.joschi.jadconfig.testbeans.EmptyBean;
 import com.github.joschi.jadconfig.testbeans.FoobarConfigurationBean;
@@ -149,7 +150,7 @@ public class JadConfigTest {
         Assert.assertEquals(1234, configurationBean.getMyShort());
     }
 
-@Test
+    @Test
     public void testDumpDefaultPropertiesWithoutProcess() throws RepositoryException, ValidationException {
 
         DefaultValueConfigurationBean configurationBean = new DefaultValueConfigurationBean();
@@ -457,6 +458,17 @@ public class JadConfigTest {
         Assert.assertTrue(jadConfig.getConfigurationBeans().isEmpty());
         Assert.assertTrue(jadConfig.getRepositories().isEmpty());
         Assert.assertEquals(1, jadConfig.getConverterFactories().size());
+    }
+
+    @Test
+    public void testParameterExceptionContainsParameterName() throws RepositoryException, ValidationException {
+        expectedException.expect(ParameterException.class);
+        expectedException.expectMessage("Couldn't convert value for parameter \"test.string\"");
+
+        ConverterFailureBean configurationBean = new ConverterFailureBean();
+        jadConfig = new JadConfig(repository, configurationBean);
+
+        jadConfig.process();
     }
 }
 

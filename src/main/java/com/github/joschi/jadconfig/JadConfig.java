@@ -135,7 +135,11 @@ public class JadConfig {
                     }
 
                     LOG.debug("Converting parameter value {}", parameterName);
-                    fieldValue = convertStringValue(field.getType(), parameter.converter(), parameterValue);
+                    try {
+                        fieldValue = convertStringValue(field.getType(), parameter.converter(), parameterValue);
+                    } catch (ParameterException e) {
+                        throw new ParameterException("Couldn't convert value for parameter \"" + parameterName + "\"", e);
+                    }
 
                     LOG.debug("Validating parameter {}", parameterName);
                     validateParameter(parameter.validator(), parameterName, fieldValue);
