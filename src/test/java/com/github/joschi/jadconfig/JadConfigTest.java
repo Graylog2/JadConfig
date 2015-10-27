@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -84,6 +85,7 @@ public class JadConfigTest {
         Assert.assertEquals(stringList, configurationBean.getStringList());
         Assert.assertEquals(URI.create("http://example.com/"), configurationBean.getUri());
         Assert.assertEquals(new File("testConfiguration.properties"), configurationBean.getFile());
+        Assert.assertEquals(Paths.get("testConfiguration.properties"), configurationBean.getPath());
     }
 
     @Test

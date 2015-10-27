@@ -5,6 +5,7 @@ import com.github.joschi.jadconfig.converters.StringListConverter;
 
 import java.io.File;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.List;
 
 public class SimpleConfigurationBean {
@@ -41,6 +42,9 @@ public class SimpleConfigurationBean {
 
     @Parameter("test.file")
     private File file;
+
+    @Parameter("test.path")
+    private Path path;
 
     public String getMyString() {
         return myString;
@@ -84,5 +88,9 @@ public class SimpleConfigurationBean {
 
     public File getFile() {
         return file;
+    }
+
+    public Path getPath() {
+        return path;
     }
 }
