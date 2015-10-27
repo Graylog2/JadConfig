@@ -15,6 +15,7 @@ import com.github.joschi.jadconfig.testbeans.RequiredParameterBean;
 import com.github.joschi.jadconfig.testbeans.SaveMeBean;
 import com.github.joschi.jadconfig.testbeans.SimpleConfigurationBean;
 import com.github.joschi.jadconfig.testbeans.TrimBean;
+import com.github.joschi.jadconfig.testbeans.ValidatedConfigurationBean;
 import com.github.joschi.jadconfig.testbeans.ValidatorMethodConfigurationBean;
 import com.github.joschi.jadconfig.testbeans.VoidConfigurationBean;
 import com.github.joschi.jadconfig.testconverters.FoobarConverterFactory;
@@ -471,6 +472,21 @@ public class JadConfigTest {
         jadConfig = new JadConfig(repository, configurationBean);
 
         jadConfig.process();
+    }
+
+    @Test
+    public void testProcessValidatedBean() throws RepositoryException, ValidationException {
+        ValidatedConfigurationBean configurationBean = new ValidatedConfigurationBean();
+        jadConfig = new JadConfig(repository, configurationBean);
+
+        jadConfig.process();
+
+        Assert.assertEquals("Test", configurationBean.getMyString());
+        Assert.assertEquals(123, configurationBean.getMyByte());
+        Assert.assertEquals(1234, configurationBean.getMyShort());
+        Assert.assertEquals(12345, configurationBean.getMyInetPort());
+        Assert.assertEquals(123456, configurationBean.getMyInt());
+        Assert.assertEquals(1234567890123L, configurationBean.getMyLong());
     }
 }
 

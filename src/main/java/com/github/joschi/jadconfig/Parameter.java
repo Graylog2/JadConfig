@@ -45,6 +45,14 @@ public @interface Parameter {
 
     /**
      * Specific {@link Validator} to use for this parameter.
+     *
+     * @deprecated Use {@link #validators()} instead.
      */
+    @Deprecated
     Class<? extends Validator<?>> validator() default NoValidator.class;
+
+    /**
+     * Specific {@link Validator}s to use for this parameter.
+     */
+    Class<? extends Validator<?>>[] validators() default {NoValidator.class};
 }

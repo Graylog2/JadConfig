@@ -142,7 +142,10 @@ public class JadConfig {
                     }
 
                     LOG.debug("Validating parameter {}", parameterName);
-                    validateParameter(parameter.validator(), parameterName, fieldValue);
+                    final List<Class<? extends Validator<?>>> validators =
+                            new ArrayList<>(Collections.<Class<? extends Validator<?>>>singleton(parameter.validator()));
+                    validators.addAll(Arrays.asList(parameter.validators()));
+                    validateParameter(validators, parameterName, fieldValue);
                 }
 
                 LOG.debug("Setting parameter {} to {}", parameterName, parameterValue);
@@ -197,18 +200,20 @@ public class JadConfig {
     }
 
     @SuppressWarnings("unchecked")
-    private void validateParameter(Class<? extends Validator<?>> validatorClass, String name, Object value) throws ValidationException {
-        Validator validator;
-
+    private void validateParameter(Collection<Class<? extends Validator<?>>> validatorClasses,
+                                   String name, Object value) throws ValidationException {
         LOG.debug("Validating parameter {} with value {}", name, value);
 
-        try {
-            validator = validatorClass.newInstance();
-        } catch (Exception e) {
-            throw new ParameterException("Couldn't initialize validator " + validatorClass.getCanonicalName(), e);
-        }
+        for(Class<? extends Validator<?>> validatorClass : validatorClasses) {
+            Validator validator;
+            try {
+                validator = validatorClass.newInstance();
+            } catch (Exception e) {
+                throw new ParameterException("Couldn't initialize validator " + validatorClass.getCanonicalName(), e);
+            }
 
-        validator.validate(name, value);
+            validator.validate(name, value);
+        }
     }
 
     private void invokeValidatorMethods(Object configurationBean, Method[] methods) throws ValidationException {
