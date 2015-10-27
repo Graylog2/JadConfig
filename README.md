@@ -1,6 +1,7 @@
 # JadConfig
 [![Build Status](https://travis-ci.org/joschi/JadConfig.svg?branch=master)](https://travis-ci.org/joschi/JadConfig)
 [![Coverage Status](https://img.shields.io/coveralls/joschi/JadConfig.svg)](https://coveralls.io/r/joschi/JadConfig)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.joschi/jadconfig.svg)](http://mvnrepository.com/artifact/com.github.joschi/jadconfig)
 
 JadConfig is a minimalistic annotation-driven configuration parsing framework for Java with minimal dependencies.
 
@@ -49,7 +50,7 @@ dependency to your `pom.xml`:
     <dependency>
         <groupId>joda-time</groupId>
         <artifactId>joda-time</artifactId>
-        <version>2.8</version>
+        <version>2.9</version>
     </dependency>
 
 
