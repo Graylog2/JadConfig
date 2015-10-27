@@ -1,7 +1,7 @@
 sudo: false
 language: java
 after_success:
-  - mvn -B jacoco:report coveralls:report
+  - if [[ "${TRAVIS_JDK_VERSION}" == "oraclejdk8" ]]; then mvn -B jacoco:report coveralls:report; fi
 jdk:
   - openjdk7
   - oraclejdk7
