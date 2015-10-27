@@ -141,7 +141,7 @@ To use JadConfig in your project using Maven add the following lines into the de
     <dependency>
         <groupId>com.github.joschi</groupId>
         <artifactId>jadconfig</artifactId>
-        <version>0.11.0</version>
+        <version>0.12.0</version>
     </dependency>
 
 
