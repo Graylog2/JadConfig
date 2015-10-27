@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>NamedConfigParametersModule.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JadConfig</a> &gt; <a href="index.source.html" class="el_package">com.github.joschi.jadconfig.guice</a> &gt; <span class="el_source">NamedConfigParametersModule.java</span></div><h1>NamedConfigParametersModule.java</h1><pre class="source lang-java linenums">package com.github.joschi.jadconfig.guice;
+
+import com.github.joschi.jadconfig.Parameter;
+import com.google.inject.AbstractModule;
+import com.google.inject.TypeLiteral;
+import com.google.inject.util.Providers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Field;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import static com.github.joschi.jadconfig.ReflectionUtils.getAllFields;
+import static com.github.joschi.jadconfig.ReflectionUtils.getFieldValue;
+import static com.google.inject.name.Names.named;
+
+/**
+ * A Guice module which registers all fields of the provided objects annotated with {@link Parameter}
+ * as named bindings and optionally also adds bindings of the object instances themselves.
+ *
+ * @see com.google.inject.name.Named
+ */
+public class NamedConfigParametersModule extends AbstractModule {
+<span class="fc" id="L26">    private static final Logger LOG = LoggerFactory.getLogger(NamedConfigParametersModule.class);</span>
+
+    private final Set&lt;Object&gt; beans;
+    private final boolean registerBeans;
+
+    /**
+     * Create a new {@link NamedConfigParametersModule} instance.
+     *
+     * @param beans         A {@link Collection} containing all instances of the configuration beans which
+     *                      should be registered.
+     * @param registerBeans If {@code true}, the module will add bindings for the instances in {@code beans}.
+     */
+<span class="fc" id="L38">    public NamedConfigParametersModule(final Collection beans, final boolean registerBeans) {</span>
+<span class="fc" id="L39">        this.beans = new HashSet&lt;Object&gt;(beans);</span>
+<span class="fc" id="L40">        this.registerBeans = registerBeans;</span>
+<span class="fc" id="L41">    }</span>
+
+    /**
+     * Create a new {@link NamedConfigParametersModule} instance and add bindings for the instances in {@code beans}.
+     *
+     * @param beans A {@link Collection} containing all instances of the configuration beans which
+     *              should be registered.
+     */
+    public NamedConfigParametersModule(final Collection beans) {
+<span class="fc" id="L50">        this(beans, true);</span>
+<span class="fc" id="L51">    }</span>
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configure() {
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (registerBeans) {</span>
+<span class="fc" id="L59">            registerBeanInstances();</span>
+        }
+
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        for (final Object bean : beans) {</span>
+<span class="fc" id="L63">            registerParameters(bean);</span>
+<span class="fc" id="L64">        }</span>
+<span class="fc" id="L65">    }</span>
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    private void registerParameters(Object bean) {
+<span class="fc" id="L69">        final Field[] fields = getAllFields(bean.getClass());</span>
+
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        for (Field field : fields) {</span>
+<span class="fc" id="L72">            final Parameter parameter = field.getAnnotation(Parameter.class);</span>
+
+<span class="fc bfc" id="L74" title="All 2 branches covered.">            if (parameter != null) {</span>
+                try {
+<span class="fc" id="L76">                    final TypeLiteral typeLiteral = TypeLiteral.get(field.getGenericType());</span>
+<span class="fc" id="L77">                    final Object value = getFieldValue(bean, field);</span>
+
+<span class="fc bfc" id="L79" title="All 2 branches covered.">                    if (value == null) {</span>
+<span class="fc" id="L80">                        bind(typeLiteral).annotatedWith(named(parameter.value())).toProvider(Providers.of(null));</span>
+                    } else {
+<span class="fc" id="L82">                        bind(typeLiteral).annotatedWith(named(parameter.value())).toInstance(value);</span>
+                    }
+<span class="nc" id="L84">                } catch (IllegalAccessException e) {</span>
+<span class="nc" id="L85">                    LOG.warn(&quot;Couldn't bind \&quot;&quot; + field.getName() + &quot;\&quot;&quot;, e);</span>
+<span class="pc" id="L86">                }</span>
+            } else {
+<span class="fc" id="L88">                LOG.debug(&quot;Skipping field {}&quot;, field.getName());</span>
+            }
+        }
+<span class="fc" id="L91">    }</span>
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    private void registerBeanInstances() {
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        for (final Object bean : beans) {</span>
+<span class="fc" id="L96">            final TypeLiteral typeLiteral = TypeLiteral.get(bean.getClass());</span>
+<span class="fc" id="L97">            bind(typeLiteral).toInstance(bean);</span>
+<span class="fc" id="L98">        }</span>
+<span class="fc" id="L99">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

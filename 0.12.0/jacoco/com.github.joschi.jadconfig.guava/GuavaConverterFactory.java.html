@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>GuavaConverterFactory.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JadConfig</a> &gt; <a href="index.source.html" class="el_package">com.github.joschi.jadconfig.guava</a> &gt; <span class="el_source">GuavaConverterFactory.java</span></div><h1>GuavaConverterFactory.java</h1><pre class="source lang-java linenums">package com.github.joschi.jadconfig.guava;
+
+import com.github.joschi.jadconfig.Converter;
+import com.github.joschi.jadconfig.ConverterFactory;
+import com.github.joschi.jadconfig.guava.converters.CacheBuilderSpecConverter;
+import com.github.joschi.jadconfig.guava.converters.HashCodeConverter;
+import com.github.joschi.jadconfig.guava.converters.HostAndPortConverter;
+import com.github.joschi.jadconfig.guava.converters.HostSpecifierConverter;
+import com.github.joschi.jadconfig.guava.converters.InternetDomainNameConverter;
+import com.github.joschi.jadconfig.guava.converters.MediaTypeConverter;
+import com.github.joschi.jadconfig.guava.converters.UnsignedIntegerConverter;
+import com.github.joschi.jadconfig.guava.converters.UnsignedLongConverter;
+import com.google.common.cache.CacheBuilderSpec;
+import com.google.common.hash.HashCode;
+import com.google.common.net.HostAndPort;
+import com.google.common.net.HostSpecifier;
+import com.google.common.net.InternetDomainName;
+import com.google.common.net.MediaType;
+import com.google.common.primitives.UnsignedInteger;
+import com.google.common.primitives.UnsignedLong;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * {@link ConverterFactory} for holding the {@link Converter} classes for Google Guava support.
+ * &lt;p&gt;
+ * Supported {@link Converter} types are:
+ * &lt;ul&gt;
+ * &lt;li&gt;{@link CacheBuilderSpec} through {@link CacheBuilderSpecConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link HashCode} through {@link HashCodeConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link HostAndPort} through {@link HostAndPortConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link HostSpecifier} through {@link HostSpecifierConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link InternetDomainName} through {@link InternetDomainNameConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link MediaType} through {@link MediaTypeConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link UnsignedInteger} through {@link UnsignedIntegerConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link UnsignedLong} through {@link UnsignedLongConverter}&lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;/p&gt;
+ */
+<span class="fc" id="L41">public class GuavaConverterFactory implements ConverterFactory {</span>
+    private static final Map&lt;Class, Class&lt;? extends Converter&lt;?&gt;&gt;&gt; GUAVA_CONVERTERS;
+
+    static {
+<span class="fc" id="L45">        GUAVA_CONVERTERS = new HashMap&lt;Class, Class&lt;? extends Converter&lt;?&gt;&gt;&gt;();</span>
+<span class="fc" id="L46">        GUAVA_CONVERTERS.put(CacheBuilderSpec.class, CacheBuilderSpecConverter.class);</span>
+<span class="fc" id="L47">        GUAVA_CONVERTERS.put(HashCode.class, HashCodeConverter.class);</span>
+<span class="fc" id="L48">        GUAVA_CONVERTERS.put(HostAndPort.class, HostAndPortConverter.class);</span>
+<span class="fc" id="L49">        GUAVA_CONVERTERS.put(HostSpecifier.class, HostSpecifierConverter.class);</span>
+<span class="fc" id="L50">        GUAVA_CONVERTERS.put(InternetDomainName.class, InternetDomainNameConverter.class);</span>
+<span class="fc" id="L51">        GUAVA_CONVERTERS.put(MediaType.class, MediaTypeConverter.class);</span>
+<span class="fc" id="L52">        GUAVA_CONVERTERS.put(UnsignedInteger.class, UnsignedIntegerConverter.class);</span>
+<span class="fc" id="L53">        GUAVA_CONVERTERS.put(UnsignedLong.class, UnsignedLongConverter.class);</span>
+<span class="fc" id="L54">    }</span>
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public &lt;T&gt; Class&lt;? extends Converter&lt;T&gt;&gt; getConverter(Class&lt;T&gt; classType) {
+<span class="fc" id="L61">        return (Class&lt;? extends Converter&lt;T&gt;&gt;) GUAVA_CONVERTERS.get(classType);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

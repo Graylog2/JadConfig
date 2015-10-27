@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JodaTimeConverterFactory.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JadConfig</a> &gt; <a href="index.source.html" class="el_package">com.github.joschi.jadconfig.jodatime</a> &gt; <span class="el_source">JodaTimeConverterFactory.java</span></div><h1>JodaTimeConverterFactory.java</h1><pre class="source lang-java linenums">package com.github.joschi.jadconfig.jodatime;
+
+import com.github.joschi.jadconfig.Converter;
+import com.github.joschi.jadconfig.ConverterFactory;
+import com.github.joschi.jadconfig.jodatime.converters.DateTimeFormatterConverter;
+import com.github.joschi.jadconfig.jodatime.converters.DateTimeZoneConverter;
+import com.github.joschi.jadconfig.jodatime.converters.DaysConverter;
+import com.github.joschi.jadconfig.jodatime.converters.DurationConverter;
+import com.github.joschi.jadconfig.jodatime.converters.HoursConverter;
+import com.github.joschi.jadconfig.jodatime.converters.IntervalConverter;
+import com.github.joschi.jadconfig.jodatime.converters.MinutesConverter;
+import com.github.joschi.jadconfig.jodatime.converters.MonthsConverter;
+import com.github.joschi.jadconfig.jodatime.converters.PeriodConverter;
+import com.github.joschi.jadconfig.jodatime.converters.SecondsConverter;
+import com.github.joschi.jadconfig.jodatime.converters.WeeksConverter;
+import com.github.joschi.jadconfig.jodatime.converters.YearsConverter;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Days;
+import org.joda.time.Duration;
+import org.joda.time.Hours;
+import org.joda.time.Interval;
+import org.joda.time.Minutes;
+import org.joda.time.Months;
+import org.joda.time.Period;
+import org.joda.time.Seconds;
+import org.joda.time.Weeks;
+import org.joda.time.Years;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * {@link ConverterFactory} for holding the {@link Converter} classes for Joda-Time support.
+ * &lt;p&gt;
+ * Supported {@link com.github.joschi.jadconfig.Converter} types are:
+ * &lt;ul&gt;
+ * &lt;li&gt;{@link DateTimeFormatter} through {@link DateTimeFormatterConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link DateTimeZone} through {@link DateTimeZoneConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Duration} through {@link DurationConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Interval} through {@link IntervalConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Period} through {@link PeriodConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Seconds} through {@link SecondsConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Minutes} through {@link MinutesConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Hours} through {@link HoursConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Days} through {@link DaysConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Weeks} through {@link WeeksConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Months} through {@link MonthsConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Years} through {@link YearsConverter}&lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;/p&gt;
+ *
+ * @author jschalanda
+ */
+<span class="fc" id="L55">public class JodaTimeConverterFactory implements ConverterFactory {</span>
+    private static final Map&lt;Class, Class&lt;? extends Converter&lt;?&gt;&gt;&gt; JODA_TIME_CONVERTERS;
+
+    static {
+<span class="fc" id="L59">        JODA_TIME_CONVERTERS = new HashMap&lt;Class, Class&lt;? extends Converter&lt;?&gt;&gt;&gt;();</span>
+<span class="fc" id="L60">        JODA_TIME_CONVERTERS.put(DateTimeFormatter.class, DateTimeFormatterConverter.class);</span>
+<span class="fc" id="L61">        JODA_TIME_CONVERTERS.put(DateTimeZone.class, DateTimeZoneConverter.class);</span>
+<span class="fc" id="L62">        JODA_TIME_CONVERTERS.put(Duration.class, DurationConverter.class);</span>
+<span class="fc" id="L63">        JODA_TIME_CONVERTERS.put(Interval.class, IntervalConverter.class);</span>
+<span class="fc" id="L64">        JODA_TIME_CONVERTERS.put(Period.class, PeriodConverter.class);</span>
+<span class="fc" id="L65">        JODA_TIME_CONVERTERS.put(Seconds.class, SecondsConverter.class);</span>
+<span class="fc" id="L66">        JODA_TIME_CONVERTERS.put(Minutes.class, MinutesConverter.class);</span>
+<span class="fc" id="L67">        JODA_TIME_CONVERTERS.put(Hours.class, HoursConverter.class);</span>
+<span class="fc" id="L68">        JODA_TIME_CONVERTERS.put(Days.class, DaysConverter.class);</span>
+<span class="fc" id="L69">        JODA_TIME_CONVERTERS.put(Weeks.class, WeeksConverter.class);</span>
+<span class="fc" id="L70">        JODA_TIME_CONVERTERS.put(Months.class, MonthsConverter.class);</span>
+<span class="fc" id="L71">        JODA_TIME_CONVERTERS.put(Years.class, YearsConverter.class);</span>
+<span class="fc" id="L72">    }</span>
+
+    /**
+     * Finds and returns a {@link com.github.joschi.jadconfig.Converter} for the provided {@literal classType}.
+     *
+     * @param classType The class type for which to find and return a {@link com.github.joschi.jadconfig.Converter}
+     * @return A {@link com.github.joschi.jadconfig.Converter} for the requested class type
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public &lt;T&gt; Class&lt;? extends Converter&lt;T&gt;&gt; getConverter(Class&lt;T&gt; classType) {
+<span class="fc" id="L82">        return (Class&lt;? extends Converter&lt;T&gt;&gt;) JODA_TIME_CONVERTERS.get(classType);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
