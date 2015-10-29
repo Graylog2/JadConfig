@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>DateTimeFormatterConverter.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JadConfig</a> &gt; <a href="index.source.html" class="el_package">com.github.joschi.jadconfig.jodatime.converters</a> &gt; <span class="el_source">DateTimeFormatterConverter.java</span></div><h1>DateTimeFormatterConverter.java</h1><pre class="source lang-java linenums">package com.github.joschi.jadconfig.jodatime.converters;
+
+import com.github.joschi.jadconfig.Converter;
+import com.github.joschi.jadconfig.ParameterException;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+/**
+ * Converter for type {@link org.joda.time.format.DateTimeFormatter}
+ *
+ * @author jschalanda
+ * @see org.joda.time.format.DateTimeFormat
+ * @see org.joda.time.format.DateTimeFormatter
+ */
+<span class="fc" id="L15">public class DateTimeFormatterConverter implements Converter&lt;DateTimeFormatter&gt; {</span>
+
+    /**
+     * Returns a {@link org.joda.time.format.DateTimeFormatter} instance representing the specified pattern.
+     *
+     * @param value The configuration parameter's {@link String} value
+     * @return A {@link org.joda.time.format.DateTimeFormatter} instance representing the configuration parameter's value
+     * @see org.joda.time.format.DateTimeFormat#forPattern(String)
+     */
+    @Override
+    public DateTimeFormatter convertFrom(String value) {
+        try {
+<span class="fc" id="L27">            return DateTimeFormat.forPattern(value);</span>
+<span class="fc" id="L28">        } catch (Exception ex) {</span>
+<span class="fc" id="L29">            throw new ParameterException(&quot;Couldn't convert value \&quot;&quot; + value + &quot;\&quot; to DateTimeFormatter.&quot;, ex);</span>
+        }
+    }
+
+    /**
+     * Returns an empty {@link String} since getting the original pattern from a
+     * {@link org.joda.time.format.DateTimeFormatter} isn't supported by Joda-Time.
+     *
+     * @param value The configuration parameter's {@link org.joda.time.format.DateTimeFormatter} value
+     * @return An empty {@link String}
+     */
+    @Override
+    public String convertTo(DateTimeFormatter value) {
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (value == null) {</span>
+<span class="fc" id="L43">            throw new ParameterException(&quot;Couldn't convert \&quot;null\&quot; to String.&quot;);</span>
+        }
+
+<span class="fc" id="L46">        return &quot;&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
