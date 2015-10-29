@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>PropertiesRepository.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JadConfig</a> &gt; <a href="index.source.html" class="el_package">com.github.joschi.jadconfig.repositories</a> &gt; <span class="el_source">PropertiesRepository.java</span></div><h1>PropertiesRepository.java</h1><pre class="source lang-java linenums">package com.github.joschi.jadconfig.repositories;
+
+import com.github.joschi.jadconfig.Repository;
+import com.github.joschi.jadconfig.RepositoryException;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Properties;
+
+/**
+ * {@link Repository} class providing access to a configuration repository backed by {@link Properties} files
+ *
+ * @author jschalanda
+ */
+public class PropertiesRepository implements Repository {
+
+<span class="fc" id="L19">    private final Properties PROPERTIES = new Properties();</span>
+<span class="fc" id="L20">    private File propertiesFile = null;</span>
+
+    /**
+     * Creates a new {@link PropertiesRepository} from the provided properties file {@literal filename}
+     *
+     * @param filename The filename of the properties file
+     * @throws IllegalArgumentException If the provided {@literal filename} is null or empty
+     */
+<span class="fc" id="L28">    public PropertiesRepository(String filename) {</span>
+
+<span class="fc bfc" id="L30" title="All 4 branches covered.">        if (filename == null || &quot;&quot;.equals(filename)) {</span>
+
+<span class="fc" id="L32">            throw new IllegalArgumentException(&quot;Properties filename must not be null or empty!&quot;);</span>
+        }
+
+<span class="fc" id="L35">        this.propertiesFile = new File(filename);</span>
+<span class="fc" id="L36">    }</span>
+
+    /**
+     * Creates a new {@link PropertiesRepository} from the provided {@literal propertiesFile}
+     *
+     * @param propertiesFile The properties {@link File}
+     * @throws IllegalArgumentException If the provided {@link File} is null
+     */
+<span class="fc" id="L44">    public PropertiesRepository(File propertiesFile) {</span>
+
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (propertiesFile == null) {</span>
+
+<span class="fc" id="L48">            throw new IllegalArgumentException(&quot;Properties file must not be null!&quot;);</span>
+        }
+
+<span class="fc" id="L51">        this.propertiesFile = propertiesFile;</span>
+<span class="fc" id="L52">    }</span>
+
+    /**
+     * Opens the properties file and reads its {@link Properties}
+     *
+     * @throws RepositoryException If the {@literal propertiesFile} is null, doesn't exist or an error occurred while
+     *                             reading the properties file.
+     */
+    @Override
+    public void open() throws RepositoryException {
+
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">        if (propertiesFile == null) {</span>
+
+<span class="nc" id="L65">            throw new RepositoryException(&quot;Properties file must not be null!&quot;);</span>
+        }
+
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        if (!propertiesFile.exists()) {</span>
+
+<span class="fc" id="L70">            throw new RepositoryException(&quot;Properties file &quot; + propertiesFile.getPath() + &quot; doesn't exist!&quot;);</span>
+        }
+
+<span class="fc" id="L73">        Reader propertiesReader = null;</span>
+
+        try {
+<span class="fc" id="L76">            propertiesReader = new FileReader(propertiesFile);</span>
+<span class="fc" id="L77">            PROPERTIES.load(propertiesReader);</span>
+<span class="nc" id="L78">        } catch (IOException ex) {</span>
+<span class="nc" id="L79">            throw new RepositoryException(&quot;Couldn't open properties file: &quot; + propertiesFile, ex);</span>
+        } finally {
+<span class="pc bpc" id="L81" title="3 of 4 branches missed.">            if(propertiesReader != null) {</span>
+                try {
+<span class="pc" id="L83">                    propertiesReader.close();</span>
+<span class="nc" id="L84">                } catch (IOException e) {</span>
+                    // Intentionally empty
+<span class="pc" id="L86">                }</span>
+            }
+        }
+<span class="fc" id="L89">    }</span>
+
+    /**
+     * Returns the value for a property {@literal name} or {@literal null}
+     *
+     * @param name The parameter name
+     * @return The property value for {@literal name} or {@literal null}
+     */
+    @Override
+    public String read(String name) {
+
+<span class="fc" id="L100">        return PROPERTIES.getProperty(name);</span>
+    }
+
+    /**
+     * Close the underlying properties file.
+     *
+     * @throws RepositoryException
+     */
+    @Override
+    public void close() throws RepositoryException {
+<span class="fc" id="L110">    }</span>
+
+    public File getPropertiesFile() {
+<span class="fc" id="L113">        return propertiesFile;</span>
+    }
+
+    public void setPropertiesFile(File propertiesFile) {
+<span class="nc" id="L117">        this.propertiesFile = propertiesFile;</span>
+<span class="nc" id="L118">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

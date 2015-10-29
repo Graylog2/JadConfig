@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>TypeReference.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JadConfig</a> &gt; <a href="index.source.html" class="el_package">com.github.joschi.jadconfig</a> &gt; <span class="el_source">TypeReference.java</span></div><h1>TypeReference.java</h1><pre class="source lang-java linenums">package com.github.joschi.jadconfig;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
+/**
+ * References a generic type.
+ *
+ * @author crazybob@google.com (Bob Lee)
+ * @see &lt;a href=&quot;http://gafter.blogspot.de/2006/12/super-type-tokens.html&quot;&gt;Super Type Tokens&lt;/a&gt;
+ */
+public abstract class TypeReference&lt;T&gt; implements Comparable&lt;TypeReference&lt;T&gt;&gt; {
+    private final Type type;
+    private volatile Constructor&lt;?&gt; constructor;
+
+<span class="fc" id="L18">    protected TypeReference() {</span>
+<span class="fc" id="L19">        final Type superClass = getClass().getGenericSuperclass();</span>
+
+<span class="pc bpc" id="L21" title="1 of 2 branches missed.">        if (superClass instanceof Class) {</span>
+<span class="nc" id="L22">            throw new RuntimeException(&quot;Missing type parameter.&quot;);</span>
+        }
+
+<span class="fc" id="L25">        this.type = ((ParameterizedType) superClass).getActualTypeArguments()[0];</span>
+<span class="fc" id="L26">    }</span>
+
+    /**
+     * Instantiates a new instance of {@code T} using the default, no-arg
+     * constructor.
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public T newInstance() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+<span class="pc bpc" id="L34" title="1 of 2 branches missed.">        if (constructor == null) {</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">            Class&lt;?&gt; rawType = type instanceof Class&lt;?&gt;</span>
+                    ? (Class&lt;?&gt;) type
+<span class="fc" id="L37">                    : (Class&lt;?&gt;) ((ParameterizedType) type).getRawType();</span>
+<span class="fc" id="L38">            constructor = rawType.getConstructor();</span>
+        }
+<span class="fc" id="L40">        return (T) constructor.newInstance();</span>
+    }
+
+    /**
+     * Gets the referenced type.
+     */
+    public Type getType() {
+<span class="fc" id="L47">        return this.type;</span>
+    }
+
+    /**
+     * Dummy implementation to prevent constructing a reference without type information.
+     *
+     * @see &lt;a href=&quot;http://gafter.blogspot.de/2006/12/super-type-tokens.html?showComment=1171980720000#c2954512480577635806&quot;&gt;Super Type Tokens&lt;/a&gt;
+     */
+    @Override
+    public int compareTo(final TypeReference&lt;T&gt; obj) {
+<span class="fc" id="L57">        return 0;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(final Object obj) {
+<span class="fc bfc" id="L65" title="All 6 branches covered.">        return (this == obj) || ((obj instanceof TypeReference) &amp;&amp; ((TypeReference) obj).type.equals(type));</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+<span class="fc" id="L73">        return type.hashCode();</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+<span class="fc" id="L81">        return &quot;TypeReference{&quot; + type.toString() + &quot;}&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
