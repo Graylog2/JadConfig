@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class StringListConverter implements Converter<List<String>> {
 
-    private static final String DELIMITER = ",";
+    protected static final String DELIMITER = ",";
 
     /**
      * Returns a {@link List} of {@link String}s representing the specified {@link String} {@literal value}.
