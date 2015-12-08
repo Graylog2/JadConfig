@@ -19,6 +19,7 @@ import com.github.joschi.jadconfig.testbeans.ValidatedConfigurationBean;
 import com.github.joschi.jadconfig.testbeans.ValidatorMethodConfigurationBean;
 import com.github.joschi.jadconfig.testbeans.VoidConfigurationBean;
 import com.github.joschi.jadconfig.testconverters.FoobarConverterFactory;
+import com.github.joschi.jadconfig.validators.StringNotBlankValidator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -46,7 +47,7 @@ import java.util.Map;
 public class JadConfigTest {
 
     private static final String PROPERTIES_FILE = PropertiesRepository.class.getResource("/testConfiguration.properties").getFile();
-    
+
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
@@ -430,27 +431,27 @@ public class JadConfigTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSetRepositoryThrowsExceptionWhenNull(){
+    public void testSetRepositoryThrowsExceptionWhenNull() {
         new JadConfig(repository).setRepository(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSetRepositoriesThrowsExceptionWhenArrayIsNull(){
+    public void testSetRepositoriesThrowsExceptionWhenArrayIsNull() {
         new JadConfig(repository).setRepositories((Repository[]) null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSetRepositoriesThrowsExceptionWhenCollectionIsNull(){
+    public void testSetRepositoriesThrowsExceptionWhenCollectionIsNull() {
         new JadConfig(repository).setRepositories((Collection<Repository>) null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSetRepositoriesThrowsExceptionWhenArrayIsEmpty(){
+    public void testSetRepositoriesThrowsExceptionWhenArrayIsEmpty() {
         new JadConfig(repository).setRepositories();
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSetRepositoriesThrowsExceptionWhenCollectionIsEmpty(){
+    public void testSetRepositoriesThrowsExceptionWhenCollectionIsEmpty() {
         new JadConfig(repository).setRepositories(Collections.<Repository>emptyList());
     }
 
@@ -488,5 +489,24 @@ public class JadConfigTest {
         Assert.assertEquals(123456, configurationBean.getMyInt());
         Assert.assertEquals(1234567890123L, configurationBean.getMyLong());
     }
+
+    @Test
+    public void testProcessNullPropertiesDoNotOverwriteDefaultValues() throws RepositoryException, ValidationException {
+        final SingleFieldBean bean = new SingleFieldBean();
+        jadConfig = new JadConfig(new InMemoryRepository(Collections.singletonMap("field", (String) null)), bean);
+
+        jadConfig.process();
+    }
+
+    public static class SingleFieldBean {
+        @Parameter(value = "field", required = true, validators = StringNotBlankValidator.class)
+        private String field = "test";
+
+        public String getField() {
+            return field;
+        }
+    }
+
+
 }
 

@@ -148,7 +148,7 @@ public class JadConfig {
                     validateParameter(validators, parameterName, fieldValue);
                 }
 
-                LOG.debug("Setting parameter {} to {}", parameterName, parameterValue);
+                LOG.debug("Setting parameter {} to {}", parameterName, fieldValue);
 
                 try {
                     field.set(configurationBean, fieldValue);
