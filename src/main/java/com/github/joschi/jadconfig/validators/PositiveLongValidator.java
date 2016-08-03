@@ -22,7 +22,7 @@ public class PositiveLongValidator implements Validator<Long> {
      */
     @Override
     public void validate(String name, Long value) throws ValidationException {
-        if (value == null || value < 0l) {
+        if (value != null && value < 0L) {
             throw new ValidationException("Parameter " + name + " should be positive (found " + value + ")");
         }
     }

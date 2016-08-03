@@ -54,7 +54,7 @@ public class FilePathExecutableValidatorTest {
         validator.validate("Test", Paths.get("does-not-exist-" + System.currentTimeMillis()));
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void testNull() throws ValidationException, IOException {
         validator.validate("Test", null);
     }

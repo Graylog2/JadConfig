@@ -21,7 +21,7 @@ public class InetPortValidator implements Validator<Integer> {
      */
     @Override
     public void validate(String name, Integer value) throws ValidationException {
-        if (value == null || value < 0 || value > 65535) {
+        if (value != null && (value < 0 || value > 65535)) {
             throw new ValidationException("Parameter " + name + " should be within range 0-65535 (found " + value + ")");
         }
     }

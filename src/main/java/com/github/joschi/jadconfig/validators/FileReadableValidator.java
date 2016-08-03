@@ -9,7 +9,7 @@ public class FileReadableValidator implements Validator<File> {
 
     @Override
     public void validate(String name, File value) throws ValidationException {
-        if (value != null && value.isFile() && value.canRead()) {
+        if (value == null || (value.isFile() && value.canRead())) {
             return;
         }
         throw new ValidationException("Cannot read file " + name + " at path " + value + ". Please specify the correct path or change the permissions");

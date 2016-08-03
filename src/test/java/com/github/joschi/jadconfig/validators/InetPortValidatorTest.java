@@ -35,7 +35,7 @@ public class InetPortValidatorTest {
         validator.validate("Test", 65536);
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void testValidateNull() throws ValidationException {
         validator.validate("Test", null);
     }

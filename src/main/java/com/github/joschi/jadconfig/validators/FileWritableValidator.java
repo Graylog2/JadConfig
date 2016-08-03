@@ -9,7 +9,7 @@ public class FileWritableValidator implements Validator<File> {
 
     @Override
     public void validate(String name, File value) throws ValidationException {
-        if (value != null && value.isFile() && value.canWrite()) {
+        if (value == null || (value.isFile() && value.canWrite())) {
             return;
         }
         throw new ValidationException("Cannot write to file " + name + " at path " + value + ". Please specify the correct path or change the permissions");

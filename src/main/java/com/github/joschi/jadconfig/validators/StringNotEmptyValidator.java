@@ -21,7 +21,7 @@ public class StringNotEmptyValidator implements Validator<String> {
      */
     @Override
     public void validate(final String name, final String value) throws ValidationException {
-        if (value == null || value.isEmpty()) {
+        if (value != null && value.isEmpty()) {
             throw new ValidationException("Parameter " + name + " should not be empty");
         }
     }

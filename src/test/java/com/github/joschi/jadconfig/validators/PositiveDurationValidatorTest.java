@@ -20,17 +20,17 @@ public class PositiveDurationValidatorTest {
 
     @Test
     public void testValidate() throws ValidationException {
-        validator.validate("Test", Duration.nanoseconds(0l));
-        validator.validate("Test", Duration.nanoseconds(1l));
+        validator.validate("Test", Duration.nanoseconds(0L));
+        validator.validate("Test", Duration.nanoseconds(1L));
         validator.validate("Test", Duration.nanoseconds(Long.MAX_VALUE));
     }
 
     @Test(expected = ValidationException.class)
     public void testValidateNegative() throws ValidationException {
-        validator.validate("Test", Duration.nanoseconds(-1l));
+        validator.validate("Test", Duration.nanoseconds(-1L));
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void testValidateNull() throws ValidationException {
         validator.validate("Test", null);
     }

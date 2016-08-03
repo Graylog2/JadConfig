@@ -21,7 +21,7 @@ public class StringUppercaseValidator implements Validator<String> {
      */
     @Override
     public void validate(final String name, final String value) throws ValidationException {
-        if (value == null || !value.toUpperCase().equals(value)) {
+        if (value != null && !value.toUpperCase().equals(value)) {
             throw new ValidationException("Parameter " + name + " should be uppercase (found " + value + ")");
         }
     }

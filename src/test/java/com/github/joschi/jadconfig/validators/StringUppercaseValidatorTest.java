@@ -31,7 +31,7 @@ public class StringUppercaseValidatorTest {
         validator.validate("Test", "Test");
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void testValidateNull() throws ValidationException {
         validator.validate("Test", null);
     }

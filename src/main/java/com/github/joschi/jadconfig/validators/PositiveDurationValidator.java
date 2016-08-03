@@ -22,7 +22,7 @@ public class PositiveDurationValidator implements Validator<Duration> {
      */
     @Override
     public void validate(final String name, final Duration value) throws ValidationException {
-        if (value == null || value.getQuantity() < 0l) {
+        if (value != null && value.getQuantity() < 0L) {
             throw new ValidationException("Parameter " + name + " should be positive (found " + value + ")");
         }
     }

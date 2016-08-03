@@ -22,7 +22,7 @@ public class PositiveSizeValidator implements Validator<Size> {
      */
     @Override
     public void validate(final String name, final Size value) throws ValidationException {
-        if (value == null || value.getQuantity() < 0l) {
+        if (value != null && value.getQuantity() < 0L) {
             throw new ValidationException("Parameter " + name + " should be positive (found " + value + ")");
         }
     }

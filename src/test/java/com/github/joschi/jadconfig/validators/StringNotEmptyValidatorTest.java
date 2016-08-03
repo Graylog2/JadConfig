@@ -30,7 +30,7 @@ public class StringNotEmptyValidatorTest {
         validator.validate("Test", "");
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void testValidateNull() throws ValidationException {
         validator.validate("Test", null);
     }

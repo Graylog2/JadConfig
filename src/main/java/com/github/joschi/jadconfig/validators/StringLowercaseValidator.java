@@ -21,7 +21,7 @@ public class StringLowercaseValidator implements Validator<String> {
      */
     @Override
     public void validate(final String name, final String value) throws ValidationException {
-        if (value == null || !value.toLowerCase().equals(value)) {
+        if (value != null && !value.toLowerCase().equals(value)) {
             throw new ValidationException("Parameter " + name + " should be lowercase (found " + value + ")");
         }
     }

@@ -21,7 +21,7 @@ public class PositiveIntegerValidator implements Validator<Integer> {
      */
     @Override
     public void validate(String name, Integer value) throws ValidationException {
-        if (value == null || value < 0) {
+        if (value != null && value < 0) {
             throw new ValidationException("Parameter " + name + " should be positive (found " + value + ")");
         }
     }

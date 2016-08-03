@@ -10,7 +10,7 @@ public class FilePathExecutableValidator implements Validator<Path> {
 
     @Override
     public void validate(String name, Path value) throws ValidationException {
-        if (value != null && Files.isRegularFile(value) && Files.isExecutable(value)) {
+        if (value == null || (Files.isRegularFile(value) && Files.isExecutable(value))) {
             return;
         }
         throw new ValidationException("Cannot execute file " + name + " at path " + value + ". Please specify the correct path or change the permissions");

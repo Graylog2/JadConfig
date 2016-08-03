@@ -30,7 +30,7 @@ public class PositiveIntegerValidatorTest {
         validator.validate("Test", -1);
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void testValidateNull() throws ValidationException {
         validator.validate("Test", null);
     }

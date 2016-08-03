@@ -30,7 +30,7 @@ public class PositiveSizeValidatorTest {
         validator.validate("Test", Size.bytes(-1l));
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void testValidateNull() throws ValidationException {
         validator.validate("Test", null);
     }

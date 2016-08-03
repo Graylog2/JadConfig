@@ -30,7 +30,7 @@ public class PositiveLongValidatorTest {
         validator.validate("Test", -1L);
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void testValidateNull() throws ValidationException {
         validator.validate("Test", null);
     }

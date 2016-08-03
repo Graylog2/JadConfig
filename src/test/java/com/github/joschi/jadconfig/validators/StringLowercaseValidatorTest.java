@@ -36,7 +36,7 @@ public class StringLowercaseValidatorTest {
         validator.validate("Test", "Test1234");
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void testValidateNull() throws ValidationException {
         validator.validate("Test", null);
     }

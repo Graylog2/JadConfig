@@ -10,7 +10,7 @@ public class FilePathWritableValidator implements Validator<Path> {
 
     @Override
     public void validate(String name, Path value) throws ValidationException {
-        if (value != null && Files.isRegularFile(value) && Files.isWritable(value)) {
+        if (value == null || (Files.isRegularFile(value) && Files.isWritable(value))) {
             return;
         }
         throw new ValidationException("Cannot write to file " + name + " at path " + value + ". Please specify the correct path or change the permissions");
