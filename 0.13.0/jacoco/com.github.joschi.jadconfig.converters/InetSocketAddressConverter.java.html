@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InetSocketAddressConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JadConfig</a> &gt; <a href="index.source.html" class="el_package">com.github.joschi.jadconfig.converters</a> &gt; <span class="el_source">InetSocketAddressConverter.java</span></div><h1>InetSocketAddressConverter.java</h1><pre class="source lang-java linenums">package com.github.joschi.jadconfig.converters;
+
+import com.github.joschi.jadconfig.Converter;
+import com.github.joschi.jadconfig.ParameterException;
+
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
+
+/**
+ * Converter for type {@link InetSocketAddress}
+ *
+ * @author jschalanda
+ */
+<span class="fc" id="L16">public class InetSocketAddressConverter implements Converter&lt;InetSocketAddress&gt; {</span>
+
+    private static final String SEPARATOR = &quot;:&quot;;
+
+    /**
+     * Returns a {@link InetSocketAddress} instance representing the specified {@link String} {@literal value}.
+     *
+     * @param value The configuration parameter's {@link String} representation
+     * @return A {@link InetSocketAddress} instance representing the configuration parameter's value
+     */
+    @Override
+    public InetSocketAddress convertFrom(String value) {
+
+        InetSocketAddress result;
+
+        try {
+<span class="fc bfc" id="L32" title="All 2 branches covered.">            if (null == value) {</span>
+<span class="fc" id="L33">                throw new NullPointerException(&quot;value must not be null!&quot;);</span>
+            }
+
+<span class="fc" id="L36">            int lastIndexSeparator = value.lastIndexOf(SEPARATOR);</span>
+
+<span class="fc" id="L38">            String hostname = value.substring(0, lastIndexSeparator);</span>
+<span class="fc" id="L39">            String port = value.substring(lastIndexSeparator + 1, value.length());</span>
+
+<span class="pc bpc" id="L41" title="1 of 4 branches missed.">            if (null == hostname || hostname.isEmpty()) {</span>
+<span class="fc" id="L42">                throw new UnknownHostException(&quot;hostname must not be empty!&quot;);</span>
+            }
+
+<span class="fc" id="L45">            InetAddress hostAddress = InetAddress.getByName(hostname);</span>
+
+<span class="fc" id="L47">            result = new InetSocketAddress(hostAddress, Integer.parseInt(port));</span>
+<span class="fc" id="L48">        } catch (Exception ex) {</span>
+
+<span class="fc" id="L50">            throw new ParameterException(&quot;Couldn't convert value \&quot;&quot; + value + &quot;\&quot; to InetSocketAddress.&quot;, ex);</span>
+<span class="fc" id="L51">        }</span>
+
+<span class="fc" id="L53">        return result;</span>
+    }
+
+    /**
+     * Returns a {@link String} instance representing the configuration parameter's {@literal value}.
+     *
+     * @param value The configuration parameter's {@link InetSocketAddress} representation
+     * @return A {@link String} instance representing the configuration parameter's typed value
+     */
+    @Override
+    public String convertTo(InetSocketAddress value) {
+
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (value == null) {</span>
+<span class="fc" id="L66">            throw new ParameterException(&quot;Couldn't convert \&quot;null\&quot; to String.&quot;);</span>
+        }
+
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (value.getAddress() instanceof Inet6Address) {</span>
+<span class="fc" id="L70">            return String.format(&quot;[%s]%s%d&quot;, value.getAddress().getHostAddress(), SEPARATOR, value.getPort());</span>
+        } else {
+<span class="fc" id="L72">            return String.format(&quot;%s%s%d&quot;, value.getHostName(), SEPARATOR, value.getPort());</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

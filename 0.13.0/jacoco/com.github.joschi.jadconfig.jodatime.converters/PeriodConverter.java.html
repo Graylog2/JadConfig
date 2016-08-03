@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PeriodConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JadConfig</a> &gt; <a href="index.source.html" class="el_package">com.github.joschi.jadconfig.jodatime.converters</a> &gt; <span class="el_source">PeriodConverter.java</span></div><h1>PeriodConverter.java</h1><pre class="source lang-java linenums">package com.github.joschi.jadconfig.jodatime.converters;
+
+import com.github.joschi.jadconfig.Converter;
+import com.github.joschi.jadconfig.ParameterException;
+import org.joda.time.Period;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * Allow periods to be passed in as number + unit or as a {@link org.joda.time.format.ISOPeriodFormat} (standard, without millis).
+ * &lt;p&gt;Examples:
+ * &lt;ul&gt;
+ * &lt;li&gt;{@code 23s} &amp;rarr; {@code Period.seconds(23)}&lt;/li&gt;
+ * &lt;li&gt;{@code 30m} &amp;rarr; {@code Period.minutes(30)}&lt;/li&gt;
+ * &lt;li&gt;{@code 30h} &amp;rarr; {@code Period.hours(30)}&lt;/li&gt;
+ * &lt;li&gt;{@code 30d} &amp;rarr; {@code Period.days(30)}&lt;/li&gt;
+ * &lt;li&gt;{@code 2w} &amp;rarr; {@code Period.weeks(2)}&lt;/li&gt;
+ * &lt;li&gt;{@code 1y} &amp;rarr; {@code Period.years(1)}&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * @see org.joda.time.format.ISOPeriodFormat
+ */
+<span class="fc" id="L26">public class PeriodConverter implements Converter&lt;Period&gt; {</span>
+<span class="fc" id="L27">    private static final Pattern PERIOD_PATTERN = Pattern.compile(&quot;(\\d+)\\s*(\\w+)&quot;);</span>
+<span class="fc" id="L28">    private static final Map&lt;String, Boolean&gt; SUFFIXES = new HashMap&lt;String, Boolean&gt;();</span>
+<span class="fc" id="L29">    private static final Map&lt;String, Character&gt; NORMALIZED_SUFFIXES = new HashMap&lt;String, Character&gt;();</span>
+
+    static {
+<span class="fc" id="L32">        SUFFIXES.put(&quot;s&quot;, true);</span>
+<span class="fc" id="L33">        SUFFIXES.put(&quot;S&quot;, true);</span>
+<span class="fc" id="L34">        SUFFIXES.put(&quot;sec&quot;, true);</span>
+<span class="fc" id="L35">        SUFFIXES.put(&quot;secs&quot;, true);</span>
+<span class="fc" id="L36">        SUFFIXES.put(&quot;second&quot;, true);</span>
+<span class="fc" id="L37">        SUFFIXES.put(&quot;seconds&quot;, true);</span>
+<span class="fc" id="L38">        SUFFIXES.put(&quot;m&quot;, true);</span>
+<span class="fc" id="L39">        SUFFIXES.put(&quot;M&quot;, true);</span>
+<span class="fc" id="L40">        SUFFIXES.put(&quot;min&quot;, true);</span>
+<span class="fc" id="L41">        SUFFIXES.put(&quot;minute&quot;, true);</span>
+<span class="fc" id="L42">        SUFFIXES.put(&quot;minutes&quot;, true);</span>
+<span class="fc" id="L43">        SUFFIXES.put(&quot;h&quot;, true);</span>
+<span class="fc" id="L44">        SUFFIXES.put(&quot;H&quot;, true);</span>
+<span class="fc" id="L45">        SUFFIXES.put(&quot;hr&quot;, true);</span>
+<span class="fc" id="L46">        SUFFIXES.put(&quot;hour&quot;, true);</span>
+<span class="fc" id="L47">        SUFFIXES.put(&quot;hours&quot;, true);</span>
+<span class="fc" id="L48">        SUFFIXES.put(&quot;d&quot;, false);</span>
+<span class="fc" id="L49">        SUFFIXES.put(&quot;D&quot;, false);</span>
+<span class="fc" id="L50">        SUFFIXES.put(&quot;day&quot;, false);</span>
+<span class="fc" id="L51">        SUFFIXES.put(&quot;days&quot;, false);</span>
+<span class="fc" id="L52">        SUFFIXES.put(&quot;w&quot;, false);</span>
+<span class="fc" id="L53">        SUFFIXES.put(&quot;W&quot;, false);</span>
+<span class="fc" id="L54">        SUFFIXES.put(&quot;week&quot;, false);</span>
+<span class="fc" id="L55">        SUFFIXES.put(&quot;weeks&quot;, false);</span>
+<span class="fc" id="L56">        SUFFIXES.put(&quot;month&quot;, false);</span>
+<span class="fc" id="L57">        SUFFIXES.put(&quot;months&quot;, false);</span>
+<span class="fc" id="L58">        SUFFIXES.put(&quot;y&quot;, false);</span>
+<span class="fc" id="L59">        SUFFIXES.put(&quot;Y&quot;, false);</span>
+<span class="fc" id="L60">        SUFFIXES.put(&quot;year&quot;, false);</span>
+<span class="fc" id="L61">        SUFFIXES.put(&quot;years&quot;, false);</span>
+
+<span class="fc" id="L63">        NORMALIZED_SUFFIXES.put(&quot;s&quot;, 'S');</span>
+<span class="fc" id="L64">        NORMALIZED_SUFFIXES.put(&quot;S&quot;, 'S');</span>
+<span class="fc" id="L65">        NORMALIZED_SUFFIXES.put(&quot;sec&quot;, 'S');</span>
+<span class="fc" id="L66">        NORMALIZED_SUFFIXES.put(&quot;secs&quot;, 'S');</span>
+<span class="fc" id="L67">        NORMALIZED_SUFFIXES.put(&quot;second&quot;, 'S');</span>
+<span class="fc" id="L68">        NORMALIZED_SUFFIXES.put(&quot;seconds&quot;, 'S');</span>
+<span class="fc" id="L69">        NORMALIZED_SUFFIXES.put(&quot;m&quot;, 'M');</span>
+<span class="fc" id="L70">        NORMALIZED_SUFFIXES.put(&quot;M&quot;, 'M');</span>
+<span class="fc" id="L71">        NORMALIZED_SUFFIXES.put(&quot;min&quot;, 'M');</span>
+<span class="fc" id="L72">        NORMALIZED_SUFFIXES.put(&quot;minute&quot;, 'M');</span>
+<span class="fc" id="L73">        NORMALIZED_SUFFIXES.put(&quot;minutes&quot;, 'M');</span>
+<span class="fc" id="L74">        NORMALIZED_SUFFIXES.put(&quot;h&quot;, 'H');</span>
+<span class="fc" id="L75">        NORMALIZED_SUFFIXES.put(&quot;H&quot;, 'H');</span>
+<span class="fc" id="L76">        NORMALIZED_SUFFIXES.put(&quot;hr&quot;, 'H');</span>
+<span class="fc" id="L77">        NORMALIZED_SUFFIXES.put(&quot;hour&quot;, 'H');</span>
+<span class="fc" id="L78">        NORMALIZED_SUFFIXES.put(&quot;hours&quot;, 'H');</span>
+<span class="fc" id="L79">        NORMALIZED_SUFFIXES.put(&quot;d&quot;, 'D');</span>
+<span class="fc" id="L80">        NORMALIZED_SUFFIXES.put(&quot;D&quot;, 'D');</span>
+<span class="fc" id="L81">        NORMALIZED_SUFFIXES.put(&quot;day&quot;, 'D');</span>
+<span class="fc" id="L82">        NORMALIZED_SUFFIXES.put(&quot;days&quot;, 'D');</span>
+<span class="fc" id="L83">        NORMALIZED_SUFFIXES.put(&quot;w&quot;, 'W');</span>
+<span class="fc" id="L84">        NORMALIZED_SUFFIXES.put(&quot;W&quot;, 'W');</span>
+<span class="fc" id="L85">        NORMALIZED_SUFFIXES.put(&quot;week&quot;, 'W');</span>
+<span class="fc" id="L86">        NORMALIZED_SUFFIXES.put(&quot;weeks&quot;, 'W');</span>
+<span class="fc" id="L87">        NORMALIZED_SUFFIXES.put(&quot;month&quot;, 'M');</span>
+<span class="fc" id="L88">        NORMALIZED_SUFFIXES.put(&quot;months&quot;, 'M');</span>
+<span class="fc" id="L89">        NORMALIZED_SUFFIXES.put(&quot;y&quot;, 'Y');</span>
+<span class="fc" id="L90">        NORMALIZED_SUFFIXES.put(&quot;Y&quot;, 'Y');</span>
+<span class="fc" id="L91">        NORMALIZED_SUFFIXES.put(&quot;year&quot;, 'Y');</span>
+<span class="fc" id="L92">        NORMALIZED_SUFFIXES.put(&quot;years&quot;, 'Y');</span>
+<span class="fc" id="L93">    }</span>
+
+    @Override
+    public Period convertFrom(String value) {
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        if (value == null) {</span>
+<span class="fc" id="L98">            throw new ParameterException(&quot;Couldn't convert \&quot;null\&quot; to Period object.&quot;);</span>
+        }
+
+        final Period period;
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        if (value.startsWith(&quot;P&quot;)) {</span>
+            // pure IsoPeriod format, try to parse it directly
+<span class="fc" id="L104">            period = Period.parse(value);</span>
+        } else {
+<span class="fc" id="L106">            final Matcher matcher = PERIOD_PATTERN.matcher(value);</span>
+<span class="pc bpc" id="L107" title="1 of 4 branches missed.">            if (matcher.matches() &amp;&amp; matcher.groupCount() &gt;= 2) {</span>
+<span class="fc" id="L108">                final long duration = Long.valueOf(matcher.group(1));</span>
+<span class="fc" id="L109">                final String suffix = matcher.group(2);</span>
+
+<span class="fc" id="L111">                final StringBuilder asIsoFormat = new StringBuilder(&quot;P&quot;);</span>
+
+<span class="fc" id="L113">                final Boolean prefixNecessary = SUFFIXES.get(suffix);</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">                if (prefixNecessary == null) {</span>
+<span class="fc" id="L115">                    throw new ParameterException(&quot;Couldn't convert value \&quot;&quot; + value + &quot;\&quot; to Period object, invalid unit.&quot;);</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">                } else if (prefixNecessary) {</span>
+<span class="fc" id="L117">                    asIsoFormat.append('T');</span>
+                }
+
+<span class="fc" id="L120">                final Character normalizedSuffix = NORMALIZED_SUFFIXES.get(suffix);</span>
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">                if (normalizedSuffix == null) {</span>
+<span class="nc" id="L122">                    throw new ParameterException(&quot;Couldn't convert value \&quot;&quot; + value + &quot;\&quot; to Period object, invalid unit.&quot;);</span>
+                }
+
+<span class="fc" id="L125">                asIsoFormat.append(duration).append(normalizedSuffix);</span>
+<span class="fc" id="L126">                period = Period.parse(asIsoFormat.toString());</span>
+<span class="fc" id="L127">            } else {</span>
+<span class="fc" id="L128">                period = null;</span>
+            }
+        }
+
+<span class="fc bfc" id="L132" title="All 2 branches covered.">        if (period == null) {</span>
+<span class="fc" id="L133">            throw new ParameterException(&quot;Couldn't convert value \&quot;&quot; + value + &quot;\&quot; to Period object.&quot;);</span>
+        }
+
+<span class="fc" id="L136">        return period;</span>
+    }
+
+    @Override
+    public String convertTo(Period value) {
+<span class="fc" id="L141">        return value.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

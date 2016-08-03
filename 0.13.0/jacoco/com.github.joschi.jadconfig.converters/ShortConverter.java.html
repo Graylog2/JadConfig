@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ShortConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JadConfig</a> &gt; <a href="index.source.html" class="el_package">com.github.joschi.jadconfig.converters</a> &gt; <span class="el_source">ShortConverter.java</span></div><h1>ShortConverter.java</h1><pre class="source lang-java linenums">package com.github.joschi.jadconfig.converters;
+
+import com.github.joschi.jadconfig.Converter;
+import com.github.joschi.jadconfig.ParameterException;
+
+/**
+ * Converter for type {@link Short}
+ *
+ * @author jschalanda
+ */
+<span class="fc" id="L11">public class ShortConverter implements Converter&lt;Short&gt; {</span>
+
+    /**
+     * Returns a {@link Short} instance representing the specified {@link String} {@literal value}.
+     *
+     * @param value The configuration parameter's {@link String} value
+     * @return A {@link Short} instance representing the configuration parameter's value
+     */
+    @Override
+    public Short convertFrom(String value) {
+
+        Short result;
+
+        try {
+<span class="fc" id="L25">            result = Short.valueOf(value);</span>
+<span class="fc" id="L26">        } catch (NumberFormatException ex) {</span>
+
+<span class="fc" id="L28">            throw new ParameterException(&quot;Couldn't convert value \&quot;&quot; + value + &quot;\&quot; to Short.&quot;, ex);</span>
+<span class="fc" id="L29">        }</span>
+
+<span class="fc" id="L31">        return result;</span>
+    }
+
+    /**
+     * Returns a {@link String} instance representing the configuration parameter's {@literal value}.
+     *
+     * @param value The configuration parameter's {@link Short} value
+     * @return A {@link String} instance representing the configuration parameter's typed value
+     */
+    @Override
+    public String convertTo(Short value) {
+
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (value == null) {</span>
+<span class="fc" id="L44">            throw new ParameterException(&quot;Couldn't convert \&quot;null\&quot; to String.&quot;);</span>
+        }
+
+<span class="fc" id="L47">        return value.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

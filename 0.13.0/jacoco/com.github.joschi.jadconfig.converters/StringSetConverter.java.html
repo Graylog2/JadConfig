@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StringSetConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JadConfig</a> &gt; <a href="index.source.html" class="el_package">com.github.joschi.jadconfig.converters</a> &gt; <span class="el_source">StringSetConverter.java</span></div><h1>StringSetConverter.java</h1><pre class="source lang-java linenums">package com.github.joschi.jadconfig.converters;
+
+import com.github.joschi.jadconfig.Converter;
+import com.github.joschi.jadconfig.ParameterException;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * Class for converting a comma-separated list to {@code Set&lt;String&gt;}
+ *
+ * @author jschalanda
+ */
+<span class="fc" id="L15">public class StringSetConverter implements Converter&lt;Set&lt;String&gt;&gt; {</span>
+
+    protected static final String DELIMITER = &quot;,&quot;;
+
+    /**
+     * Returns a {@link Set} of {@link String}s representing the specified {@link String} {@literal value}.
+     * &lt;p/&gt;
+     * The {@literal value} is being split on comma.
+     *
+     * @param value The configuration parameter's {@link String} value
+     * @return A {@link Set} of {@link String}s representing the configuration parameter's value
+     */
+    @Override
+    public Set&lt;String&gt; convertFrom(String value) {
+
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        if (value == null) {</span>
+<span class="fc" id="L31">            throw new ParameterException(&quot;Couldn't convert value \&quot;&quot; + value + &quot;\&quot; to set of String.&quot;);</span>
+        }
+
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        if (&quot;&quot;.equals(value)) {</span>
+
+<span class="fc" id="L36">            return Collections.emptySet();</span>
+        }
+
+<span class="fc" id="L39">        final Set&lt;String&gt; result = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L40">        Collections.addAll(result, value.split(DELIMITER));</span>
+
+<span class="fc" id="L42">        return result;</span>
+    }
+
+    /**
+     * Returns a {@link String} instance representing the configuration parameter's {@literal value}.
+     * &lt;p/&gt;
+     * The elements of the provided {@link Set} of {@link String}s are concatenated with commas.
+     *
+     * @param value The configuration parameter's {@link Set} of {@link String} representation
+     * @return A {@link String} instance representing the configuration parameter's typed value
+     */
+    @Override
+    public String convertTo(Set&lt;String&gt; value) {
+
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        if (value == null) {</span>
+<span class="fc" id="L57">            throw new ParameterException(&quot;Couldn't convert \&quot;null\&quot; to String.&quot;);</span>
+        }
+
+<span class="fc" id="L60">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L61">        String separator = &quot;&quot;;</span>
+
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        for (String element : value) {</span>
+<span class="fc" id="L64">            sb.append(separator);</span>
+<span class="fc" id="L65">            sb.append(element);</span>
+<span class="fc" id="L66">            separator = DELIMITER;</span>
+<span class="fc" id="L67">        }</span>
+
+<span class="fc" id="L69">        return sb.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

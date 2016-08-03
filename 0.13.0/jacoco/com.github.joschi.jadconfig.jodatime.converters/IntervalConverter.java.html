@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IntervalConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JadConfig</a> &gt; <a href="index.source.html" class="el_package">com.github.joschi.jadconfig.jodatime.converters</a> &gt; <span class="el_source">IntervalConverter.java</span></div><h1>IntervalConverter.java</h1><pre class="source lang-java linenums">package com.github.joschi.jadconfig.jodatime.converters;
+
+import com.github.joschi.jadconfig.Converter;
+import com.github.joschi.jadconfig.ParameterException;
+import org.joda.time.Interval;
+
+/**
+ * Converter for type {@link org.joda.time.Interval}
+ *
+ * @author jschalanda
+ */
+<span class="fc" id="L12">public class IntervalConverter implements Converter&lt;Interval&gt; {</span>
+
+    /**
+     * Returns a {@link org.joda.time.Interval} instance representing the specified {@link String} {@literal value}.
+     *
+     * @param value The configuration parameter's {@link String} value
+     * @return A {@link org.joda.time.Interval} instance representing the configuration parameter's value
+     * @see Interval#parse(String)
+     */
+    @Override
+    public Interval convertFrom(String value) {
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        if(null == value) {</span>
+<span class="fc" id="L24">            throw new ParameterException(&quot;Couldn't convert \&quot;null\&quot; to Interval.&quot;);</span>
+        }
+
+        try {
+<span class="fc" id="L28">            return Interval.parse(value);</span>
+<span class="fc" id="L29">        } catch (Exception ex) {</span>
+<span class="fc" id="L30">            throw new ParameterException(&quot;Couldn't convert value \&quot;&quot; + value + &quot;\&quot; to Interval.&quot;, ex);</span>
+        }
+    }
+
+    /**
+     * Returns a {@link String} instance representing the configuration parameter's {@literal value}.
+     *
+     * @param value The configuration parameter's {@link org.joda.time.Interval} value
+     * @return A {@link String} instance representing the configuration parameter's typed value
+     */
+    @Override
+    public String convertTo(Interval value) {
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">        if (value == null) {</span>
+<span class="nc" id="L43">            throw new ParameterException(&quot;Couldn't convert \&quot;null\&quot; to String.&quot;);</span>
+        }
+
+<span class="fc" id="L46">        return value.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

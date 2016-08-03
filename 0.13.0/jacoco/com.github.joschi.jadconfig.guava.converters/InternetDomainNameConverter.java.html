@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InternetDomainNameConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JadConfig</a> &gt; <a href="index.source.html" class="el_package">com.github.joschi.jadconfig.guava.converters</a> &gt; <span class="el_source">InternetDomainNameConverter.java</span></div><h1>InternetDomainNameConverter.java</h1><pre class="source lang-java linenums">package com.github.joschi.jadconfig.guava.converters;
+
+import com.github.joschi.jadconfig.Converter;
+import com.github.joschi.jadconfig.ParameterException;
+import com.google.common.net.InternetDomainName;
+
+/**
+ * Converter for type {@link InternetDomainName}.
+ */
+<span class="fc" id="L10">public class InternetDomainNameConverter implements Converter&lt;InternetDomainName&gt; {</span>
+
+    /**
+     * Returns a {@link InternetDomainName} instance representing the specified {@link String} {@literal value}.
+     *
+     * @param value The configuration parameter's {@link String} value
+     * @return An {@link InternetDomainName} instance representing the configuration parameter's value
+     */
+    @Override
+    public InternetDomainName convertFrom(String value) {
+        final InternetDomainName result;
+
+        try {
+<span class="fc" id="L23">            result = InternetDomainName.from(value);</span>
+<span class="fc" id="L24">        } catch (Exception ex) {</span>
+<span class="fc" id="L25">            throw new ParameterException(&quot;Couldn't convert value \&quot;&quot; + value + &quot;\&quot; to InternetDomainName.&quot;, ex);</span>
+<span class="fc" id="L26">        }</span>
+
+<span class="fc" id="L28">        return result;</span>
+    }
+
+    /**
+     * Returns a {@link String} instance representing the configuration parameter's {@literal value}.
+     *
+     * @param value The configuration parameter's {@link InternetDomainName} value
+     * @return A {@link String} instance representing the configuration parameter's typed value
+     */
+    @Override
+    public String convertTo(InternetDomainName value) {
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if (value == null) {</span>
+<span class="fc" id="L40">            throw new ParameterException(&quot;Couldn't convert \&quot;null\&quot; to String.&quot;);</span>
+        }
+
+<span class="fc" id="L43">        return value.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

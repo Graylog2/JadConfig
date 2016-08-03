@@ -1,0 +1,10 @@
+com.github.joschi.jadconfig
+com.github.joschi.jadconfig.converters
+com.github.joschi.jadconfig.guava
+com.github.joschi.jadconfig.guava.converters
+com.github.joschi.jadconfig.guice
+com.github.joschi.jadconfig.jodatime
+com.github.joschi.jadconfig.jodatime.converters
+com.github.joschi.jadconfig.repositories
+com.github.joschi.jadconfig.util
+com.github.joschi.jadconfig.validators

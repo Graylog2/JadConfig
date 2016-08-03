@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DefaultConverterFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JadConfig</a> &gt; <a href="index.source.html" class="el_package">com.github.joschi.jadconfig</a> &gt; <span class="el_source">DefaultConverterFactory.java</span></div><h1>DefaultConverterFactory.java</h1><pre class="source lang-java linenums">package com.github.joschi.jadconfig;
+
+import com.github.joschi.jadconfig.converters.BigDecimalConverter;
+import com.github.joschi.jadconfig.converters.BigIntegerConverter;
+import com.github.joschi.jadconfig.converters.BooleanConverter;
+import com.github.joschi.jadconfig.converters.ByteConverter;
+import com.github.joschi.jadconfig.converters.CharsetConverter;
+import com.github.joschi.jadconfig.converters.ClassConverter;
+import com.github.joschi.jadconfig.converters.CurrencyConverter;
+import com.github.joschi.jadconfig.converters.DecimalFormatConverter;
+import com.github.joschi.jadconfig.converters.DoubleConverter;
+import com.github.joschi.jadconfig.converters.DurationConverter;
+import com.github.joschi.jadconfig.converters.FileConverter;
+import com.github.joschi.jadconfig.converters.FloatConverter;
+import com.github.joschi.jadconfig.converters.Inet4AddressConverter;
+import com.github.joschi.jadconfig.converters.Inet6AddressConverter;
+import com.github.joschi.jadconfig.converters.InetAddressConverter;
+import com.github.joschi.jadconfig.converters.InetSocketAddressConverter;
+import com.github.joschi.jadconfig.converters.IntegerConverter;
+import com.github.joschi.jadconfig.converters.LocaleConverter;
+import com.github.joschi.jadconfig.converters.LongConverter;
+import com.github.joschi.jadconfig.converters.PathConverter;
+import com.github.joschi.jadconfig.converters.PatternConverter;
+import com.github.joschi.jadconfig.converters.ShortConverter;
+import com.github.joschi.jadconfig.converters.SizeConverter;
+import com.github.joschi.jadconfig.converters.SizeUnitConverter;
+import com.github.joschi.jadconfig.converters.StringConverter;
+import com.github.joschi.jadconfig.converters.TimeUnitConverter;
+import com.github.joschi.jadconfig.converters.TimeZoneConverter;
+import com.github.joschi.jadconfig.converters.URIConverter;
+import com.github.joschi.jadconfig.converters.URLConverter;
+import com.github.joschi.jadconfig.converters.UUIDConverter;
+import com.github.joschi.jadconfig.util.Duration;
+import com.github.joschi.jadconfig.util.Size;
+import com.github.joschi.jadconfig.util.SizeUnit;
+
+import java.io.File;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.text.DecimalFormat;
+import java.util.Currency;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
+
+/**
+ * {@link ConverterFactory} for holding the default {@link Converter} classes.
+ * &lt;p&gt;&lt;/p&gt;Supported {@link Converter} types are:
+ * &lt;ul&gt;
+ * &lt;li&gt;{@link String} through {@link StringConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Byte} and {@literal byte} through {@link ByteConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Short} and {@literal short} through {@link ByteConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Integer} and {@literal int} through {@link ByteConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Long} and {@literal long} through {@link ByteConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Boolean} and {@literal boolean} through {@link ByteConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Float} and {@literal float} through {@link ByteConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Double} and {@literal double} through {@link ByteConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link URI} through {@link URIConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link URL} through {@link URLConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link File} through {@link FileConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link BigDecimal} through {@link BigDecimalConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link BigInteger} through {@link BigIntegerConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Charset} through {@link CharsetConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Currency} through {@link CurrencyConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link DecimalFormat} through {@link DecimalFormatConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link InetAddress} through {@link InetAddressConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Inet4Address} through {@link Inet4AddressConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Inet6Address} through {@link Inet6AddressConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link InetSocketAddress} through {@link InetSocketAddressConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Locale} through {@link LocaleConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Pattern} through {@link PatternConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link TimeZone} through {@link TimeZoneConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link UUID} through {@link UUIDConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Duration} through {@link DurationConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Size} through {@link SizeConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link SizeUnit} through {@link SizeUnitConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link TimeUnit} through {@link TimeUnitConverter}&lt;/li&gt;
+ * &lt;li&gt;{@link Class} through {@link ClassConverter}&lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;/p&gt;
+ *
+ * @author jschalanda
+ */
+<span class="fc" id="L96">public class DefaultConverterFactory implements ConverterFactory {</span>
+
+    private static final Map&lt;Class, Class&lt;? extends Converter&lt;?&gt;&gt;&gt; DEFAULT_CONVERTERS;
+
+    static {
+<span class="fc" id="L101">        DEFAULT_CONVERTERS = new HashMap&lt;Class, Class&lt;? extends Converter&lt;?&gt;&gt;&gt;();</span>
+<span class="fc" id="L102">        DEFAULT_CONVERTERS.put(String.class, StringConverter.class);</span>
+<span class="fc" id="L103">        DEFAULT_CONVERTERS.put(Byte.class, ByteConverter.class);</span>
+<span class="fc" id="L104">        DEFAULT_CONVERTERS.put(byte.class, ByteConverter.class);</span>
+<span class="fc" id="L105">        DEFAULT_CONVERTERS.put(Short.class, ShortConverter.class);</span>
+<span class="fc" id="L106">        DEFAULT_CONVERTERS.put(short.class, ShortConverter.class);</span>
+<span class="fc" id="L107">        DEFAULT_CONVERTERS.put(Integer.class, IntegerConverter.class);</span>
+<span class="fc" id="L108">        DEFAULT_CONVERTERS.put(int.class, IntegerConverter.class);</span>
+<span class="fc" id="L109">        DEFAULT_CONVERTERS.put(Long.class, LongConverter.class);</span>
+<span class="fc" id="L110">        DEFAULT_CONVERTERS.put(long.class, LongConverter.class);</span>
+<span class="fc" id="L111">        DEFAULT_CONVERTERS.put(Boolean.class, BooleanConverter.class);</span>
+<span class="fc" id="L112">        DEFAULT_CONVERTERS.put(boolean.class, BooleanConverter.class);</span>
+<span class="fc" id="L113">        DEFAULT_CONVERTERS.put(Float.class, FloatConverter.class);</span>
+<span class="fc" id="L114">        DEFAULT_CONVERTERS.put(float.class, FloatConverter.class);</span>
+<span class="fc" id="L115">        DEFAULT_CONVERTERS.put(Double.class, DoubleConverter.class);</span>
+<span class="fc" id="L116">        DEFAULT_CONVERTERS.put(double.class, DoubleConverter.class);</span>
+<span class="fc" id="L117">        DEFAULT_CONVERTERS.put(URI.class, URIConverter.class);</span>
+<span class="fc" id="L118">        DEFAULT_CONVERTERS.put(URL.class, URLConverter.class);</span>
+<span class="fc" id="L119">        DEFAULT_CONVERTERS.put(File.class, FileConverter.class);</span>
+<span class="fc" id="L120">        DEFAULT_CONVERTERS.put(Path.class, PathConverter.class);</span>
+<span class="fc" id="L121">        DEFAULT_CONVERTERS.put(BigDecimal.class, BigDecimalConverter.class);</span>
+<span class="fc" id="L122">        DEFAULT_CONVERTERS.put(BigInteger.class, BigIntegerConverter.class);</span>
+<span class="fc" id="L123">        DEFAULT_CONVERTERS.put(Charset.class, CharsetConverter.class);</span>
+<span class="fc" id="L124">        DEFAULT_CONVERTERS.put(Currency.class, CurrencyConverter.class);</span>
+<span class="fc" id="L125">        DEFAULT_CONVERTERS.put(DecimalFormat.class, DecimalFormatConverter.class);</span>
+<span class="fc" id="L126">        DEFAULT_CONVERTERS.put(InetAddress.class, InetAddressConverter.class);</span>
+<span class="fc" id="L127">        DEFAULT_CONVERTERS.put(Inet4Address.class, Inet4AddressConverter.class);</span>
+<span class="fc" id="L128">        DEFAULT_CONVERTERS.put(Inet6Address.class, Inet6AddressConverter.class);</span>
+<span class="fc" id="L129">        DEFAULT_CONVERTERS.put(InetSocketAddress.class, InetSocketAddressConverter.class);</span>
+<span class="fc" id="L130">        DEFAULT_CONVERTERS.put(Locale.class, LocaleConverter.class);</span>
+<span class="fc" id="L131">        DEFAULT_CONVERTERS.put(Pattern.class, PatternConverter.class);</span>
+<span class="fc" id="L132">        DEFAULT_CONVERTERS.put(TimeZone.class, TimeZoneConverter.class);</span>
+<span class="fc" id="L133">        DEFAULT_CONVERTERS.put(UUID.class, UUIDConverter.class);</span>
+<span class="fc" id="L134">        DEFAULT_CONVERTERS.put(Duration.class, DurationConverter.class);</span>
+<span class="fc" id="L135">        DEFAULT_CONVERTERS.put(Size.class, SizeConverter.class);</span>
+<span class="fc" id="L136">        DEFAULT_CONVERTERS.put(SizeUnit.class, SizeUnitConverter.class);</span>
+<span class="fc" id="L137">        DEFAULT_CONVERTERS.put(TimeUnit.class, TimeUnitConverter.class);</span>
+<span class="fc" id="L138">        DEFAULT_CONVERTERS.put(Class.class, ClassConverter.class);</span>
+<span class="fc" id="L139">    }</span>
+
+    /**
+     * Finds and returns a {@link Converter} for the provided {@literal classType}.
+     *
+     * @param classType The class type for which to find and return a {@link Converter}
+     * @return A {@link Converter} for the requested class type
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public &lt;T&gt; Class&lt;? extends Converter&lt;T&gt;&gt; getConverter(Class&lt;T&gt; classType) {
+<span class="fc" id="L149">        return (Class&lt;? extends Converter&lt;T&gt;&gt;) DEFAULT_CONVERTERS.get(classType);</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

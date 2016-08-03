@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SizeUnit.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JadConfig</a> &gt; <a href="index.source.html" class="el_package">com.github.joschi.jadconfig.util</a> &gt; <span class="el_source">SizeUnit.java</span></div><h1>SizeUnit.java</h1><pre class="source lang-java linenums">package com.github.joschi.jadconfig.util;
+
+/**
+ * A unit of size.
+ */
+<span class="fc" id="L6">public enum SizeUnit {</span>
+    /**
+     * Bytes.
+     */
+<span class="fc" id="L10">    BYTES(8),</span>
+
+    /**
+     * Kilobytes.
+     */
+<span class="fc" id="L15">    KILOBYTES(8L * 1024),</span>
+
+    /**
+     * Megabytes.
+     */
+<span class="fc" id="L20">    MEGABYTES(8L * 1024 * 1024),</span>
+
+    /**
+     * Gigabytes.
+     */
+<span class="fc" id="L25">    GIGABYTES(8L * 1024 * 1024 * 1024),</span>
+
+    /**
+     * Terabytes.
+     */
+<span class="fc" id="L30">    TERABYTES(8L * 1024 * 1024 * 1024 * 1024),</span>
+
+    /**
+     * Petabytes.
+     */
+<span class="fc" id="L35">    PETABYTES(8L * 1024 * 1024 * 1024 * 1024 * 1024);</span>
+
+    private final long bits;
+
+<span class="fc" id="L39">    SizeUnit(long bits) {</span>
+<span class="fc" id="L40">        this.bits = bits;</span>
+<span class="fc" id="L41">    }</span>
+
+    /**
+     * Converts a size of the given unit into the current unit.
+     *
+     * @param size the magnitude of the size
+     * @param unit the unit of the size
+     * @return the given size in the current unit.
+     */
+    public long convert(long size, SizeUnit unit) {
+<span class="fc" id="L51">        return (size * unit.bits) / bits;</span>
+    }
+
+    /**
+     * Converts the given number of the current units into bytes.
+     *
+     * @param l the magnitude of the size in the current unit
+     * @return {@code l} of the current units in bytes
+     */
+    public long toBytes(long l) {
+<span class="fc" id="L61">        return BYTES.convert(l, this);</span>
+    }
+
+    /**
+     * Converts the given number of the current units into kilobytes.
+     *
+     * @param l the magnitude of the size in the current unit
+     * @return {@code l} of the current units in kilobytes
+     */
+    public long toKilobytes(long l) {
+<span class="fc" id="L71">        return KILOBYTES.convert(l, this);</span>
+    }
+
+    /**
+     * Converts the given number of the current units into megabytes.
+     *
+     * @param l the magnitude of the size in the current unit
+     * @return {@code l} of the current units in megabytes
+     */
+    public long toMegabytes(long l) {
+<span class="fc" id="L81">        return MEGABYTES.convert(l, this);</span>
+    }
+
+    /**
+     * Converts the given number of the current units into gigabytes.
+     *
+     * @param l the magnitude of the size in the current unit
+     * @return {@code l} of the current units in bytes
+     */
+    public long toGigabytes(long l) {
+<span class="fc" id="L91">        return GIGABYTES.convert(l, this);</span>
+    }
+
+    /**
+     * Converts the given number of the current units into terabytes.
+     *
+     * @param l the magnitude of the size in the current unit
+     * @return {@code l} of the current units in terabytes
+     */
+    public long toTerabytes(long l) {
+<span class="fc" id="L101">        return TERABYTES.convert(l, this);</span>
+    }
+
+    /**
+     * Converts the given number of the current units into petabytes.
+     *
+     * @param l the magnitude of the size in the current unit
+     * @return {@code l} of the current units in terabytes
+     */
+    public long toPetabytes(long l) {
+<span class="fc" id="L111">        return PETABYTES.convert(l, this);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
