@@ -8,7 +8,7 @@
 
     <groupId>com.github.joschi</groupId>
     <artifactId>jadconfig</artifactId>
-    <version>0.12.3-SNAPSHOT</version>
+    <version>0.13.0</version>
     <packaging>jar</packaging>
 
     <name>JadConfig</name>
@@ -27,7 +27,8 @@
         <developerConnection>scm:git:git@github.com:joschi/JadConfig.git</developerConnection>
         <connection>scm:git:github.com/joschi/JadConfig.git</connection>
         <url>https://github.com/joschi/JadConfig</url>
-    </scm>
+      <tag>jadconfig-0.13.0</tag>
+  </scm>
 
     <issueManagement>
         <url>https://github.com/joschi/JadConfig/issues</url>
