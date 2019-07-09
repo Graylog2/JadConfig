@@ -3,5 +3,5 @@ language: java
 after_success:
   - if [[ "${TRAVIS_JDK_VERSION}" == "oraclejdk8" ]]; then mvn -B jacoco:report coveralls:report; fi
 jdk:
-  - openjdk7
-  - oraclejdk8
+  - openjdk8
+  - openjdk11
