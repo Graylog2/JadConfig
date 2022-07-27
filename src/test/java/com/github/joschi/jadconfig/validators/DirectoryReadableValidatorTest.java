@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import static org.junit.Assert.fail;
 
@@ -25,14 +26,7 @@ public class DirectoryReadableValidatorTest {
 
     @Test
     public void testExistingDirectory() throws ValidationException, IOException {
-        File tempDir = File.createTempFile("DirectoryReadableValidatorTest-testExistingDirectory", ".dir");
-        if (!tempDir.delete()) {
-            fail("Couldn't delete temporary file " + tempDir.getCanonicalPath());
-        }
-
-        if (!tempDir.mkdir()) {
-            fail("Couldn't create temporary directory " + tempDir.getCanonicalPath());
-        }
+        File tempDir = Files.createTempDirectory("DirectoryReadableValidatorTest-testExistingDirectory" + ".dir").toFile();
 
         tempDir.deleteOnExit();
 
@@ -49,14 +43,7 @@ public class DirectoryReadableValidatorTest {
 
     @Test(expected = ValidationException.class)
     public void testUnreadableDirectory() throws ValidationException, IOException {
-        File tempDir = File.createTempFile("DirectoryReadableValidatorTest-testUnreadableDirectory", ".dir");
-        if (!tempDir.delete()) {
-            fail("Couldn't delete temporary file " + tempDir.getCanonicalPath());
-        }
-
-        if (!tempDir.mkdir()) {
-            fail("Couldn't create temporary directory " + tempDir.getCanonicalPath());
-        }
+        File tempDir = Files.createTempDirectory("DirectoryReadableValidatorTest-testUnreadableDirectory" + ".dir").toFile();
 
         if (!tempDir.setReadable(false)) {
             fail("Couldn't set directory " + tempDir.getCanonicalPath() + " unreadable");
