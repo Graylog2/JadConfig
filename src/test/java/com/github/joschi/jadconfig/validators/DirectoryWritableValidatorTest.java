@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import static org.junit.Assert.fail;
 
@@ -25,14 +26,7 @@ public class DirectoryWritableValidatorTest {
 
     @Test
     public void testExistingDirectory() throws ValidationException, IOException {
-        File tempDir = File.createTempFile("DirectoryWritableValidatorTest-testExistingDirectory", ".dir");
-        if (!tempDir.delete()) {
-            fail("Couldn't delete temporary file " + tempDir.getCanonicalPath());
-        }
-
-        if (!tempDir.mkdir()) {
-            fail("Couldn't create temporary directory " + tempDir.getCanonicalPath());
-        }
+        File tempDir = Files.createTempDirectory("DirectoryWritableValidatorTest-testExistingDirectory" + ".dir").toFile();
 
         tempDir.deleteOnExit();
 
@@ -49,14 +43,7 @@ public class DirectoryWritableValidatorTest {
 
     @Test(expected = ValidationException.class)
     public void testMissingPermissions() throws ValidationException, IOException {
-        File tempDir = File.createTempFile("DirectoryWritableValidatorTest-testMissingPermissions", ".dir");
-        if (!tempDir.delete()) {
-            fail("Couldn't delete temporary file " + tempDir.getCanonicalPath());
-        }
-
-        if (!tempDir.mkdir()) {
-            fail("Couldn't create temporary directory " + tempDir.getCanonicalPath());
-        }
+        File tempDir = Files.createTempDirectory("DirectoryWritableValidatorTest-testMissingPermissions" + ".dir").toFile();
 
         if (!tempDir.setWritable(false)) {
             fail("Couldn't set directory " + tempDir.getCanonicalPath() + " unwritable");
