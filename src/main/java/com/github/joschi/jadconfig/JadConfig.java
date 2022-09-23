@@ -2,6 +2,7 @@ package com.github.joschi.jadconfig;
 
 import com.github.joschi.jadconfig.converters.NoConverter;
 import com.github.joschi.jadconfig.converters.StringConverter;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import static com.github.joschi.jadconfig.ReflectionUtils.getAllFields;
 import static com.github.joschi.jadconfig.ReflectionUtils.getAllMethods;
@@ -112,16 +115,9 @@ public class JadConfig {
                 Object fieldValue = getFieldValue(field, configurationBean);
 
                 String parameterName = parameter.value();
-                String parameterValue = null;
+                String parameterValue = lookupParameter(parameterName)
+                        .orElseGet(() -> lookupFallbackParameter(parameter));
 
-                for (Repository repository : repositories) {
-                    LOG.debug("Looking up parameter {} in repository {}", parameterName, repository);
-                    parameterValue = repository.read(parameterName);
-
-                    if (null != parameterValue) {
-                        break;
-                    }
-                }
 
                 if (parameterValue == null && fieldValue == null && parameter.required()) {
                     throw new ParameterException("Required parameter \"" + parameterName + "\" not found.");
@@ -157,6 +153,24 @@ public class JadConfig {
                 }
             }
         }
+    }
+
+    @Nullable
+    private String lookupFallbackParameter(Parameter parameter) {
+        final Optional<String> fallbackValue = Optional.ofNullable(parameter.fallbackPropertyName())
+                .filter(fallbackName -> !fallbackName.trim().isEmpty())
+                .flatMap(this::lookupParameter);
+        fallbackValue.ifPresent(value -> LOG.warn("Primary parameter {} not found, using the fallback value of {}. Please correct your configuration if possible.",
+                parameter.value(), parameter.fallbackPropertyName()));
+        return fallbackValue.orElse(null);
+    }
+
+    private Optional<String> lookupParameter(String parameterName) {
+        return repositories.stream()
+                .peek(repository -> LOG.debug("Looking up parameter {} in repository {}", parameterName, repository))
+                .map(repository -> repository.read(parameterName))
+                .filter(Objects::nonNull)
+                .findFirst();
     }
 
     private Object convertStringValue(Class<?> fieldType, Class<? extends Converter<?>> converterClass, String stringValue) {

@@ -91,6 +91,17 @@ public class JadConfigTest {
     }
 
     @Test
+    public void testFallbackLogic() throws ValidationException, RepositoryException {
+        SimpleConfigurationBean configurationBean = new SimpleConfigurationBean();
+        jadConfig = new JadConfig(repository, configurationBean);
+
+        jadConfig.process();
+        Assert.assertEquals("Test", configurationBean.getMyFallbackString());
+        Assert.assertEquals("prim", configurationBean.getMyPrimSecString());
+        Assert.assertNull(configurationBean.getMyNonexistentString());
+    }
+
+    @Test
     public void testProcessWithMultipleRepositories() throws RepositoryException, ValidationException {
 
         final SimpleConfigurationBean configurationBean = new SimpleConfigurationBean();

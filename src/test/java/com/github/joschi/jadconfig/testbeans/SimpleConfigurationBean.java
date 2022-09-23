@@ -46,6 +46,15 @@ public class SimpleConfigurationBean {
     @Parameter("test.path")
     private Path path;
 
+    @Parameter(value = "test.Nonexistent", fallbackPropertyName = "test.string")
+    private String myFallbackString;
+
+    @Parameter(value = "test.fallback.primary", fallbackPropertyName = "test.fallback.secondary")
+    private String myPrimSecString;
+
+    @Parameter(value = "test.Nonexistent", fallbackPropertyName = "test.AlsoNonexistent")
+    private String myNonexistentString;
+
     public String getMyString() {
         return myString;
     }
@@ -92,5 +101,17 @@ public class SimpleConfigurationBean {
 
     public Path getPath() {
         return path;
+    }
+
+    public String getMyFallbackString() {
+        return myFallbackString;
+    }
+
+    public String getMyPrimSecString() {
+        return myPrimSecString;
+    }
+
+    public String getMyNonexistentString() {
+        return myNonexistentString;
     }
 }

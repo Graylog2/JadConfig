@@ -55,4 +55,10 @@ public @interface Parameter {
      * Specific {@link Validator}s to use for this parameter.
      */
     Class<? extends Validator<?>>[] validators() default {NoValidator.class};
+
+    /**
+     * Optional fallback name of the configuration option in the {@link Repository}
+     * Used only when the original name in {@link #value()} doesn't deliver any results in the repository
+     */
+    String fallbackPropertyName() default "";
 }
