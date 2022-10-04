@@ -124,7 +124,6 @@
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
             <version>3.0.2</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
