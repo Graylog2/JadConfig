@@ -55,6 +55,9 @@ public class SimpleConfigurationBean {
     @Parameter(value = "test.Nonexistent", fallbackPropertyName = "test.AlsoNonexistent")
     private String myNonexistentString;
 
+    @Parameter(value = "test.Nonexistent", fallbackPropertyName = "test.fallback.secondary")
+    private String myHardcodedDefaultString = "foobar";
+
     public String getMyString() {
         return myString;
     }
@@ -113,5 +116,9 @@ public class SimpleConfigurationBean {
 
     public String getMyNonexistentString() {
         return myNonexistentString;
+    }
+
+    public String getMyHardcodedDefaultString() {
+        return myHardcodedDefaultString;
     }
 }

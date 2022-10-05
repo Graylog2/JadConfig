@@ -99,6 +99,8 @@ public class JadConfigTest {
         Assert.assertEquals("Test", configurationBean.getMyFallbackString());
         Assert.assertEquals("prim", configurationBean.getMyPrimSecString());
         Assert.assertNull(configurationBean.getMyNonexistentString());
+        Assert.assertEquals("sec", configurationBean.getMyHardcodedDefaultString());
+
     }
 
     @Test

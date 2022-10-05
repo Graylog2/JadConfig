@@ -155,7 +155,6 @@ public class JadConfig {
         }
     }
 
-    @Nullable
     private String lookupFallbackParameter(Parameter parameter) {
         final Optional<String> fallbackValue = Optional.ofNullable(parameter.fallbackPropertyName())
                 .filter(fallbackName -> !fallbackName.trim().isEmpty())
