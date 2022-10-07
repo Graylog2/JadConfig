@@ -52,10 +52,10 @@ public class SimpleConfigurationBean {
     @Parameter(value = "test.fallback.primary", fallbackPropertyName = "test.fallback.secondary")
     private String myPrimSecString;
 
-    @Parameter(value = "test.Nonexistent", fallbackPropertyName = "test.AlsoNonexistent")
+    @Parameter(value = "test.Nonexistent2", fallbackPropertyName = "test.AlsoNonexistent")
     private String myNonexistentString;
 
-    @Parameter(value = "test.Nonexistent", fallbackPropertyName = "test.fallback.secondary")
+    @Parameter(value = "test.Nonexistent3", fallbackPropertyName = "test.fallback.secondary")
     private String myHardcodedDefaultString = "foobar";
 
     public String getMyString() {
