@@ -1,7 +1,5 @@
 # JadConfig
-[![Build Status](https://travis-ci.org/joschi/JadConfig.svg?branch=master)](https://travis-ci.org/joschi/JadConfig)
-[![Coverage Status](https://img.shields.io/coveralls/joschi/JadConfig.svg)](https://coveralls.io/r/joschi/JadConfig)
-[![Maven Central](https://img.shields.io/maven-central/v/com.github.joschi/jadconfig.svg)](http://mvnrepository.com/artifact/com.github.joschi/jadconfig)
+[![Maven Central](https://img.shields.io/maven-central/v/org.graylog/jadconfig.svg)](http://mvnrepository.com/artifact/org.graylog/jadconfig)
 
 JadConfig is a minimalistic annotation-driven configuration parsing framework for Java with minimal dependencies.
 
@@ -140,7 +138,7 @@ see [UseNullable](https://github.com/google/guice/wiki/UseNullable) in the Guice
 To use JadConfig in your project using Maven add the following lines into the dependencies section of your `pom.xml`:
 
     <dependency>
-        <groupId>com.github.joschi</groupId>
+        <groupId>org.graylog</groupId>
         <artifactId>jadconfig</artifactId>
         <version>0.13.0</version>
     </dependency>
@@ -148,7 +146,7 @@ To use JadConfig in your project using Maven add the following lines into the de
 
 ## Support
 
-Please file bug reports and feature requests in [GitHub issues](https://github.com/joschi/JadConfig/issues).
+Please file bug reports and feature requests in [GitHub issues](https://github.com/Graylog2/JadConfig/issues).
 
 
 ## License
