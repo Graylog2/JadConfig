@@ -2,6 +2,7 @@ package com.github.joschi.jadconfig;
 
 import com.github.joschi.jadconfig.converters.NoConverter;
 import com.github.joschi.jadconfig.converters.StringConverter;
+import com.github.joschi.jadconfig.response.ProcessingResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,9 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.github.joschi.jadconfig.ReflectionUtils.getAllFields;
-import static com.github.joschi.jadconfig.ReflectionUtils.getAllMethods;
-import static com.github.joschi.jadconfig.ReflectionUtils.invokeMethodsWithAnnotation;
+import static com.github.joschi.jadconfig.ReflectionUtils.*;
 
 /**
  * The main class for JadConfig. It's responsible for parsing the configuration bean(s) that contain(s) the annotated
@@ -85,6 +84,8 @@ public class JadConfig {
      * Processes the configuration provided by the configured {@link Repository} and filling the provided configuration
      * beans.
      *
+     * Stops processing on first encountered exception.
+     *
      * @throws RepositoryException If an error occurred while reading from the configured {@link Repository}
      * @throws ValidationException If any parameter couldn't be successfully validated
      */
@@ -103,53 +104,99 @@ public class JadConfig {
         }
     }
 
+    /**
+     * Processes the configuration provided by the configured {@link Repository} and filling the provided configuration
+     * beans.
+     *
+     * Instead of stopping processing on first encountered exception, tries to collect all validation problems and return them in single response,
+     * allowing identifying many problems at once.
+     *
+     * @return Response object, containing encountered problems if processing was not successful.
+     */
+    public ProcessingResponse processFailingLazily() throws RepositoryException {
+
+        ProcessingResponse response = new ProcessingResponse();
+
+        for (Repository repository : repositories) {
+            LOG.debug("Opening repository {}", repository);
+            repository.open();
+        }
+
+        for (Object configurationBean : configurationBeans) {
+            LOG.debug("Processing configuration bean {}", configurationBean);
+
+            response.addOutcome(
+                configurationBean,
+                processClassFieldsFailingLazily(configurationBean, getAllFields(configurationBean.getClass())),
+                invokeValidatorMethodsFailingLazily(configurationBean, getAllMethods(configurationBean.getClass()))
+            );
+        }
+        return response;
+    }
+
 
     private void processClassFields(Object configurationBean, Field[] fields) throws ValidationException {
         for (Field field : fields) {
-            Parameter parameter = field.getAnnotation(Parameter.class);
+            processClassField(configurationBean, field);
+        }
+    }
 
-            if (parameter != null) {
-                LOG.debug("Processing field {}", parameter);
+    private Map<String, Exception> processClassFieldsFailingLazily(Object configurationBean, Field[] fields) {
+        Map<String, Exception> fieldProcessingProblems = new HashMap<>();
+        for (Field field : fields) {
+            try {
+                processClassField(configurationBean, field);
+            } catch (Exception ex) {
+                fieldProcessingProblems.put(field.getAnnotation(Parameter.class).value(), ex);
+            }
+        }
+        return fieldProcessingProblems;
+    }
 
-                Object fieldValue = getFieldValue(field, configurationBean);
+    private void processClassField(Object configurationBean, Field field) throws ValidationException {
+        Parameter parameter = field.getAnnotation(Parameter.class);
 
-                String parameterName = parameter.value();
-                String parameterValue = lookupParameter(parameterName)
-                        .orElseGet(() -> lookupFallbackParameter(parameter));
+        if (parameter != null) {
+            LOG.debug("Processing field {}", parameter);
+
+            Object fieldValue = getFieldValue(field, configurationBean);
+
+            String parameterName = parameter.value();
+            String parameterValue = lookupParameter(parameterName)
+                    .orElseGet(() -> lookupFallbackParameter(parameter));
 
 
-                if (parameterValue == null && fieldValue == null && parameter.required()) {
-                    throw new ParameterException("Required parameter \"" + parameterName + "\" not found.");
+            if (parameterValue == null && fieldValue == null && parameter.required()) {
+                throw new ParameterException("Required parameter \"" + parameterName + "\" not found.");
+            }
+
+            if (parameterValue != null) {
+
+                if (parameter.trim()) {
+                    LOG.debug("Trimmed parameter value {}", parameterName);
+                    parameterValue = Strings.trim(parameterValue);
                 }
 
-                if (parameterValue != null) {
-
-                    if (parameter.trim()) {
-                        LOG.debug("Trimmed parameter value {}", parameterName);
-                        parameterValue = Strings.trim(parameterValue);
-                    }
-
-                    LOG.debug("Converting parameter value {}", parameterName);
-                    try {
-                        fieldValue = convertStringValue(field.getType(), parameter.converter(), parameterValue);
-                    } catch (ParameterException e) {
-                        throw new ParameterException("Couldn't convert value for parameter \"" + parameterName + "\"", e);
-                    }
-
-                    LOG.debug("Validating parameter {}", parameterName);
-                    final List<Class<? extends Validator<?>>> validators =
-                            new ArrayList<>(Collections.<Class<? extends Validator<?>>>singleton(parameter.validator()));
-                    validators.addAll(Arrays.asList(parameter.validators()));
-                    validateParameter(validators, parameterName, fieldValue);
-                }
-
-                LOG.debug("Setting parameter {} to {}", parameterName, fieldValue);
-
+                LOG.debug("Converting parameter value {}", parameterName);
                 try {
-                    field.set(configurationBean, fieldValue);
-                } catch (Exception e) {
-                    throw new ParameterException("Couldn't set field " + field.getName(), e);
+                    fieldValue = convertStringValue(field.getType(), parameter.converter(), parameterValue);
+                } catch (ParameterException e) {
+                    throw new ParameterException("Couldn't convert value for parameter \"" + parameterName + "\"", e);
                 }
+
+                LOG.debug("Validating parameter {}", parameterName);
+                final List<Class<? extends Validator<?>>> validators =
+                        new ArrayList<>(Collections.<Class<? extends Validator<?>>>singleton(parameter.validator()));
+                validators.addAll(Arrays.asList(parameter.validators()));
+                validateParameter(validators, parameterName, fieldValue);
+            }
+
+            LOG.debug("Setting parameter {} to {}", parameterName, fieldValue);
+
+            try {
+                field.set(configurationBean, fieldValue);
+            } catch (Exception e) {
+                throw new ParameterException("Couldn't set field " + field.getName(), e);
             }
         }
     }
@@ -240,6 +287,27 @@ public class JadConfig {
         } catch (Exception e) {
             throw new ValidationException("Couldn't run validator method", e);
         }
+    }
+
+    private Map<String, Exception> invokeValidatorMethodsFailingLazily(Object configurationBean, Method[] methods) {
+        Map<String, Exception> problems = new HashMap<>();
+
+        for (Method method : methods) {
+            if (method.isAnnotationPresent(ValidatorMethod.class)) {
+                try {
+                    method.invoke(configurationBean);
+                } catch (InvocationTargetException invEx) {
+                    if (invEx.getTargetException() instanceof ValidationException) {
+                        problems.put(method.getName(), (ValidationException)invEx.getTargetException());
+                    } else {
+                        problems.put(method.getName(), invEx);
+                    }
+                } catch (Exception ex) {
+                    problems.put(method.getName(), ex);
+                }
+            }
+        }
+        return problems;
     }
 
     private <T> Class<? extends Converter<T>> findConverter(Class<T> clazz) {
