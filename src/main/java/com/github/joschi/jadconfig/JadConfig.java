@@ -107,14 +107,18 @@ public class JadConfig {
     /**
      * Processes the configuration provided by the configured {@link Repository} and filling the provided configuration
      * beans.
-     *
-     * Instead of stopping processing on first encountered exception, tries to collect all validation problems and return them in single response,
-     * allowing identifying many problems at once.
-     *
-     * @return Response object, containing encountered problems if processing was not successful.
+     * <p>
+     * Instead of stopping processing on first encountered exception, tries to collect all validation problems and in
+     * case of any problems aggregate them all into single exception, listing all the field and validation issues.
      */
-    public ProcessingResponse processFailingLazily() throws RepositoryException {
+    public void processFailingLazily() throws RepositoryException, LazyValidationException {
+        final ProcessingResponse result = doProcessFailingLazily();
+        if (!result.isSuccess()) {
+            throw new LazyValidationException(result);
+        }
+    }
 
+    ProcessingResponse doProcessFailingLazily() throws RepositoryException {
         ProcessingResponse response = new ProcessingResponse();
 
         for (Repository repository : repositories) {
