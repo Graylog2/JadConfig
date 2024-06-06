@@ -2,6 +2,7 @@ package com.github.joschi.jadconfig;
 
 import com.github.joschi.jadconfig.converters.NoConverter;
 import com.github.joschi.jadconfig.converters.StringConverter;
+import com.github.joschi.jadconfig.response.ProcessingOutcome;
 import com.github.joschi.jadconfig.response.ProcessingResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static com.github.joschi.jadconfig.ReflectionUtils.*;
 
 /**
  * The main class for JadConfig. It's responsible for parsing the configuration bean(s) that contain(s) the annotated
@@ -99,8 +100,8 @@ public class JadConfig {
         for (Object configurationBean : configurationBeans) {
             LOG.debug("Processing configuration bean {}", configurationBean);
 
-            processClassFields(configurationBean, getAllFields(configurationBean.getClass()));
-            invokeValidatorMethods(configurationBean, getAllMethods(configurationBean.getClass()));
+            processClassFields(configurationBean, ReflectionUtils.getAllFields(configurationBean.getClass()));
+            invokeValidatorMethods(configurationBean, ReflectionUtils.getAllMethods(configurationBean.getClass()));
         }
     }
 
@@ -119,23 +120,21 @@ public class JadConfig {
     }
 
     ProcessingResponse doProcessFailingLazily() throws RepositoryException {
-        ProcessingResponse response = new ProcessingResponse();
-
         for (Repository repository : repositories) {
             LOG.debug("Opening repository {}", repository);
             repository.open();
         }
 
-        for (Object configurationBean : configurationBeans) {
-            LOG.debug("Processing configuration bean {}", configurationBean);
+        return configurationBeans.stream()
+                .peek(bean -> LOG.debug("Processing configuration bean {}", bean))
+                .map(this::processBean)
+                .collect(Collectors.collectingAndThen(Collectors.toList(), ProcessingResponse::new));
+    }
 
-            response.addOutcome(
-                configurationBean,
-                processClassFieldsFailingLazily(configurationBean, getAllFields(configurationBean.getClass())),
-                invokeValidatorMethodsFailingLazily(configurationBean, getAllMethods(configurationBean.getClass()))
-            );
-        }
-        return response;
+    private ProcessingOutcome processBean(Object bean) {
+        final Map<String, Exception> fieldProcessingProblems = processClassFieldsFailingLazily(bean, ReflectionUtils.getAllFields(bean.getClass()));
+        final Map<String, Exception> validationMethodsProblems = invokeValidatorMethodsFailingLazily(bean, ReflectionUtils.getAllMethods(bean.getClass()));
+        return new ProcessingOutcome(bean, fieldProcessingProblems, validationMethodsProblems);
     }
 
 
@@ -146,7 +145,7 @@ public class JadConfig {
     }
 
     private Map<String, Exception> processClassFieldsFailingLazily(Object configurationBean, Field[] fields) {
-        Map<String, Exception> fieldProcessingProblems = new HashMap<>();
+        final Map<String, Exception> fieldProcessingProblems = new HashMap<>();
         for (Field field : fields) {
             try {
                 processClassField(configurationBean, field);
@@ -281,7 +280,7 @@ public class JadConfig {
 
     private void invokeValidatorMethods(Object configurationBean, Method[] methods) throws ValidationException {
         try {
-            invokeMethodsWithAnnotation(configurationBean, ValidatorMethod.class, methods);
+            ReflectionUtils.invokeMethodsWithAnnotation(configurationBean, ValidatorMethod.class, methods);
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof ValidationException) {
                 throw (ValidationException)e.getTargetException();
@@ -294,7 +293,7 @@ public class JadConfig {
     }
 
     private Map<String, Exception> invokeValidatorMethodsFailingLazily(Object configurationBean, Method[] methods) {
-        Map<String, Exception> problems = new HashMap<>();
+        final Map<String, Exception> problems = new HashMap<>();
 
         for (Method method : methods) {
             if (method.isAnnotationPresent(ValidatorMethod.class)) {
@@ -364,7 +363,7 @@ public class JadConfig {
         final Map<String, String> configurationDump = new HashMap<String, String>();
 
         for (Object configurationBean : configurationBeans) {
-            for (Field field : getAllFields(configurationBean.getClass())) {
+            for (Field field : ReflectionUtils.getAllFields(configurationBean.getClass())) {
                 final Parameter parameter = field.getAnnotation(Parameter.class);
 
                 if (parameter != null) {

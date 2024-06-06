@@ -21,16 +21,10 @@ public class LazyValidationException extends ValidationException {
         result.getOutcomes().stream()
                 .filter(ProcessingOutcome::hasProblems)
                 .flatMap(processingOutcome -> Stream.concat(
-                        processingOutcome.getFieldProcessingProblems().values().stream().map(e -> toMessage(processingOutcome, e)),
-                        processingOutcome.getValidationMethodsProblems().values().stream().map(e -> toMessage(processingOutcome, e))
+                        processingOutcome.getFieldProcessingProblems().values().stream().map(Throwable::getMessage),
+                        processingOutcome.getValidationMethodsProblems().values().stream().map(Throwable::getMessage)
                 )).forEach(stringBuilder::add);
         return String.join("\n", stringBuilder);
-    }
-
-    private static String toMessage(ProcessingOutcome processingOutcome, Exception exception) {
-        // TODO: should we distinct between field processing problem and validation method?
-        // TODO: should we include class name of the bean or not?
-        return exception.getMessage();
     }
 
     public ProcessingResponse getProcessingResponse() {
