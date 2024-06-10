@@ -7,7 +7,6 @@ import com.github.joschi.jadconfig.validators.InetPortValidator;
 import com.github.joschi.jadconfig.validators.NoValidator;
 import com.github.joschi.jadconfig.validators.PositiveIntegerValidator;
 import com.github.joschi.jadconfig.validators.PositiveLongValidator;
-import com.github.joschi.jadconfig.validators.PositiveSizeValidator;
 
 public class ValidatedConfigurationBean {
 
@@ -54,7 +53,7 @@ public class ValidatedConfigurationBean {
     }
 
     @ValidatorMethod
-    public void validate() throws ValidationException {
+    public void myCustomValidatorMethod() throws ValidationException {
 
         if (!"Test".equals(myString)) {
             throw new ValidationException("BOOM");
