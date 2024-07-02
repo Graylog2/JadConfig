@@ -8,6 +8,7 @@ import com.github.joschi.jadconfig.testbeans.EmptyBean;
 import com.github.joschi.jadconfig.testbeans.FoobarConfigurationBean;
 import com.github.joschi.jadconfig.testbeans.InheritedBeanSubClass;
 import com.github.joschi.jadconfig.testbeans.InheritedBeanSubSubClass;
+import com.github.joschi.jadconfig.testbeans.InvalidDefaultValueValidatorBean;
 import com.github.joschi.jadconfig.testbeans.Multi1ConfigurationBean;
 import com.github.joschi.jadconfig.testbeans.Multi2ConfigurationBean;
 import com.github.joschi.jadconfig.testbeans.NonExistingParameterBean;
@@ -502,6 +503,16 @@ public class JadConfigTest {
         Assert.assertEquals(123456, configurationBean.getMyInt());
         Assert.assertEquals(1234567890123L, configurationBean.getMyLong());
     }
+
+    @Test
+    public void testProcessValidatedBeanInvalidDefaultValue() {
+        InvalidDefaultValueValidatorBean configurationBean = new InvalidDefaultValueValidatorBean();
+        jadConfig = new JadConfig(repository, configurationBean);
+
+        // the default value is -1, validator expects only positive longs => validation exception
+        Assert.assertThrows(ValidationException.class, () -> jadConfig.process());
+    }
+
 
     @Test
     public void testProcessNullPropertiesDoNotOverwriteDefaultValues() throws RepositoryException, ValidationException {
