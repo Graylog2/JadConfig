@@ -1,5 +1,7 @@
 package com.github.joschi.jadconfig;
 
+import java.util.Collection;
+
 /**
  * Interface for configuration repositories
  * <p>A configuration repository can be any data source containing configuration data,
@@ -24,6 +26,8 @@ public interface Repository {
      * @return The value of the provided {@literal name} as {@link String}
      */
     String read(String name);
+
+    Collection<String> readNames(String prefix);
 
     /**
      * Closes the underlying data source when it isn't require any more.

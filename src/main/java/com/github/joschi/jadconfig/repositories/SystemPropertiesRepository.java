@@ -3,6 +3,9 @@ package com.github.joschi.jadconfig.repositories;
 import com.github.joschi.jadconfig.Repository;
 import com.github.joschi.jadconfig.RepositoryException;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 /**
  * {@link Repository} class providing access to System properties.
  * <p/>
@@ -44,6 +47,11 @@ public class SystemPropertiesRepository implements Repository {
     public String read(String name) {
 
         return System.getProperty(prefix + name);
+    }
+
+    @Override
+    public Collection<String> readNames(String prefix) {
+        return System.getProperties().stringPropertyNames().stream().filter(key -> key.startsWith(prefix)).collect(Collectors.toSet());
     }
 
     @Override

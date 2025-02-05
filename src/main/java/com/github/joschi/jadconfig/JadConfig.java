@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -202,6 +203,27 @@ public class JadConfig {
                 throw new ParameterException("Couldn't set field " + field.getName(), e);
             }
         }
+
+        processPrefixParameter(configurationBean, field);
+    }
+
+    private void processPrefixParameter(Object configurationBean, Field field) {
+        AggregatedParameter parameter = field.getAnnotation(AggregatedParameter.class);
+        if (parameter != null) {
+            LOG.debug("Processing prefixed field {}", field);
+            final Map<String, String> params = repositories.stream().flatMap(r -> collectPrefixedParams(r, parameter.prefix()).entrySet().stream()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            try {
+                field.setAccessible(true);
+                field.set(configurationBean, params);
+            } catch (IllegalAccessException e) {
+                throw new ParameterException("Couldn't set field " + field.getName(), e);
+            }
+        }
+    }
+
+    private Map<String, String> collectPrefixedParams(Repository repository, String prefix) {
+        final Collection<String> names = repository.readNames(prefix);
+        return names.stream().collect(Collectors.toMap(Function.identity(), repository::read));
     }
 
     private String lookupFallbackParameter(Parameter parameter) {

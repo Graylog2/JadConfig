@@ -1,12 +1,14 @@
 package com.github.joschi.jadconfig.testbeans;
 
 import com.github.joschi.jadconfig.Parameter;
+import com.github.joschi.jadconfig.AggregatedParameter;
 import com.github.joschi.jadconfig.converters.StringListConverter;
 
 import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 public class SimpleConfigurationBean {
 
@@ -57,6 +59,9 @@ public class SimpleConfigurationBean {
 
     @Parameter(value = "test.Nonexistent3", fallbackPropertyName = "test.fallback.secondary")
     private String myHardcodedDefaultString = "foobar";
+
+    @AggregatedParameter(prefix = "opensearch.")
+    private Map<String, String> opensearchProperties;
 
     public String getMyString() {
         return myString;
@@ -120,5 +125,9 @@ public class SimpleConfigurationBean {
 
     public String getMyHardcodedDefaultString() {
         return myHardcodedDefaultString;
+    }
+
+    public Map<String, String> getOpensearchProperties() {
+        return opensearchProperties;
     }
 }

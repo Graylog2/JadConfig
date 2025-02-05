@@ -3,6 +3,9 @@ package com.github.joschi.jadconfig.repositories;
 import com.github.joschi.jadconfig.Repository;
 import com.github.joschi.jadconfig.RepositoryException;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 /**
  * {@link Repository} class providing access to environment variables.
  * <p/>
@@ -73,6 +76,20 @@ public class EnvironmentRepository implements Repository {
         }
 
         return System.getenv(envName);
+    }
+
+    @Override
+    public Collection<String> readNames(String namePrefix) {
+
+        final String envName;
+
+        if (upperCase) {
+            envName = (prefix + namePrefix).toUpperCase();
+        } else {
+            envName = prefix + namePrefix;
+        }
+
+        return System.getenv().keySet().stream().filter(e -> e.startsWith(envName)).collect(Collectors.toSet());
     }
 
     @Override
