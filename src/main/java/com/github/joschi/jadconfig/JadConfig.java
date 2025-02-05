@@ -186,12 +186,9 @@ public class JadConfig {
                 } catch (ParameterException e) {
                     throw new ParameterException("Couldn't convert value for parameter \"" + parameterName + "\"", e);
                 }
-
-                LOG.debug("Validating parameter {}", parameterName);
-                final List<Class<? extends Validator<?>>> validators =
-                        new ArrayList<>(Collections.<Class<? extends Validator<?>>>singleton(parameter.validator()));
-                validators.addAll(Arrays.asList(parameter.validators()));
-                validateParameter(validators, parameterName, fieldValue);
+                validateFieldValue(parameterName, parameter, fieldValue);
+            } else if (fieldValue != null) {
+                validateFieldValue(parameterName, parameter, fieldValue);
             }
 
             LOG.debug("Setting parameter {} to {}", parameterName, fieldValue);
@@ -202,6 +199,14 @@ public class JadConfig {
                 throw new ParameterException("Couldn't set field " + field.getName(), e);
             }
         }
+    }
+
+    private void validateFieldValue(String parameterName, Parameter parameter, Object fieldValue) throws ValidationException {
+        LOG.debug("Validating parameter {}", parameterName);
+        final List<Class<? extends Validator<?>>> validators =
+                new ArrayList<>(Collections.<Class<? extends Validator<?>>>singleton(parameter.validator()));
+        validators.addAll(Arrays.asList(parameter.validators()));
+        validateParameter(validators, parameterName, fieldValue);
     }
 
     private String lookupFallbackParameter(Parameter parameter) {
