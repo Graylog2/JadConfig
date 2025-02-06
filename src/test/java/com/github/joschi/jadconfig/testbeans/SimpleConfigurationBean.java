@@ -60,7 +60,7 @@ public class SimpleConfigurationBean {
     @Parameter(value = "test.Nonexistent3", fallbackPropertyName = "test.fallback.secondary")
     private String myHardcodedDefaultString = "foobar";
 
-    @AggregatedParameter(prefix = "opensearch.")
+    @AggregatedParameter(prefix = {"opensearch.", "opensearch_"}, stripPrefix = true)
     private Map<String, String> opensearchProperties;
 
     public String getMyString() {

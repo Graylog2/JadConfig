@@ -18,10 +18,11 @@ public class AggregatedPropertiesTest {
         jadConfig.process();
 
         Assert.assertNotNull(configurationBean.getOpensearchProperties());
-        Assert.assertEquals(3, configurationBean.getOpensearchProperties().size());
+        Assert.assertEquals(4, configurationBean.getOpensearchProperties().size());
 
-        Assert.assertEquals("search,cluster_manager", configurationBean.getOpensearchProperties().get("opensearch.node.roles"));
-        Assert.assertEquals("10gb", configurationBean.getOpensearchProperties().get("opensearch.node.search.cache.size"));
-        Assert.assertEquals("/tmp", configurationBean.getOpensearchProperties().get("opensearch.path.repo"));
+        Assert.assertEquals("search,cluster_manager", configurationBean.getOpensearchProperties().get("node.roles"));
+        Assert.assertEquals("10gb", configurationBean.getOpensearchProperties().get("node.search.cache.size"));
+        Assert.assertEquals("/tmp", configurationBean.getOpensearchProperties().get("path.repo"));
+        Assert.assertEquals("debug", configurationBean.getOpensearchProperties().get("logger.reindex.level"));
     }
 }

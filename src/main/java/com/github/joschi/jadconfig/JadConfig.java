@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -211,7 +212,7 @@ public class JadConfig {
         AggregatedParameter parameter = field.getAnnotation(AggregatedParameter.class);
         if (parameter != null) {
             LOG.debug("Processing prefixed field {}", field);
-            final Map<String, String> params = repositories.stream().flatMap(r -> collectPrefixedParams(r, parameter.prefix()).entrySet().stream()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            final Map<String, String> params = repositories.stream().flatMap(r -> collectPrefixedParams(r, parameter.prefix()).entrySet().stream()).collect(Collectors.toMap(entry -> stripPrefix(entry.getKey(), parameter), Map.Entry::getValue));
             try {
                 field.setAccessible(true);
                 field.set(configurationBean, params);
@@ -221,8 +222,20 @@ public class JadConfig {
         }
     }
 
-    private Map<String, String> collectPrefixedParams(Repository repository, String prefix) {
-        final Collection<String> names = repository.readNames(prefix);
+    private String stripPrefix(String key, AggregatedParameter parameter) {
+        if (parameter.stripPrefix()) {
+            return Arrays.stream(parameter.prefix())
+                    .filter(key::startsWith)
+                    .map(prefix -> key.replaceFirst(prefix, ""))
+                    .findFirst()
+                    .orElse(key);
+        } else {
+            return key;
+        }
+    }
+
+    private Map<String, String> collectPrefixedParams(Repository repository, String[] prefixes) {
+        final Set<String> names = Arrays.stream(prefixes).flatMap(prefix -> repository.readNames(prefix).stream()).collect(Collectors.toSet());
         return names.stream().collect(Collectors.toMap(Function.identity(), repository::read));
     }
 

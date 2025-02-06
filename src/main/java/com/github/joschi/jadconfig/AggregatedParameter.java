@@ -17,5 +17,10 @@ public @interface AggregatedParameter {
      * as defined. So if you want to match opensearch.path.repo and opensearch.node.roles, your prefix should be
      * {@code opensearch.}
      */
-    String prefix();
+    String[] prefix();
+
+    /**
+     * Should the prefix be removed from collected property names?
+     */
+    boolean stripPrefix() default false;
 }
