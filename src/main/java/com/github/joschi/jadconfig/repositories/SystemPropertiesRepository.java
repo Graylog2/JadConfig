@@ -56,8 +56,11 @@ public class SystemPropertiesRepository implements Repository {
     }
 
     @Override
-    public Collection<String> readNames(String prefix) {
-        return system.getProperties().stringPropertyNames().stream().filter(key -> key.startsWith(prefix)).collect(Collectors.toSet());
+    public Collection<String> readNames(String namePrefix) {
+        return system.getProperties().stringPropertyNames().stream()
+                .filter(key -> key.startsWith(prefix + namePrefix))
+                .map(propertyName -> propertyName.replaceFirst(prefix, ""))
+                .collect(Collectors.toSet());
     }
 
     @Override

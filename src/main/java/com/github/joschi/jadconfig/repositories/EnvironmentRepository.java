@@ -79,7 +79,11 @@ public class EnvironmentRepository implements Repository {
     @Override
     public Collection<String> readNames(String namePrefix) {
         final String envName = constructPropertyName(namePrefix);
-        return system.getenv().keySet().stream().filter(e -> e.startsWith(envName)).collect(Collectors.toSet());
+        return system.getenv().keySet()
+                .stream()
+                .filter(e -> e.startsWith(envName))
+                .map(propertyName -> propertyName.replaceFirst(prefix, ""))
+                .collect(Collectors.toSet());
     }
 
     private String constructPropertyName(String name) {

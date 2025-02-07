@@ -34,15 +34,18 @@ public class SystemPropertiesRepositoryTest {
     @Test
     public void testReadNames() {
         final TestSystem testSystem = new TestSystem();
-        testSystem.putProperty("opensearch.node.name", "my-node");
-        testSystem.putProperty("opensearch.node.roles", "search");
+        testSystem.putProperty("graylog2.opensearch.node.name", "my-node");
+        testSystem.putProperty("graylog2.opensearch.node.roles", "search");
         testSystem.putProperty("java_home", "/usr/share/java");
-        final Repository testRepository = new SystemPropertiesRepository("", testSystem);
+        final Repository testRepository = new SystemPropertiesRepository("graylog2.", testSystem);
 
         final Collection<String> names = testRepository.readNames("opensearch.");
         Assert.assertEquals(2, names.size());
         Assert.assertTrue(names.contains("opensearch.node.name"));
         Assert.assertTrue(names.contains("opensearch.node.roles"));
+
+        Assert.assertEquals("my-node", testRepository.read("opensearch.node.name"));
+        Assert.assertEquals("search", testRepository.read("opensearch.node.roles"));
     }
 
 }

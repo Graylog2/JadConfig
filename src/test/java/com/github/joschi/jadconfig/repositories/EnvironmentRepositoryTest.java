@@ -52,14 +52,17 @@ public class EnvironmentRepositoryTest {
     }
 
     @Test
-    public void testreadNames() {
+    public void testReadNames() {
         final TestSystem env = new TestSystem();
-        env.putEnv("OPENSEARCH_NODE_NAME", "my-node");
-        env.putEnv("OPENSEARCH_NODE_ROLE", "search");
-        final Repository testRepository = new EnvironmentRepository("", true, env);
+        env.putEnv("GRAYLOG_DATANODE_OPENSEARCH_NODE_NAME", "my-node");
+        env.putEnv("GRAYLOG_DATANODE_OPENSEARCH_NODE_ROLE", "search");
+        final Repository testRepository = new EnvironmentRepository("GRAYLOG_DATANODE_", true, env);
         final Collection<String> names = testRepository.readNames("OPENSEARCH_");
         Assert.assertEquals(2, names.size());
         Assert.assertTrue(names.contains("OPENSEARCH_NODE_NAME"));
         Assert.assertTrue(names.contains("OPENSEARCH_NODE_ROLE"));
+
+        Assert.assertEquals("my-node", testRepository.read("OPENSEARCH_NODE_NAME"));
+        Assert.assertEquals("search", testRepository.read("OPENSEARCH_NODE_ROLE"));
     }
 }
