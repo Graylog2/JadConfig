@@ -7,7 +7,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Collection;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * {@link Repository} class providing access to a configuration repository backed by {@link Properties} files
@@ -98,6 +100,11 @@ public class PropertiesRepository implements Repository {
     public String read(String name) {
 
         return PROPERTIES.getProperty(name);
+    }
+
+    @Override
+    public Collection<String> readNames(String prefix) {
+        return PROPERTIES.stringPropertyNames().stream().filter(name -> name.startsWith(prefix)).collect(Collectors.toSet());
     }
 
     /**

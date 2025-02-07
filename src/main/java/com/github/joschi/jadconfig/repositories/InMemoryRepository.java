@@ -3,8 +3,11 @@ package com.github.joschi.jadconfig.repositories;
 import com.github.joschi.jadconfig.Repository;
 import com.github.joschi.jadconfig.RepositoryException;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * {@link Repository} class providing access to a simple configuration repository backed by {@link HashMap}
@@ -13,9 +16,10 @@ import java.util.Map;
  */
 public class InMemoryRepository implements Repository {
 
-    private Map<String, String> properties = null;
+    private final Map<String, String> properties;
 
     public InMemoryRepository() {
+        this(new LinkedHashMap<>());
     }
 
     public InMemoryRepository(Map<String, String> properties) {
@@ -24,42 +28,19 @@ public class InMemoryRepository implements Repository {
 
     @Override
     public void open() throws RepositoryException {
-
-        if (properties == null) {
-
-            properties = new HashMap<String, String>();
-        }
     }
 
     @Override
     public String read(String name) {
-
-        if (properties == null) {
-
-            throw new IllegalStateException("Repository has already been closed or has never been opened");
-        }
-
         return properties.get(name);
     }
 
     @Override
-    public void close() throws RepositoryException {
-
-        if (properties == null) {
-
-            throw new IllegalStateException("Repository has already been closed or has never been opened");
-        }
-
-        properties = null;
+    public Collection<String> readNames(String prefix) {
+        return properties.keySet().stream().filter(key -> key.startsWith(prefix)).collect(Collectors.toSet());
     }
 
-    public int size() {
-
-        if (properties == null) {
-
-            throw new IllegalStateException("Call open before attempting any other operation");
-        }
-
-        return properties.size();
+    @Override
+    public void close() {
     }
 }
