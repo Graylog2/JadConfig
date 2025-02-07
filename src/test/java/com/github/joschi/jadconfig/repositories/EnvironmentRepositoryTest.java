@@ -1,9 +1,11 @@
 package com.github.joschi.jadconfig.repositories;
 
+import com.github.joschi.jadconfig.Repository;
 import com.github.joschi.jadconfig.RepositoryException;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Collection;
 
 /**
  * Unit tests for {@link EnvironmentRepository}
@@ -12,59 +14,52 @@ import org.junit.Test;
  */
 public class EnvironmentRepositoryTest {
 
-    private EnvironmentRepository repository;
-
-    @Before
-    public void setUp() {
-
-        repository = new EnvironmentRepository();
-    }
-
-    @Test
-    public void testOpen() throws RepositoryException {
-
-        repository.open();
-    }
-
-    @Test
-    public void testClose() throws RepositoryException {
-
-        repository.close();
-    }
-
     @Test
     public void testRead() throws RepositoryException {
-
+        final TestSystem testEnv = new TestSystem();
+        testEnv.putEnv("JAVA_HOME", "/usr/share/java");
+        final Repository repository = new EnvironmentRepository("", true, testEnv);
         Assert.assertNull(repository.read("This environment variable should not exist"));
-
-        Assert.assertEquals(System.getenv("JAVA_HOME"), repository.read("JAVA_HOME"));
+        Assert.assertEquals("/usr/share/java", repository.read("JAVA_HOME"));
     }
 
     @Test
     public void testUpperCaseEnabledRead() throws RepositoryException {
-        final EnvironmentRepository testRepository = new EnvironmentRepository(true);
-
-        Assert.assertEquals(System.getenv("JAVA_HOME"), testRepository.read("jAvA_homE"));
+        final TestSystem testEnv = new TestSystem();
+        testEnv.putEnv("JAVA_HOME", "/usr/share/java");
+        final Repository repository = new EnvironmentRepository("", true, testEnv);
+        Assert.assertEquals("/usr/share/java", repository.read("jAvA_homE"));
     }
 
     @Test
     public void testUpperCaseDisabledRead() throws RepositoryException {
-        final EnvironmentRepository testRepository = new EnvironmentRepository(false);
+        final TestSystem testEnv = new TestSystem();
+        testEnv.putEnv("JAVA_HOME", "/usr/share/java");
+        final Repository repository = new EnvironmentRepository("", false, testEnv);
 
-        Assert.assertNull(testRepository.read("jAvA_homE"));
-        Assert.assertEquals(System.getenv("JAVA_HOME"), testRepository.read("JAVA_HOME"));
+        Assert.assertNull(repository.read("jAvA_homE"));
+        Assert.assertEquals("/usr/share/java", repository.read("JAVA_HOME"));
     }
 
     @Test
     public void testPrefixedRead() throws RepositoryException {
-        final EnvironmentRepository testRepository = new EnvironmentRepository("JAVA_");
 
-        Assert.assertEquals(System.getenv("JAVA_HOME"), testRepository.read("HOME"));
+        final TestSystem testEnv = new TestSystem();
+        testEnv.putEnv("JAVA_HOME", "/usr/share/java");
+        final Repository repository = new EnvironmentRepository("JAVA_", true, testEnv);
+
+        Assert.assertEquals("/usr/share/java", repository.read("HOME"));
     }
 
     @Test
-    public void testSize() throws RepositoryException {
-
-        Assert.assertEquals(System.getenv().size(), repository.size());
+    public void testreadNames() {
+        final TestSystem env = new TestSystem();
+        env.putEnv("OPENSEARCH_NODE_NAME", "my-node");
+        env.putEnv("OPENSEARCH_NODE_ROLE", "search");
+        final Repository testRepository = new EnvironmentRepository("", true, env);
+        final Collection<String> names = testRepository.readNames("OPENSEARCH_");
+        Assert.assertEquals(2, names.size());
+        Assert.assertTrue(names.contains("OPENSEARCH_NODE_NAME"));
+        Assert.assertTrue(names.contains("OPENSEARCH_NODE_ROLE"));
     }
 }

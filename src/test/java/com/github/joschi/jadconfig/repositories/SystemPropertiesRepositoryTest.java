@@ -1,9 +1,10 @@
 package com.github.joschi.jadconfig.repositories;
 
-import com.github.joschi.jadconfig.RepositoryException;
+import com.github.joschi.jadconfig.Repository;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Collection;
 
 /**
  * Unit tests for {@link SystemPropertiesRepository}
@@ -12,43 +13,36 @@ import org.junit.Test;
  */
 public class SystemPropertiesRepositoryTest {
 
-    private SystemPropertiesRepository repository;
-
-    @Before
-    public void setUp() {
-
-        repository = new SystemPropertiesRepository();
-    }
-
     @Test
-    public void testOpen() throws RepositoryException {
-
-        repository.open();
-    }
-
-    @Test
-    public void testClose() throws RepositoryException {
-
-        repository.close();
-    }
-
-    @Test
-    public void testRead() throws RepositoryException {
+    public void testRead() {
+        final TestSystem testSystem = new TestSystem();
+        testSystem.putProperty("java.version", "1.8");
+        final Repository repository = new SystemPropertiesRepository("", testSystem);
 
         Assert.assertNull(repository.read("This system property should not exist"));
-        Assert.assertEquals(System.getProperty("java.version"), repository.read("java.version"));
+        Assert.assertEquals("1.8", repository.read("java.version"));
     }
 
     @Test
-    public void testReadWithPrefix() throws RepositoryException {
-        final SystemPropertiesRepository testRepository = new SystemPropertiesRepository("java.");
-
-        Assert.assertEquals(System.getProperty("java.version"), testRepository.read("version"));
+    public void testReadWithPrefix() {
+        final TestSystem testSystem = new TestSystem();
+        testSystem.putProperty("java.version", "1.8");
+        final Repository testRepository = new SystemPropertiesRepository("java.", testSystem);
+        Assert.assertEquals("1.8", testRepository.read("version"));
     }
 
     @Test
-    public void testSize() throws RepositoryException {
+    public void testReadNames() {
+        final TestSystem testSystem = new TestSystem();
+        testSystem.putProperty("opensearch.node.name", "my-node");
+        testSystem.putProperty("opensearch.node.roles", "search");
+        testSystem.putProperty("java_home", "/usr/share/java");
+        final Repository testRepository = new SystemPropertiesRepository("", testSystem);
 
-        Assert.assertEquals(System.getProperties().size(), repository.size());
+        final Collection<String> names = testRepository.readNames("opensearch.");
+        Assert.assertEquals(2, names.size());
+        Assert.assertTrue(names.contains("opensearch.node.name"));
+        Assert.assertTrue(names.contains("opensearch.node.roles"));
     }
+
 }

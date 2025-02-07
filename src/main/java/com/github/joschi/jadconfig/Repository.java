@@ -27,6 +27,9 @@ public interface Repository {
      */
     String read(String name);
 
+    /**
+     * Reads all available property names beginning with {@code prefix}.
+     */
     Collection<String> readNames(String prefix);
 
     /**

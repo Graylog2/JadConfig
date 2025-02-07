@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
  * A prefix for all key lookups can be defined with {@link #EnvironmentRepository(String)}.
  * The default prefix is empty.
  *
- * @see System#getenv()
- * @see System#getenv(String)
+ * @see java.lang.System#getenv()
+ * @see java.lang.System#getenv(String)
  */
 public class EnvironmentRepository implements Repository {
-
     private final String prefix;
     private final boolean upperCase;
+    private final JavaSystem system;
 
     /**
      * Creates a new instance of {@link EnvironmentRepository} with the default settings,
@@ -56,8 +56,13 @@ public class EnvironmentRepository implements Repository {
      * @param upperCase Whether keys should be looked up in upper case.
      */
     public EnvironmentRepository(final String prefix, boolean upperCase) {
+        this(prefix, upperCase, JavaLangSystem.INSTANCE);
+    }
+
+    public EnvironmentRepository(String prefix, boolean upperCase, JavaSystem system) {
         this.prefix = prefix;
         this.upperCase = upperCase;
+        this.system = system;
     }
 
     @Override
@@ -67,37 +72,30 @@ public class EnvironmentRepository implements Repository {
 
     @Override
     public String read(final String name) {
-        final String envName;
-
-        if (upperCase) {
-            envName = (prefix + name).toUpperCase();
-        } else {
-            envName = prefix + name;
-        }
-
-        return System.getenv(envName);
+        final String envName = constructPropertyName(name);
+        return system.getenv(envName);
     }
 
     @Override
     public Collection<String> readNames(String namePrefix) {
+        final String envName = constructPropertyName(namePrefix);
+        return system.getenv().keySet().stream().filter(e -> e.startsWith(envName)).collect(Collectors.toSet());
+    }
 
-        final String envName;
-
+    private String constructPropertyName(String name) {
         if (upperCase) {
-            envName = (prefix + namePrefix).toUpperCase();
+            return  (prefix + name).toUpperCase();
         } else {
-            envName = prefix + namePrefix;
+            return prefix + name;
         }
-
-        return System.getenv().keySet().stream().filter(e -> e.startsWith(envName)).collect(Collectors.toSet());
     }
 
     @Override
-    public void close() throws RepositoryException {
+    public void close() {
         // NOP
     }
 
     public int size() {
-        return System.getenv().size();
+        return system.getenv().size();
     }
 }

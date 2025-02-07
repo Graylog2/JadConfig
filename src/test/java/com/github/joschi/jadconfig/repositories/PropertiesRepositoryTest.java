@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 
 import static org.junit.Assert.fail;
 
@@ -96,5 +97,24 @@ public class PropertiesRepositoryTest {
 
         repository.open();
         repository.close();
+    }
+
+    @Test
+    public void testReadNames() throws RepositoryException {
+        final PropertiesRepository testRepository = new PropertiesRepository(PROPERTIES_FILE);
+        try {
+            testRepository.open();
+            final Collection<String> names = testRepository.readNames("opensearch.");
+            Assert.assertEquals(3, names.size());
+            Assert.assertTrue(names.contains("opensearch.node.roles"));
+            Assert.assertTrue(names.contains("opensearch.node.search.cache.size"));
+            Assert.assertTrue(names.contains("opensearch.path.repo"));
+
+            final Collection<String> underscoreNames = testRepository.readNames("opensearch_");
+            Assert.assertEquals(1, underscoreNames.size());
+            Assert.assertTrue(underscoreNames.contains("opensearch_logger.reindex.level"));
+        } finally {
+            testRepository.close();
+        }
     }
 }
