@@ -140,7 +140,7 @@ To use JadConfig in your project using Maven add the following lines into the de
     <dependency>
         <groupId>org.graylog</groupId>
         <artifactId>jadconfig</artifactId>
-        <version>0.13.0</version>
+        <version>0.16.0</version>
     </dependency>
 
 
