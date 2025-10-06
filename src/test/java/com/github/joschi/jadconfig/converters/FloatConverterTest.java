@@ -33,7 +33,7 @@ public class FloatConverterTest {
         Assert.assertEquals(Float.MAX_VALUE, converter.convertFrom("3.4028235E38"), 0.0f);
 
         Assert.assertEquals(0.0f, converter.convertFrom("1.4E-46"), 0.0f);
-        Assert.assertEquals(Float.MIN_NORMAL, converter.convertFrom("1.17549435E-38f"), 0.0f);
+        Assert.assertEquals(Float.MIN_NORMAL, converter.convertFrom("1.1754944E-38f"), 0.0f);
 
         Assert.assertEquals(Float.POSITIVE_INFINITY, converter.convertFrom("3.4028235E39"), 0.0f);
         Assert.assertEquals(Float.NEGATIVE_INFINITY, converter.convertFrom("-3.4028235E39"), 0.0f);
@@ -65,7 +65,7 @@ public class FloatConverterTest {
         Assert.assertEquals("1.4E-45", converter.convertTo(Float.MIN_VALUE));
         Assert.assertEquals("3.4028235E38", converter.convertTo(Float.MAX_VALUE));
 
-        Assert.assertEquals("1.17549435E-38", converter.convertTo(Float.MIN_NORMAL));
+        Assert.assertEquals("1.1754944E-38", converter.convertTo(Float.MIN_NORMAL));
 
         Assert.assertEquals("Infinity", converter.convertTo(Float.POSITIVE_INFINITY));
         Assert.assertEquals("-Infinity", converter.convertTo(Float.NEGATIVE_INFINITY));
