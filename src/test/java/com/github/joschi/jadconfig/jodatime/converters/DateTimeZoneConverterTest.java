@@ -2,12 +2,13 @@ package com.github.joschi.jadconfig.jodatime.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
 import org.joda.time.DateTimeZone;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.TimeZone;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link com.github.joschi.jadconfig.jodatime.converters.DateTimeZoneConverter}
@@ -17,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 public class DateTimeZoneConverterTest {
     private DateTimeZoneConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         converter = new DateTimeZoneConverter();
     }
@@ -30,9 +31,11 @@ public class DateTimeZoneConverterTest {
         assertEquals(DateTimeZone.getDefault(), converter.convertFrom(TimeZone.getDefault().getID()));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromEmpty() {
-        converter.convertFrom("");
+        assertThrows(ParameterException.class, () ->
+                converter.convertFrom("")
+        );
     }
 
     @Test

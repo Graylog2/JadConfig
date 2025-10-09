@@ -1,11 +1,13 @@
 package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link LocaleConverter}
@@ -16,7 +18,7 @@ public class LocaleConverterTest {
 
     private LocaleConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         converter = new LocaleConverter();
@@ -25,28 +27,30 @@ public class LocaleConverterTest {
     @Test
     public void testConvertFrom() {
 
-        Assert.assertEquals(Locale.GERMAN, converter.convertFrom("de"));
-        Assert.assertEquals(Locale.GERMANY, converter.convertFrom("de_DE"));
-        Assert.assertEquals(Locale.US, converter.convertFrom("en_US"));
-        Assert.assertEquals(new Locale("es", "ES", "Traditional_WIN"), converter.convertFrom("es_ES_Traditional_WIN"));
+        Assertions.assertEquals(Locale.GERMAN, converter.convertFrom("de"));
+        Assertions.assertEquals(Locale.GERMANY, converter.convertFrom("de_DE"));
+        Assertions.assertEquals(Locale.US, converter.convertFrom("en_US"));
+        Assertions.assertEquals(new Locale("es", "ES", "Traditional_WIN"), converter.convertFrom("es_ES_Traditional_WIN"));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
     @Test
     public void testConvertTo() {
 
-        Assert.assertEquals(Locale.GERMAN.toString(), converter.convertTo(Locale.GERMAN));
-        Assert.assertEquals(Locale.US.toString(), converter.convertTo(Locale.US));
+        Assertions.assertEquals(Locale.GERMAN.toString(), converter.convertTo(Locale.GERMAN));
+        Assertions.assertEquals(Locale.US.toString(), converter.convertTo(Locale.US));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-
-        converter.convertTo(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertTo(null)
+        );
     }
 }

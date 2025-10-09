@@ -1,9 +1,11 @@
 package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link StringConverter}
@@ -14,7 +16,7 @@ public class StringConverterTest {
 
     private StringConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         converter = new StringConverter();
@@ -23,26 +25,28 @@ public class StringConverterTest {
     @Test
     public void testConvertFrom() {
 
-        Assert.assertEquals("", converter.convertFrom(""));
-        Assert.assertEquals("Test", converter.convertFrom("Test"));
+        Assertions.assertEquals("", converter.convertFrom(""));
+        Assertions.assertEquals("Test", converter.convertFrom("Test"));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
     @Test
     public void testConvertTo() {
 
-        Assert.assertEquals("", converter.convertTo(""));
-        Assert.assertEquals("Test", converter.convertTo("Test"));
+        Assertions.assertEquals("", converter.convertTo(""));
+        Assertions.assertEquals("Test", converter.convertTo("Test"));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-
-        converter.convertTo(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertTo(null)
+        );
     }
 }

@@ -2,10 +2,11 @@ package com.github.joschi.jadconfig.jodatime.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
 import org.joda.time.Days;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link com.github.joschi.jadconfig.jodatime.converters.DaysConverter}
@@ -15,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 public class DaysConverterTest {
     private DaysConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         converter = new DaysConverter();
     }
@@ -29,29 +30,39 @@ public class DaysConverterTest {
         assertEquals(Days.MAX_VALUE, converter.convertFrom("2147483647"));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromTooBig() {
-        converter.convertFrom("2147483648");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("2147483648")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromTooSmall() {
-        converter.convertFrom("-2147483649");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("-2147483649")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromEmpty() {
-        converter.convertFrom("");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertInvalid() {
-        converter.convertFrom("Not a number");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("Not a number")
+        );
     }
 
     @Test
@@ -63,8 +74,10 @@ public class DaysConverterTest {
         assertEquals("2147483647", converter.convertTo(Days.MAX_VALUE));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-        converter.convertTo(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertTo(null)
+        );
     }
 }

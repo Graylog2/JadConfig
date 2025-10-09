@@ -1,15 +1,18 @@
 package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import com.github.joschi.jadconfig.RepositoryException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link PathConverter}
@@ -20,7 +23,7 @@ public class PathConverterTest {
 
     private PathConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         converter = new PathConverter();
@@ -32,14 +35,15 @@ public class PathConverterTest {
         Path tmpFile = Files.createTempFile("PathConverterTest-testConvertFrom", ".tmp");
         tmpFile.toFile().deleteOnExit();
 
-        Assert.assertEquals(Paths.get(""), converter.convertFrom(""));
-        Assert.assertEquals(tmpFile, converter.convertFrom(tmpFile.toString()));
+        Assertions.assertEquals(Paths.get(""), converter.convertFrom(""));
+        Assertions.assertEquals(tmpFile, converter.convertFrom(tmpFile.toString()));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
     @Test
@@ -48,13 +52,14 @@ public class PathConverterTest {
         Path tmpFile = Files.createTempFile("PathConverterTest-testConvertTo", ".tmp");
         tmpFile.toFile().deleteOnExit();
 
-        Assert.assertEquals("", converter.convertTo(Paths.get("")));
-        Assert.assertEquals(tmpFile.toString(), converter.convertTo(tmpFile));
+        Assertions.assertEquals("", converter.convertTo(Paths.get("")));
+        Assertions.assertEquals(tmpFile.toString(), converter.convertTo(tmpFile));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-
-        converter.convertTo(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertTo(null)
+        );
     }
 }

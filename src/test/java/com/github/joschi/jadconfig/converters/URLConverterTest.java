@@ -1,12 +1,14 @@
 package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link URLConverter}
@@ -17,7 +19,7 @@ public class URLConverterTest {
 
     private URLConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         converter = new URLConverter();
@@ -26,36 +28,39 @@ public class URLConverterTest {
     @Test
     public void testConvertFrom() throws MalformedURLException {
 
-        Assert.assertEquals(new URL("http://localhost:80/path?key=value#fragment"), converter.convertFrom("http://localhost:80/path?key=value#fragment"));
+        Assertions.assertEquals(new URL("http://localhost:80/path?key=value#fragment"), converter.convertFrom("http://localhost:80/path?key=value#fragment"));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromEmptyString() {
-
-        converter.convertFrom("");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromInvalid() {
-
-        converter.convertFrom("Not an URL");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("Not an URL")
+        );
     }
 
     @Test
     public void testConvertTo() throws MalformedURLException {
-
-        Assert.assertEquals("http://localhost:80/path?key=value#fragment", converter.convertTo(new URL("http://localhost:80/path?key=value#fragment")));
+        Assertions.assertEquals("http://localhost:80/path?key=value#fragment", converter.convertTo(new URL("http://localhost:80/path?key=value#fragment")));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-
-        converter.convertTo(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertTo(null)
+        );
     }
 }

@@ -2,9 +2,11 @@ package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
 import com.github.joschi.jadconfig.util.SizeUnit;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link SizeUnitConverter}
@@ -14,41 +16,49 @@ import org.junit.Test;
 public class SizeUnitConverterTest {
     private SizeUnitConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         converter = new SizeUnitConverter();
     }
 
     @Test
     public void testConvertFrom() {
-        Assert.assertEquals(SizeUnit.BYTES, converter.convertFrom("bytes"));
-        Assert.assertEquals(SizeUnit.KILOBYTES, converter.convertFrom("KILObytes"));
-        Assert.assertEquals(SizeUnit.MEGABYTES, converter.convertFrom("MEGABYTES"));
+        Assertions.assertEquals(SizeUnit.BYTES, converter.convertFrom("bytes"));
+        Assertions.assertEquals(SizeUnit.KILOBYTES, converter.convertFrom("KILObytes"));
+        Assertions.assertEquals(SizeUnit.MEGABYTES, converter.convertFrom("MEGABYTES"));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromEmptyString() {
-        converter.convertFrom("");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromInvalid() {
-        converter.convertFrom("Invalid SizeUnit");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("Invalid SizeUnit")
+        );
     }
 
     @Test
     public void testConvertTo() {
-        Assert.assertEquals("BYTES", converter.convertTo(SizeUnit.BYTES));
-        Assert.assertEquals("KILOBYTES", converter.convertTo(SizeUnit.KILOBYTES));
+        Assertions.assertEquals("BYTES", converter.convertTo(SizeUnit.BYTES));
+        Assertions.assertEquals("KILOBYTES", converter.convertTo(SizeUnit.KILOBYTES));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-        converter.convertTo(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertTo(null)
+        );
     }
 }

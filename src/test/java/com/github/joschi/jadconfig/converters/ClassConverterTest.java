@@ -1,11 +1,13 @@
 package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link com.github.joschi.jadconfig.converters.UUIDConverter}
@@ -13,7 +15,7 @@ import java.util.UUID;
 public class ClassConverterTest {
     private ClassConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         converter = new ClassConverter();
     }
@@ -21,32 +23,40 @@ public class ClassConverterTest {
     @Test
     public void testConvertFrom() {
         Class<?> clazz = String.class;
-        Assert.assertEquals(clazz, converter.convertFrom(clazz.getCanonicalName()));
+        Assertions.assertEquals(clazz, converter.convertFrom(clazz.getCanonicalName()));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromEmptyString() {
-        converter.convertFrom("");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromInvalid() {
-        converter.convertFrom("Invalid Class");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("Invalid Class")
+        );
     }
 
     @Test
     public void testConvertTo() {
         Class<?> clazz = String.class;
-        Assert.assertEquals(clazz.getCanonicalName(), converter.convertTo(clazz));
+        Assertions.assertEquals(clazz.getCanonicalName(), converter.convertTo(clazz));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-        converter.convertTo(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertTo(null)
+        );
     }
 }

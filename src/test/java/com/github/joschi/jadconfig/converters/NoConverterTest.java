@@ -1,7 +1,10 @@
 package com.github.joschi.jadconfig.converters;
 
-import org.junit.Before;
-import org.junit.Test;
+import com.github.joschi.jadconfig.ValidationException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link NoConverter}
@@ -12,21 +15,23 @@ public class NoConverterTest {
 
     private NoConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         converter = new NoConverter();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testConvertFrom() {
-
-        converter.convertFrom("");
+        assertThrows(UnsupportedOperationException.class,
+                () -> converter.convertFrom("")
+        );
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testConvertTo() {
-
-        converter.convertTo("");
+        assertThrows(UnsupportedOperationException.class,
+                () -> converter.convertTo("")
+        );
     }
 }

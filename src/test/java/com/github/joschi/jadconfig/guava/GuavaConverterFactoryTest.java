@@ -16,9 +16,9 @@ import com.google.common.net.InternetDomainName;
 import com.google.common.net.MediaType;
 import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GuavaConverterFactoryTest {
     @Test

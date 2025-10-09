@@ -1,9 +1,12 @@
 package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import com.github.joschi.jadconfig.ValidationException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link ByteConverter}
@@ -14,7 +17,7 @@ public class ByteConverterTest {
 
     private ByteConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         converter = new ByteConverter();
@@ -23,50 +26,55 @@ public class ByteConverterTest {
     @Test
     public void testConvertFrom() {
 
-        Assert.assertEquals(Byte.valueOf((byte) 0), converter.convertFrom("0"));
-        Assert.assertEquals(Byte.valueOf((byte) 1), converter.convertFrom("1"));
-        Assert.assertEquals(Byte.valueOf((byte) -1), converter.convertFrom("-1"));
-        Assert.assertEquals(Byte.MIN_VALUE, converter.convertFrom("-128").byteValue());
-        Assert.assertEquals(Byte.MAX_VALUE, converter.convertFrom("127").byteValue());
+        Assertions.assertEquals(Byte.valueOf((byte) 0), converter.convertFrom("0"));
+        Assertions.assertEquals(Byte.valueOf((byte) 1), converter.convertFrom("1"));
+        Assertions.assertEquals(Byte.valueOf((byte) -1), converter.convertFrom("-1"));
+        Assertions.assertEquals(Byte.MIN_VALUE, converter.convertFrom("-128").byteValue());
+        Assertions.assertEquals(Byte.MAX_VALUE, converter.convertFrom("127").byteValue());
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromTooBig() {
-
-        converter.convertFrom("128");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("128")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromTooSmall() {
-
-        converter.convertFrom("-129");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("-129")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertInvalid() {
-
-        converter.convertFrom("Not a number");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("Not a number")
+        );
     }
 
     @Test
     public void testConvertTo() {
 
-        Assert.assertEquals("0", converter.convertTo((byte) 0));
-        Assert.assertEquals("1", converter.convertTo((byte) 1));
-        Assert.assertEquals("-1", converter.convertTo((byte) -1));
-        Assert.assertEquals("-128", converter.convertTo(Byte.MIN_VALUE));
-        Assert.assertEquals("127", converter.convertTo(Byte.MAX_VALUE));
+        Assertions.assertEquals("0", converter.convertTo((byte) 0));
+        Assertions.assertEquals("1", converter.convertTo((byte) 1));
+        Assertions.assertEquals("-1", converter.convertTo((byte) -1));
+        Assertions.assertEquals("-128", converter.convertTo(Byte.MIN_VALUE));
+        Assertions.assertEquals("127", converter.convertTo(Byte.MAX_VALUE));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-
-        converter.convertTo(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertTo(null)
+        );
     }
 }

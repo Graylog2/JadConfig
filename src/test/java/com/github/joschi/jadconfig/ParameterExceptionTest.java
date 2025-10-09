@@ -1,7 +1,9 @@
 package com.github.joschi.jadconfig;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link ParameterException}
@@ -17,24 +19,26 @@ public class ParameterExceptionTest {
 
         exception = new ParameterException();
 
-        Assert.assertNull(exception.getMessage());
-        Assert.assertNull(exception.getCause());
+        Assertions.assertNull(exception.getMessage());
+        Assertions.assertNull(exception.getCause());
 
         exception = new ParameterException("Test");
 
-        Assert.assertEquals("Test", exception.getMessage());
-        Assert.assertNull(exception.getCause());
+        Assertions.assertEquals("Test", exception.getMessage());
+        Assertions.assertNull(exception.getCause());
 
         Exception cause = new Exception("Cause");
         exception = new ParameterException("Test", cause);
 
-        Assert.assertEquals("Test", exception.getMessage());
-        Assert.assertEquals(cause, exception.getCause());
+        Assertions.assertEquals("Test", exception.getMessage());
+        Assertions.assertEquals(cause, exception.getCause());
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testRuntimeException() {
-
-        throw new ParameterException("Test");
+        assertThrows(ParameterException.class,
+                () -> {
+                    throw new ParameterException("Test");
+        });
     }
 }

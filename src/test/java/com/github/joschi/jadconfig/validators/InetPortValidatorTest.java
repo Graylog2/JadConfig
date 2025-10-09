@@ -1,8 +1,11 @@
 package com.github.joschi.jadconfig.validators;
 
+import com.github.joschi.jadconfig.ParameterException;
 import com.github.joschi.jadconfig.ValidationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link com.github.joschi.jadconfig.validators.InetPortValidator}
@@ -13,7 +16,7 @@ public class InetPortValidatorTest {
 
     private InetPortValidator validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         validator = new InetPortValidator();
     }
@@ -25,14 +28,18 @@ public class InetPortValidatorTest {
         validator.validate("Test", 65535);
     }
 
-    @Test(expected = ValidationException.class)
-    public void testValidateNegative() throws ValidationException {
-        validator.validate("Test", -1);
+    @Test
+    public void testValidateNegative() {
+        assertThrows(ValidationException.class,
+                () -> validator.validate("Test", -1)
+        );
     }
 
-    @Test(expected = ValidationException.class)
-    public void testValidateTooBig() throws ValidationException {
-        validator.validate("Test", 65536);
+    @Test
+    public void testValidateTooBig() {
+        assertThrows(ValidationException.class,
+                () -> validator.validate("Test", 65536)
+        );
     }
 
     @Test

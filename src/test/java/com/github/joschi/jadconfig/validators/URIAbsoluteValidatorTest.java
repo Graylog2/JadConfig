@@ -1,10 +1,13 @@
 package com.github.joschi.jadconfig.validators;
 
+import com.github.joschi.jadconfig.ParameterException;
 import com.github.joschi.jadconfig.ValidationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.net.URI;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link URIAbsoluteValidator}
@@ -15,7 +18,7 @@ public class URIAbsoluteValidatorTest {
 
     private URIAbsoluteValidator validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         validator = new URIAbsoluteValidator();
     }
@@ -27,14 +30,18 @@ public class URIAbsoluteValidatorTest {
         validator.validate("Test", URI.create("test://example.com/test?foo=bar#foobaz"));
     }
 
-    @Test(expected = ValidationException.class)
-    public void testValidateRelativeURI() throws ValidationException {
-        validator.validate("Test", URI.create("/nope"));
+    @Test
+    public void testValidateRelativeURI() {
+        assertThrows(ValidationException.class,
+                () -> validator.validate("Test", URI.create("/nope"))
+        );
     }
 
-    @Test(expected = ValidationException.class)
-    public void testValidateEmptyURI() throws ValidationException {
-        validator.validate("Test", URI.create(""));
+    @Test
+    public void testValidateEmptyURI() {
+        assertThrows(ValidationException.class,
+                () -> validator.validate("Test", URI.create(""))
+        );
     }
 
     @Test

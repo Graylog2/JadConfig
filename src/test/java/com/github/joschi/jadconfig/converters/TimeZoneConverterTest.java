@@ -1,11 +1,13 @@
 package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.TimeZone;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link com.github.joschi.jadconfig.converters.TimeZoneConverter}
@@ -16,7 +18,7 @@ public class TimeZoneConverterTest {
 
     private TimeZoneConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         converter = new TimeZoneConverter();
@@ -25,30 +27,32 @@ public class TimeZoneConverterTest {
     @Test
     public void testConvertFrom() {
 
-        Assert.assertEquals(TimeZone.getTimeZone("GMT"), converter.convertFrom(""));
-        Assert.assertEquals(TimeZone.getTimeZone("Europe/Berlin"), converter.convertFrom("Europe/Berlin"));
-        Assert.assertEquals(TimeZone.getTimeZone("Asia/Tokyo"), converter.convertFrom("Asia/Tokyo"));
-        Assert.assertEquals(TimeZone.getDefault(), converter.convertFrom(TimeZone.getDefault().getID()));
+        Assertions.assertEquals(TimeZone.getTimeZone("GMT"), converter.convertFrom(""));
+        Assertions.assertEquals(TimeZone.getTimeZone("Europe/Berlin"), converter.convertFrom("Europe/Berlin"));
+        Assertions.assertEquals(TimeZone.getTimeZone("Asia/Tokyo"), converter.convertFrom("Asia/Tokyo"));
+        Assertions.assertEquals(TimeZone.getDefault(), converter.convertFrom(TimeZone.getDefault().getID()));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
     @Test
     public void testConvertTo() {
 
-        Assert.assertEquals("GMT", converter.convertTo(TimeZone.getTimeZone("")));
-        Assert.assertEquals("Europe/Berlin", converter.convertTo(TimeZone.getTimeZone("Europe/Berlin")));
-        Assert.assertEquals("Asia/Tokyo", converter.convertTo(TimeZone.getTimeZone("Asia/Tokyo")));
-        Assert.assertEquals(TimeZone.getDefault().getID(), converter.convertTo(TimeZone.getDefault()));
+        Assertions.assertEquals("GMT", converter.convertTo(TimeZone.getTimeZone("")));
+        Assertions.assertEquals("Europe/Berlin", converter.convertTo(TimeZone.getTimeZone("Europe/Berlin")));
+        Assertions.assertEquals("Asia/Tokyo", converter.convertTo(TimeZone.getTimeZone("Asia/Tokyo")));
+        Assertions.assertEquals(TimeZone.getDefault().getID(), converter.convertTo(TimeZone.getDefault()));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-
-        converter.convertTo(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertTo(null)
+        );
     }
 }

@@ -1,12 +1,14 @@
 package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link FileConverter}
@@ -17,7 +19,7 @@ public class FileConverterTest {
 
     private FileConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         converter = new FileConverter();
@@ -29,14 +31,15 @@ public class FileConverterTest {
         File tmpFile = File.createTempFile("FileConverterTest-testConvert", ".tmp");
         tmpFile.deleteOnExit();
 
-        Assert.assertEquals(new File(""), converter.convertFrom(""));
-        Assert.assertEquals(tmpFile, converter.convertFrom(tmpFile.getPath()));
+        Assertions.assertEquals(new File(""), converter.convertFrom(""));
+        Assertions.assertEquals(tmpFile, converter.convertFrom(tmpFile.getPath()));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
     @Test
@@ -45,13 +48,14 @@ public class FileConverterTest {
         File tmpFile = File.createTempFile("FileConverterTest-testConvert", ".tmp");
         tmpFile.deleteOnExit();
 
-        Assert.assertEquals("", converter.convertTo(new File("")));
-        Assert.assertEquals(tmpFile.getPath(), converter.convertTo(tmpFile));
+        Assertions.assertEquals("", converter.convertTo(new File("")));
+        Assertions.assertEquals(tmpFile.getPath(), converter.convertTo(tmpFile));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-
-        converter.convertTo(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertTo(null)
+        );
     }
 }

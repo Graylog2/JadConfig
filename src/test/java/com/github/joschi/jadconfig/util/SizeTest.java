@@ -1,9 +1,9 @@
 package com.github.joschi.jadconfig.util;
 
-import org.junit.Test;
+import com.github.joschi.jadconfig.ParameterException;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SizeTest {
     @Test
@@ -105,19 +105,25 @@ public class SizeTest {
         assertEquals(Size.kilobytes(64), Size.parse("64   kilobytes"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void unableParseWrongSizeCount() {
-        Size.parse("three bytes");
+        assertThrows(IllegalArgumentException.class,
+                () -> Size.parse("three bytes")
+        );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void unableParseWrongSizeUnit() {
-        Size.parse("1EB");
+        assertThrows(IllegalArgumentException.class,
+                () -> Size.parse("1EB")
+        );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void unableParseWrongSizeFormat() {
-        Size.parse("1 mega byte");
+        assertThrows(IllegalArgumentException.class,
+                () -> Size.parse("1 mega byte")
+        );
     }
 
     @Test

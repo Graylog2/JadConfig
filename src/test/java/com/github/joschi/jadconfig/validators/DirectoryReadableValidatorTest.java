@@ -1,14 +1,16 @@
 package com.github.joschi.jadconfig.validators;
 
+import com.github.joschi.jadconfig.ParameterException;
 import com.github.joschi.jadconfig.ValidationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for {@link DirectoryReadableValidator}
@@ -19,7 +21,7 @@ public class DirectoryReadableValidatorTest {
 
     private DirectoryReadableValidator validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         validator = new DirectoryReadableValidator();
     }
@@ -33,34 +35,43 @@ public class DirectoryReadableValidatorTest {
         validator.validate("Test", tempDir);
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void testExistingFile() throws ValidationException, IOException {
-        File tmpFile = File.createTempFile("DirectoryReadableValidatorTest-testExistingFile", ".tmp");
-        tmpFile.deleteOnExit();
-
-        validator.validate("Test", tmpFile);
+        assertThrows(ValidationException.class,
+                () -> {
+                    File tmpFile = File.createTempFile("DirectoryReadableValidatorTest-testExistingFile", ".tmp");
+                    tmpFile.deleteOnExit();
+            
+                    validator.validate("Test", tmpFile);
+                });
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void testUnreadableDirectory() throws ValidationException, IOException {
-        File tempDir = Files.createTempDirectory("DirectoryReadableValidatorTest-testUnreadableDirectory" + ".dir").toFile();
+        assertThrows(ValidationException.class,
+                () -> {
+                    File tempDir = Files.createTempDirectory("DirectoryReadableValidatorTest-testUnreadableDirectory" + ".dir").toFile();
 
-        if (!tempDir.setReadable(false)) {
-            fail("Couldn't set directory " + tempDir.getCanonicalPath() + " unreadable");
-        }
+                    if (!tempDir.setReadable(false)) {
+                        fail("Couldn't set directory " + tempDir.getCanonicalPath() + " unreadable");
+                    }
 
-        validator.validate("Test", tempDir);
+                    validator.validate("Test", tempDir);
+                });
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void testMissingDirectory() throws ValidationException, IOException {
-        File tempFile = File.createTempFile("DirectoryReadableValidatorTest-testMissingDirectory", ".tmp");
+        assertThrows(ValidationException.class,
+                () -> {
+                    File tempFile = File.createTempFile("DirectoryReadableValidatorTest-testMissingDirectory", ".tmp");
 
-        if (!tempFile.delete()) {
-            fail("Couldn't delete temporary file " + tempFile.getCanonicalPath());
-        }
+                    if (!tempFile.delete()) {
+                        fail("Couldn't delete temporary file " + tempFile.getCanonicalPath());
+                    }
 
-        validator.validate("Test", tempFile);
+                    validator.validate("Test", tempFile);
+                });
     }
 
     @Test

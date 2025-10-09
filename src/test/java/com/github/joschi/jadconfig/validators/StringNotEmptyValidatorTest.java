@@ -1,8 +1,11 @@
 package com.github.joschi.jadconfig.validators;
 
+import com.github.joschi.jadconfig.ParameterException;
 import com.github.joschi.jadconfig.ValidationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link StringNotEmptyValidator}
@@ -13,7 +16,7 @@ public class StringNotEmptyValidatorTest {
 
     private StringNotEmptyValidator validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         validator = new StringNotEmptyValidator();
     }
@@ -25,9 +28,11 @@ public class StringNotEmptyValidatorTest {
         validator.validate("Test", "\n");
     }
 
-    @Test(expected = ValidationException.class)
-    public void testValidateEmptyString() throws ValidationException {
-        validator.validate("Test", "");
+    @Test
+    public void testValidateEmptyString() {
+        assertThrows(ValidationException.class,
+                () -> validator.validate("Test", "")
+        );
     }
 
     @Test

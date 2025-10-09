@@ -1,11 +1,13 @@
 package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link com.github.joschi.jadconfig.converters.BigIntegerConverter}
@@ -16,7 +18,7 @@ public class BigIntegerConverterTest {
 
     private BigIntegerConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         converter = new BigIntegerConverter();
@@ -25,36 +27,39 @@ public class BigIntegerConverterTest {
     @Test
     public void testConvertFrom() {
 
-        Assert.assertEquals(BigInteger.ZERO, converter.convertFrom("0"));
-        Assert.assertEquals(BigInteger.ONE, converter.convertFrom("1"));
-        Assert.assertEquals(BigInteger.ONE.negate(), converter.convertFrom("-1"));
-        Assert.assertEquals(new BigInteger("1234567890"), converter.convertFrom("1234567890"));
+        Assertions.assertEquals(BigInteger.ZERO, converter.convertFrom("0"));
+        Assertions.assertEquals(BigInteger.ONE, converter.convertFrom("1"));
+        Assertions.assertEquals(BigInteger.ONE.negate(), converter.convertFrom("-1"));
+        Assertions.assertEquals(new BigInteger("1234567890"), converter.convertFrom("1234567890"));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class, () ->
+                converter.convertFrom(null)
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromInvalid() {
-
-        converter.convertFrom("Not a number");
+        assertThrows(ParameterException.class, () ->
+                converter.convertFrom("Not a number")
+        );
     }
 
     @Test
     public void testConvertTo() {
 
-        Assert.assertEquals("0", converter.convertTo(BigInteger.ZERO));
-        Assert.assertEquals("1", converter.convertTo(BigInteger.ONE));
-        Assert.assertEquals("-1", converter.convertTo(BigInteger.ONE.negate()));
-        Assert.assertEquals("1234567890", converter.convertTo(new BigInteger("1234567890")));
+        Assertions.assertEquals("0", converter.convertTo(BigInteger.ZERO));
+        Assertions.assertEquals("1", converter.convertTo(BigInteger.ONE));
+        Assertions.assertEquals("-1", converter.convertTo(BigInteger.ONE.negate()));
+        Assertions.assertEquals("1234567890", converter.convertTo(new BigInteger("1234567890")));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-
-        converter.convertTo(null);
+        assertThrows(ParameterException.class, () ->
+                converter.convertTo(null)
+        );
     }
 }

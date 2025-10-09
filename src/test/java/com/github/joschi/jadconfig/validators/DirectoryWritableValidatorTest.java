@@ -1,14 +1,16 @@
 package com.github.joschi.jadconfig.validators;
 
+import com.github.joschi.jadconfig.ParameterException;
 import com.github.joschi.jadconfig.ValidationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for {@link DirectoryWritableValidator}
@@ -19,7 +21,7 @@ public class DirectoryWritableValidatorTest {
 
     private DirectoryWritableValidator validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         validator = new DirectoryWritableValidator();
     }
@@ -33,34 +35,44 @@ public class DirectoryWritableValidatorTest {
         validator.validate("Test", tempDir);
     }
 
-    @Test(expected = ValidationException.class)
-    public void testExistingFile() throws ValidationException, IOException {
-        File tmpFile = File.createTempFile("DirectoryWritableValidatorTest-testExistingFile", ".tmp");
-        tmpFile.deleteOnExit();
+    @Test
+    public void testExistingFile() {
+        assertThrows(ValidationException.class,
+                () -> {
+                    File tmpFile = File.createTempFile("DirectoryWritableValidatorTest-testExistingFile", ".tmp");
+                    tmpFile.deleteOnExit();
 
-        validator.validate("Test", tmpFile);
+                    validator.validate("Test", tmpFile);
+                });
     }
 
-    @Test(expected = ValidationException.class)
-    public void testMissingPermissions() throws ValidationException, IOException {
-        File tempDir = Files.createTempDirectory("DirectoryWritableValidatorTest-testMissingPermissions" + ".dir").toFile();
+    @Test
+    public void testMissingPermissions() {
+        assertThrows(ValidationException.class,
+                () -> {
+                    File tempDir = Files.createTempDirectory("DirectoryWritableValidatorTest-testMissingPermissions" + ".dir").toFile();
 
-        if (!tempDir.setWritable(false)) {
-            fail("Couldn't set directory " + tempDir.getCanonicalPath() + " unwritable");
-        }
+                    if (!tempDir.setWritable(false)) {
+                        fail("Couldn't set directory " + tempDir.getCanonicalPath() + " unwritable");
+                    }
 
-        validator.validate("Test", tempDir);
+                    validator.validate("Test", tempDir);
+                });
     }
 
-    @Test(expected = ValidationException.class)
-    public void testMissingDirectory() throws ValidationException, IOException {
-        File tempFile = File.createTempFile("DirectoryWritableValidatorTest-testMissingDirectory", ".tmp");
+    @Test
+    public void testMissingDirectory() {
+        assertThrows(ValidationException.class,
+                () -> {
+                    File tempFile = File.createTempFile("DirectoryWritableValidatorTest-testMissingDirectory", ".tmp");
 
-        if (!tempFile.delete()) {
-            fail("Couldn't delete temporary file " + tempFile.getCanonicalPath());
-        }
 
-        validator.validate("Test", tempFile);
+                    if (!tempFile.delete()) {
+                        fail("Couldn't delete temporary file " + tempFile.getCanonicalPath());
+                    }
+
+                    validator.validate("Test", tempFile);
+                });
     }
 
     @Test

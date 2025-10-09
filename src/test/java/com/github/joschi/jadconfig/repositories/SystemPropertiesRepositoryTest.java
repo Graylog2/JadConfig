@@ -1,9 +1,9 @@
 package com.github.joschi.jadconfig.repositories;
 
 import com.github.joschi.jadconfig.RepositoryException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link SystemPropertiesRepository}
@@ -14,7 +14,7 @@ public class SystemPropertiesRepositoryTest {
 
     private SystemPropertiesRepository repository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         repository = new SystemPropertiesRepository();
@@ -35,20 +35,20 @@ public class SystemPropertiesRepositoryTest {
     @Test
     public void testRead() throws RepositoryException {
 
-        Assert.assertNull(repository.read("This system property should not exist"));
-        Assert.assertEquals(System.getProperty("java.version"), repository.read("java.version"));
+        Assertions.assertNull(repository.read("This system property should not exist"));
+        Assertions.assertEquals(System.getProperty("java.version"), repository.read("java.version"));
     }
 
     @Test
     public void testReadWithPrefix() throws RepositoryException {
         final SystemPropertiesRepository testRepository = new SystemPropertiesRepository("java.");
 
-        Assert.assertEquals(System.getProperty("java.version"), testRepository.read("version"));
+        Assertions.assertEquals(System.getProperty("java.version"), testRepository.read("version"));
     }
 
     @Test
     public void testSize() throws RepositoryException {
 
-        Assert.assertEquals(System.getProperties().size(), repository.size());
+        Assertions.assertEquals(System.getProperties().size(), repository.size());
     }
 }

@@ -1,7 +1,9 @@
 package com.github.joschi.jadconfig;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link RepositoryException}
@@ -17,24 +19,26 @@ public class RepositoryExceptionTest {
 
         exception = new RepositoryException();
 
-        Assert.assertNull(exception.getMessage());
-        Assert.assertNull(exception.getCause());
+        Assertions.assertNull(exception.getMessage());
+        Assertions.assertNull(exception.getCause());
 
         exception = new RepositoryException("Test");
 
-        Assert.assertEquals("Test", exception.getMessage());
-        Assert.assertNull(exception.getCause());
+        Assertions.assertEquals("Test", exception.getMessage());
+        Assertions.assertNull(exception.getCause());
 
         Exception cause = new Exception("Cause");
         exception = new RepositoryException("Test", cause);
 
-        Assert.assertEquals("Test", exception.getMessage());
-        Assert.assertEquals(cause, exception.getCause());
+        Assertions.assertEquals("Test", exception.getMessage());
+        Assertions.assertEquals(cause, exception.getCause());
     }
 
-    @Test(expected = RepositoryException.class)
-    public void testException() throws RepositoryException {
-
-        throw new RepositoryException("Test");
+    @Test
+    public void testException() {
+        assertThrows(RepositoryException.class,
+                () -> {
+                    throw new RepositoryException("Test");
+                });
     }
 }

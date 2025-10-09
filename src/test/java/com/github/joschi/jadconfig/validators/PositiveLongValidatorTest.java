@@ -1,8 +1,11 @@
 package com.github.joschi.jadconfig.validators;
 
+import com.github.joschi.jadconfig.ParameterException;
 import com.github.joschi.jadconfig.ValidationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link com.github.joschi.jadconfig.validators.PositiveLongValidator}
@@ -13,7 +16,7 @@ public class PositiveLongValidatorTest {
 
     private PositiveLongValidator validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         validator = new PositiveLongValidator();
     }
@@ -25,9 +28,11 @@ public class PositiveLongValidatorTest {
         validator.validate("Test", Long.MAX_VALUE);
     }
 
-    @Test(expected = ValidationException.class)
-    public void testValidateNegative() throws ValidationException {
-        validator.validate("Test", -1L);
+    @Test
+    public void testValidateNegative() {
+        assertThrows(ValidationException.class,
+                () -> validator.validate("Test", -1L)
+        );
     }
 
     @Test

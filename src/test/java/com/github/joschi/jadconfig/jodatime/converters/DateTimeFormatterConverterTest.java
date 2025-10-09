@@ -5,10 +5,11 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link com.github.joschi.jadconfig.jodatime.converters.DateTimeFormatterConverter}
@@ -18,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 public class DateTimeFormatterConverterTest {
     private DateTimeFormatterConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         converter = new DateTimeFormatterConverter();
     }
@@ -29,19 +30,25 @@ public class DateTimeFormatterConverterTest {
         assertEquals("2014-01-01", converter.convertFrom("yyyy-MM-dd").print(dateTime));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class, () ->
+                converter.convertFrom(null)
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromEmpty() {
-        converter.convertFrom("");
+        assertThrows(ParameterException.class, () ->
+                converter.convertFrom("")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromInvalidPattern() {
-        converter.convertFrom("Invalid Pattern");
+        assertThrows(ParameterException.class, () ->
+                converter.convertFrom("Invalid Pattern")
+        );
     }
 
     @Test
@@ -51,8 +58,10 @@ public class DateTimeFormatterConverterTest {
         assertEquals("", converter.convertTo(DateTimeFormat.mediumDateTime()));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-        converter.convertTo(null);
+        assertThrows(ParameterException.class, () ->
+                converter.convertTo(null)
+        );
     }
 }

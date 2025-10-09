@@ -2,9 +2,11 @@ package com.github.joschi.jadconfig.guava.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
 import com.google.common.net.HostAndPort;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link HostAndPortConverter}.
@@ -12,39 +14,43 @@ import org.junit.Test;
 public class HostAndPortConverterTest {
     private HostAndPortConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         converter = new HostAndPortConverter();
     }
 
     @Test
     public void testConvertFrom()  {
-        Assert.assertEquals(HostAndPort.fromHost("localhost"), converter.convertFrom("localhost"));
-        Assert.assertEquals(HostAndPort.fromParts("localhost",100), converter.convertFrom("localhost:100"));
-        Assert.assertEquals(HostAndPort.fromHost("127.0.0.1"), converter.convertFrom("127.0.0.1"));
-        Assert.assertEquals(HostAndPort.fromParts("127.0.0.1", 100), converter.convertFrom("127.0.0.1:100"));
-        Assert.assertEquals(HostAndPort.fromHost("::1"), converter.convertFrom("::1"));
-        Assert.assertEquals(HostAndPort.fromParts("[::1]", 100), converter.convertFrom("[::1]:100"));
+        Assertions.assertEquals(HostAndPort.fromHost("localhost"), converter.convertFrom("localhost"));
+        Assertions.assertEquals(HostAndPort.fromParts("localhost",100), converter.convertFrom("localhost:100"));
+        Assertions.assertEquals(HostAndPort.fromHost("127.0.0.1"), converter.convertFrom("127.0.0.1"));
+        Assertions.assertEquals(HostAndPort.fromParts("127.0.0.1", 100), converter.convertFrom("127.0.0.1:100"));
+        Assertions.assertEquals(HostAndPort.fromHost("::1"), converter.convertFrom("::1"));
+        Assertions.assertEquals(HostAndPort.fromParts("[::1]", 100), converter.convertFrom("[::1]:100"));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
     @Test
     public void testConvertTo() {
-        Assert.assertEquals("localhost", converter.convertTo(HostAndPort.fromString("localhost")));
-        Assert.assertEquals("localhost:100", converter.convertTo(HostAndPort.fromParts("localhost", 100)));
-        Assert.assertEquals("127.0.0.1", converter.convertTo(HostAndPort.fromString("127.0.0.1")));
-        Assert.assertEquals("127.0.0.1:100", converter.convertTo(HostAndPort.fromParts("127.0.0.1", 100)));
-        Assert.assertEquals("[::1]", converter.convertTo(HostAndPort.fromString("::1")));
-        Assert.assertEquals("[::1]", converter.convertTo(HostAndPort.fromString("[::1]")));
-        Assert.assertEquals("[::1]:100", converter.convertTo(HostAndPort.fromParts("[::1]", 100)));
+        Assertions.assertEquals("localhost", converter.convertTo(HostAndPort.fromString("localhost")));
+        Assertions.assertEquals("localhost:100", converter.convertTo(HostAndPort.fromParts("localhost", 100)));
+        Assertions.assertEquals("127.0.0.1", converter.convertTo(HostAndPort.fromString("127.0.0.1")));
+        Assertions.assertEquals("127.0.0.1:100", converter.convertTo(HostAndPort.fromParts("127.0.0.1", 100)));
+        Assertions.assertEquals("[::1]", converter.convertTo(HostAndPort.fromString("::1")));
+        Assertions.assertEquals("[::1]", converter.convertTo(HostAndPort.fromString("[::1]")));
+        Assertions.assertEquals("[::1]:100", converter.convertTo(HostAndPort.fromParts("[::1]", 100)));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-        converter.convertTo(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertTo(null)
+        );
     }
 }

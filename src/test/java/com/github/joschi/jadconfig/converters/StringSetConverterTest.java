@@ -2,13 +2,15 @@ package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
 import com.google.common.base.Joiner;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link StringSetConverter}
@@ -18,25 +20,27 @@ import java.util.Set;
 public class StringSetConverterTest {
     private StringSetConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         converter = new StringSetConverter();
     }
 
     @Test
     public void testConvertFrom() {
-        Assert.assertEquals(Collections.<String>emptySet(), converter.convertFrom(""));
-        Assert.assertEquals(0, converter.convertFrom(",").size());
-        Assert.assertEquals(0, converter.convertFrom(",,,,,").size());
-        Assert.assertEquals(1, converter.convertFrom("one").size());
-        Assert.assertEquals(1, converter.convertFrom("one;two;three").size());
-        Assert.assertEquals(3, converter.convertFrom("one,two,three").size());
-        Assert.assertEquals(3, converter.convertFrom("one,one,two,three").size());
+        Assertions.assertEquals(Collections.<String>emptySet(), converter.convertFrom(""));
+        Assertions.assertEquals(0, converter.convertFrom(",").size());
+        Assertions.assertEquals(0, converter.convertFrom(",,,,,").size());
+        Assertions.assertEquals(1, converter.convertFrom("one").size());
+        Assertions.assertEquals(1, converter.convertFrom("one;two;three").size());
+        Assertions.assertEquals(3, converter.convertFrom("one,two,three").size());
+        Assertions.assertEquals(3, converter.convertFrom("one,one,two,three").size());
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
     @Test
@@ -46,12 +50,14 @@ public class StringSetConverterTest {
         set.add("two");
         set.add("three");
 
-        Assert.assertEquals("", converter.convertTo(Collections.<String>emptySet()));
-        Assert.assertEquals(Joiner.on(',').join(set), converter.convertTo(set));
+        Assertions.assertEquals("", converter.convertTo(Collections.<String>emptySet()));
+        Assertions.assertEquals(Joiner.on(',').join(set), converter.convertTo(set));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-        converter.convertTo(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertTo(null)
+        );
     }
 }

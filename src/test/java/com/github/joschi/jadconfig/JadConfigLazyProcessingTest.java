@@ -4,13 +4,13 @@ import com.github.joschi.jadconfig.repositories.InMemoryRepository;
 import com.github.joschi.jadconfig.response.ProcessingOutcome;
 import com.github.joschi.jadconfig.response.ProcessingResponse;
 import com.github.joschi.jadconfig.testbeans.ValidatedConfigurationBean;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JadConfigLazyProcessingTest {
 
@@ -28,7 +28,7 @@ public class JadConfigLazyProcessingTest {
         JadConfig jadConfig = new JadConfig(repository, configurationBean);
         try {
             jadConfig.processFailingLazily();
-            Assert.fail("Should throw an exception!");
+            Assertions.fail("Should throw an exception!");
         } catch (LazyValidationException e) {
             final ProcessingResponse response = e.getProcessingResponse();
             assertFalse(response.isSuccess());

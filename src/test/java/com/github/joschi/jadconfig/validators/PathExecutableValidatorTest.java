@@ -2,16 +2,18 @@ package com.github.joschi.jadconfig.validators;
 
 
 import com.github.joschi.jadconfig.ValidationException;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for {@link PathExecutableValidator}
@@ -19,44 +21,47 @@ import static org.junit.Assert.fail;
  * @author jschalanda
  */
 public class PathExecutableValidatorTest {
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
     private PathExecutableValidator validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         validator = new PathExecutableValidator();
     }
 
     @Test
-    public void testExistingDirectory() throws ValidationException, IOException {
-        validator.validate("Test", temporaryFolder.newFolder().toPath());
-    }
-
-    @Test(expected = ValidationException.class)
-    public void testMissingFilePermissions() throws ValidationException, IOException {
-        File tempFile = temporaryFolder.newFile();
-        if (!tempFile.setExecutable(false)) {
-            fail("Couldn't make file " + tempFile.getCanonicalPath() + " non-executable");
-        }
-
-        validator.validate("Test", tempFile.toPath());
-    }
-
-    @Test(expected = ValidationException.class)
-    public void testMissingDirectoryPermissions() throws ValidationException, IOException {
-        File tempDir = temporaryFolder.newFolder();
-        if (!tempDir.setExecutable(false)) {
-            fail("Couldn't make directory " + tempDir.getCanonicalPath() + " non-executable");
-        }
-
-        validator.validate("Test", tempDir.toPath());
+    public void testExistingDirectory(@TempDir Path temp) throws ValidationException, IOException {
+        validator.validate("Test", Files.createDirectories(temp.resolve("test")));
     }
 
     @Test
-    public void testCorrectFilePermissions() throws ValidationException, IOException {
-        File tempFile = temporaryFolder.newFile();
+    public void testMissingFilePermissions(@TempDir Path temp) {
+        assertThrows(ValidationException.class,
+                () -> {
+                    File tempFile = Files.createFile(temp.resolve("test1.txt")).toFile();
+                    if (!tempFile.setExecutable(false)) {
+                        fail("Couldn't make file " + tempFile.getCanonicalPath() + " non-executable");
+                    }
+
+                    validator.validate("Test", tempFile.toPath());
+                });
+    }
+
+    @Test
+    public void testMissingDirectoryPermissions(@TempDir Path temp) {
+        assertThrows(ValidationException.class,
+                () -> {
+                    File tempDir = Files.createDirectory(temp.resolve("test2")).toFile();
+                    if (!tempDir.setExecutable(false)) {
+                        fail("Couldn't make directory " + tempDir.getCanonicalPath() + " non-executable");
+                    }
+
+                    validator.validate("Test", tempDir.toPath());
+                });
+    }
+
+    @Test
+    public void testCorrectFilePermissions(@TempDir Path temp) throws IOException, ValidationException {
+        File tempFile = Files.createFile(temp.resolve("test3.txt")).toFile();
         if (!tempFile.setExecutable(true)) {
             fail("Couldn't make file " + tempFile.getCanonicalPath() + " non-executable");
         }
@@ -65,8 +70,8 @@ public class PathExecutableValidatorTest {
     }
 
     @Test
-    public void testCorrectDirectoryPermissions() throws ValidationException, IOException {
-        File tempDir = temporaryFolder.newFolder();
+    public void testCorrectDirectoryPermissions(@TempDir Path temp) throws IOException, ValidationException {
+        File tempDir = Files.createDirectory(temp.resolve("test4")).toFile();
         if (!tempDir.setExecutable(true)) {
             fail("Couldn't make directory " + tempDir.getCanonicalPath() + " non-executable");
         }
@@ -74,9 +79,11 @@ public class PathExecutableValidatorTest {
         validator.validate("Test", tempDir.toPath());
     }
 
-    @Test(expected = ValidationException.class)
-    public void testMissingFile() throws ValidationException, IOException {
-        validator.validate("Test", Paths.get("does-not-exist-" + System.currentTimeMillis()));
+    @Test
+    public void testMissingFile() {
+        assertThrows(ValidationException.class,
+                () -> validator.validate("Test", Paths.get("does-not-exist-" + System.currentTimeMillis()))
+        );
     }
 
     @Test

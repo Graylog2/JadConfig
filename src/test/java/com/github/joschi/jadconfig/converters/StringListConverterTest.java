@@ -1,13 +1,15 @@
 package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link StringListConverter}
@@ -18,7 +20,7 @@ public class StringListConverterTest {
 
     private StringListConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         converter = new StringListConverter();
@@ -27,18 +29,19 @@ public class StringListConverterTest {
     @Test
     public void testConvertFrom() {
 
-        Assert.assertEquals(Collections.<String>emptyList(), converter.convertFrom(""));
-        Assert.assertEquals(0, converter.convertFrom(",").size());
-        Assert.assertEquals(0, converter.convertFrom(",,,,,").size());
-        Assert.assertEquals(1, converter.convertFrom("one").size());
-        Assert.assertEquals(1, converter.convertFrom("one;two;three").size());
-        Assert.assertEquals(3, converter.convertFrom("one,two,three").size());
+        Assertions.assertEquals(Collections.<String>emptyList(), converter.convertFrom(""));
+        Assertions.assertEquals(0, converter.convertFrom(",").size());
+        Assertions.assertEquals(0, converter.convertFrom(",,,,,").size());
+        Assertions.assertEquals(1, converter.convertFrom("one").size());
+        Assertions.assertEquals(1, converter.convertFrom("one;two;three").size());
+        Assertions.assertEquals(3, converter.convertFrom("one,two,three").size());
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
     @Test
@@ -47,13 +50,14 @@ public class StringListConverterTest {
         List<String> list = new ArrayList<String>();
         list.add("one"); list.add("two"); list.add("three");
 
-        Assert.assertEquals("", converter.convertTo(Collections.<String>emptyList()));
-        Assert.assertEquals("one,two,three", converter.convertTo(list));
+        Assertions.assertEquals("", converter.convertTo(Collections.<String>emptyList()));
+        Assertions.assertEquals("one,two,three", converter.convertTo(list));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-
-        converter.convertTo(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertTo(null)
+        );
     }
 }
