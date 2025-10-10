@@ -21,7 +21,7 @@ public class ConfigurationDocsGenerator {
     /**
      * This class is linked from the datanode pom.xml and generates conf.example and csv documentation.
      */
-    static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
         final ConfigurationDocsGenerator generator = new ConfigurationDocsGenerator();
         generator.generateDocumentation(parseDocumentationFormat(args), ConfigurationBeansSPI::loadConfigurationBeans);
     }
