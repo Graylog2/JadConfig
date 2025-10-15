@@ -13,14 +13,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class ConfigurationDocsGenerator {
-    /**
-     * This class is linked from the datanode pom.xml and generates conf.example and csv documentation.
-     */
+
     public static void main(String[] args) throws IOException {
         final ConfigurationDocsGenerator generator = new ConfigurationDocsGenerator();
         generator.generateDocumentation(parseDocumentationFormat(args), ConfigurationBeansSPI::loadConfigurationBeans);
@@ -88,11 +93,27 @@ public class ConfigurationDocsGenerator {
 
     @Nonnull
     private static List<ConfigurationSection> sectionsFromEntries(List<ConfigurationEntryWithSection> entries) {
-        final Collection<ConfigurationSection> sections = entries.stream()
+        return entries.stream()
                 .filter(ConfigurationEntryWithSection::hasSection)
-                .collect(Collectors.groupingBy(ConfigurationEntryWithSection::sectionHeading, Collectors.collectingAndThen(Collectors.toList(), list -> new ConfigurationSection(list.iterator().next().sectionHeading(), list.iterator().next().sectionDescription(), Collections.emptyList(), list.stream().map(ConfigurationEntryWithSection::entry).collect(Collectors.toList()))))).values();
-        return sections.stream()
-                .sorted(Comparator.comparing(ConfigurationSection::hasPriority, Comparator.reverseOrder())).toList();
+                .collect(groupBySection())
+                .values()
+                .stream()
+                .sorted(sortByPriority())
+                .toList();
+    }
+
+    private static Comparator<ConfigurationSection> sortByPriority() {
+        return Comparator.comparing(ConfigurationSection::hasPriority, Comparator.reverseOrder());
+    }
+
+    private static Collector<ConfigurationEntryWithSection, ?, Map<String, ConfigurationSection>> groupBySection() {
+        return Collectors.groupingBy(ConfigurationEntryWithSection::sectionHeading, Collectors.collectingAndThen(Collectors.toList(), ConfigurationDocsGenerator::toConfigurationSection));
+    }
+
+    private static ConfigurationSection toConfigurationSection(List<ConfigurationEntryWithSection> list) {
+        final ConfigurationEntryWithSection section = list.stream().findFirst().orElseThrow(() -> new IllegalArgumentException("No configuration section found but expected!"));
+        final List<ConfigurationEntry> entries = list.stream().map(ConfigurationEntryWithSection::entry).collect(Collectors.toList());
+        return new ConfigurationSection(section.sectionHeading(), section.sectionDescription(), Collections.emptyList(), entries);
     }
 
     @Nonnull
