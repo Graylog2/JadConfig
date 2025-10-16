@@ -1,8 +1,8 @@
 package com.github.joschi.jadconfig.validators;
 
 import com.github.joschi.jadconfig.ValidationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link NoValidator}
@@ -13,7 +13,7 @@ public class NoValidatorTest {
 
     private NoValidator validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         validator = new NoValidator();
     }

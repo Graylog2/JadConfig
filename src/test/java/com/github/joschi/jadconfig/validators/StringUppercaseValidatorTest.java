@@ -1,8 +1,11 @@
 package com.github.joschi.jadconfig.validators;
 
+import com.github.joschi.jadconfig.ParameterException;
 import com.github.joschi.jadconfig.ValidationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link StringUppercaseValidator}
@@ -13,7 +16,7 @@ public class StringUppercaseValidatorTest {
 
     private StringUppercaseValidator validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         validator = new StringUppercaseValidator();
     }
@@ -26,9 +29,11 @@ public class StringUppercaseValidatorTest {
         validator.validate("Test", "TEST1234");
     }
 
-    @Test(expected = ValidationException.class)
-    public void testValidateLowercaseString() throws ValidationException {
-        validator.validate("Test", "Test");
+    @Test
+    public void testValidateLowercaseString() {
+        assertThrows(ValidationException.class,
+                () -> validator.validate("Test", "Test")
+        );
     }
 
     @Test

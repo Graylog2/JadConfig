@@ -1,13 +1,15 @@
 package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link TrimmedStringSortedSetConverter}
@@ -17,28 +19,30 @@ import java.util.TreeSet;
 public class TrimmedStringSortedSetConverterTest {
     private TrimmedStringSortedSetConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         converter = new TrimmedStringSortedSetConverter();
     }
 
     @Test
     public void testConvertFrom() {
-        Assert.assertEquals(new TreeSet<String>(), converter.convertFrom(""));
-        Assert.assertEquals(0, converter.convertFrom(",").size());
-        Assert.assertEquals(0, converter.convertFrom(",,,,,").size());
-        Assert.assertEquals(1, converter.convertFrom("one").size());
-        Assert.assertEquals(1, converter.convertFrom("one;two;three").size());
-        Assert.assertEquals(3, converter.convertFrom("one, two, three").size());
+        Assertions.assertEquals(new TreeSet<String>(), converter.convertFrom(""));
+        Assertions.assertEquals(0, converter.convertFrom(",").size());
+        Assertions.assertEquals(0, converter.convertFrom(",,,,,").size());
+        Assertions.assertEquals(1, converter.convertFrom("one").size());
+        Assertions.assertEquals(1, converter.convertFrom("one;two;three").size());
+        Assertions.assertEquals(3, converter.convertFrom("one, two, three").size());
 
         final SortedSet<String> result = converter.convertFrom("item1, item1\t,   item3,\nitem2");
         final SortedSet<String> expected = new TreeSet<>(Arrays.asList("item1", "item2", "item3"));
-        Assert.assertEquals(expected, result);
+        Assertions.assertEquals(expected, result);
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class, () ->
+                converter.convertFrom(null)
+        );
     }
 
     @Test
@@ -48,12 +52,14 @@ public class TrimmedStringSortedSetConverterTest {
         sortedSet.add("item1");
         sortedSet.add("item2");
 
-        Assert.assertEquals("", converter.convertTo(new TreeSet<String>()));
-        Assert.assertEquals("item1,item2,item3", converter.convertTo(sortedSet));
+        Assertions.assertEquals("", converter.convertTo(new TreeSet<String>()));
+        Assertions.assertEquals("item1,item2,item3", converter.convertTo(sortedSet));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-        converter.convertTo(null);
+        assertThrows(ParameterException.class, () ->
+                converter.convertTo(null)
+        );
     }
 }

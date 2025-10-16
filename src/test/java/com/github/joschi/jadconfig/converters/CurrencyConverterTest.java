@@ -1,11 +1,13 @@
 package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Currency;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link CurrencyConverter}
@@ -16,7 +18,7 @@ public class CurrencyConverterTest {
 
     private CurrencyConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         converter = new CurrencyConverter();
@@ -25,32 +27,35 @@ public class CurrencyConverterTest {
     @Test
     public void testConvertFrom() {
 
-        Assert.assertEquals(Currency.getInstance("EUR"), converter.convertFrom("EUR"));
-        Assert.assertEquals(Currency.getInstance("USD"), converter.convertFrom("USD"));
+        Assertions.assertEquals(Currency.getInstance("EUR"), converter.convertFrom("EUR"));
+        Assertions.assertEquals(Currency.getInstance("USD"), converter.convertFrom("USD"));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromEmptyString() {
-
-        converter.convertFrom("");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("")
+        );
     }
 
     @Test
     public void testConvertTo() {
 
-        Assert.assertEquals("EUR", converter.convertTo(Currency.getInstance("EUR")));
-        Assert.assertEquals("USD", converter.convertTo(Currency.getInstance("USD")));
+        Assertions.assertEquals("EUR", converter.convertTo(Currency.getInstance("EUR")));
+        Assertions.assertEquals("USD", converter.convertTo(Currency.getInstance("USD")));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-
-        converter.convertTo(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertTo(null)
+        );
     }
 }

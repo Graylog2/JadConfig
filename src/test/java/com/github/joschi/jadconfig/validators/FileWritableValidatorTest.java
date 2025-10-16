@@ -2,13 +2,14 @@ package com.github.joschi.jadconfig.validators;
 
 
 import com.github.joschi.jadconfig.ValidationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for {@link FileWritableValidator}
@@ -19,7 +20,7 @@ public class FileWritableValidatorTest {
 
     private FileWritableValidator validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         validator = new FileWritableValidator();
     }
@@ -32,27 +33,33 @@ public class FileWritableValidatorTest {
         validator.validate("Test", tempFile);
     }
 
-    @Test(expected = ValidationException.class)
-    public void testMissingPermissions() throws ValidationException, IOException {
-        File tempFile = File.createTempFile("FileWritableValidatorTest-testMissingPermissions", ".tmp");
-        tempFile.deleteOnExit();
+    @Test
+    public void testMissingPermissions() {
+        assertThrows(ValidationException.class,
+                () -> {
+                    File tempFile = File.createTempFile("FileWritableValidatorTest-testMissingPermissions", ".tmp");
+                    tempFile.deleteOnExit();
 
-        if (!tempFile.setWritable(false)) {
-            fail("Couldn't set file " + tempFile.getCanonicalPath() + " unwritable");
-        }
+                    if (!tempFile.setWritable(false)) {
+                        fail("Couldn't set file " + tempFile.getCanonicalPath() + " unwritable");
+                    }
 
-        validator.validate("Test", tempFile);
+                    validator.validate("Test", tempFile);
+                });
     }
 
-    @Test(expected = ValidationException.class)
-    public void testMissingFile() throws ValidationException, IOException {
-        File tempFile = File.createTempFile("FileWritableValidatorTest-testMissingFile", ".tmp");
+    @Test
+    public void testMissingFile() {
+        assertThrows(ValidationException.class,
+                () -> {
+                    File tempFile = File.createTempFile("FileWritableValidatorTest-testMissingFile", ".tmp");
 
-        if (!tempFile.delete()) {
-            fail("Couldn't delete temporary file " + tempFile.getCanonicalPath());
-        }
+                    if (!tempFile.delete()) {
+                        fail("Couldn't delete temporary file " + tempFile.getCanonicalPath());
+                    }
 
-        validator.validate("Test", tempFile);
+                    validator.validate("Test", tempFile);
+                });
     }
 
     @Test

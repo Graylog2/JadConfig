@@ -4,15 +4,16 @@ import com.github.joschi.jadconfig.ParameterException;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class IntervalConverterTest {
     private IntervalConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         converter = new IntervalConverter();
     }
@@ -23,19 +24,25 @@ public class IntervalConverterTest {
         assertEquals(interval, converter.convertFrom("2014-01-01T00:00:00.000/2014-01-02T00:00:00.000"));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void invalidSimpleFormatThrowsException() {
-        converter.convertFrom("foo");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("foo")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void emptyStringThrowsException() {
-        converter.convertFrom("");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void nullThrowsException() {
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
     @Test

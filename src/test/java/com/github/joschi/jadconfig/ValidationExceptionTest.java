@@ -1,7 +1,9 @@
 package com.github.joschi.jadconfig;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link ValidationException}
@@ -17,24 +19,26 @@ public class ValidationExceptionTest {
 
         exception = new ValidationException();
 
-        Assert.assertNull(exception.getMessage());
-        Assert.assertNull(exception.getCause());
+        Assertions.assertNull(exception.getMessage());
+        Assertions.assertNull(exception.getCause());
 
         exception = new ValidationException("Test");
 
-        Assert.assertEquals("Test", exception.getMessage());
-        Assert.assertNull(exception.getCause());
+        Assertions.assertEquals("Test", exception.getMessage());
+        Assertions.assertNull(exception.getCause());
 
         Exception cause = new Exception("Cause");
         exception = new ValidationException("Test", cause);
 
-        Assert.assertEquals("Test", exception.getMessage());
-        Assert.assertEquals(cause, exception.getCause());
+        Assertions.assertEquals("Test", exception.getMessage());
+        Assertions.assertEquals(cause, exception.getCause());
     }
 
-    @Test(expected = ValidationException.class)
-    public void testException() throws ValidationException {
-
-        throw new ValidationException("Test");
+    @Test
+    public void testException() {
+        assertThrows(ValidationException.class,
+                () -> {
+                    throw new ValidationException("Test");
+                });
     }
 }

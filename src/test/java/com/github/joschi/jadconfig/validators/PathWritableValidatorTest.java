@@ -2,16 +2,18 @@ package com.github.joschi.jadconfig.validators;
 
 
 import com.github.joschi.jadconfig.ValidationException;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for {@link PathWritableValidator}
@@ -19,49 +21,54 @@ import static org.junit.Assert.fail;
  * @author jschalanda
  */
 public class PathWritableValidatorTest {
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
     private PathWritableValidator validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         validator = new PathWritableValidator();
     }
 
     @Test
-    public void testExistingFile() throws ValidationException, IOException {
-        validator.validate("Test", temporaryFolder.newFile().toPath());
+    public void testExistingDirectory(@TempDir Path temp) throws ValidationException {
+        validator.validate("Test", temp);
     }
 
     @Test
-    public void testExistingDirectory() throws ValidationException, IOException {
-        validator.validate("Test", temporaryFolder.newFolder().toPath());
-    }
-
-    @Test(expected = ValidationException.class)
-    public void testMissingFilePermissions() throws ValidationException, IOException {
-        File tempFile = temporaryFolder.newFile();
-        if (!tempFile.setWritable(false)) {
-            fail("Couldn't make file " + tempFile.getCanonicalPath() + " non-writable");
-        }
-
-        validator.validate("Test", tempFile.toPath());
-    }
-
-    @Test(expected = ValidationException.class)
-    public void testMissingDirectoryPermissions() throws ValidationException, IOException {
-        File tempDir = temporaryFolder.newFolder();
-        if (!tempDir.setWritable(false)) {
-            fail("Couldn't make directory " + tempDir.getCanonicalPath() + " non-writable");
-        }
-
-        validator.validate("Test", tempDir.toPath());
+    public void testExistingFile(@TempDir Path temp) throws ValidationException, IOException {
+        assertThrows(ValidationException.class,
+                () -> validator.validate("Test", temp.resolve("test1.txt"))
+        );
     }
 
     @Test
-    public void testCorrectFilePermissions() throws ValidationException, IOException {
-        File tempFile = temporaryFolder.newFile();
+    public void testMissingFilePermissions(@TempDir Path temp) {
+        assertThrows(ValidationException.class,
+                () -> {
+                    File tempFile = Files.createFile(temp.resolve("test1.txt")).toFile();
+                    if (!tempFile.setWritable(false)) {
+                        fail("Couldn't make file " + tempFile.getCanonicalPath() + " non-writable");
+                    }
+
+                    validator.validate("Test", tempFile.toPath());
+                });
+    }
+
+    @Test
+    public void testMissingDirectoryPermissions(@TempDir Path temp) {
+        assertThrows(ValidationException.class,
+                () -> {
+                    File tempDir = Files.createDirectories(temp.resolve("testdir2")).toFile();
+                    if (!tempDir.setWritable(false)) {
+                        fail("Couldn't make directory " + tempDir.getCanonicalPath() + " non-writable");
+                    }
+
+                    validator.validate("Test", tempDir.toPath());
+                });
+    }
+
+    @Test
+    public void testCorrectFilePermissions(@TempDir Path temp) throws IOException, ValidationException {
+        File tempFile = Files.createFile(temp.resolve("test2.txt")).toFile();
         if (!tempFile.setWritable(true)) {
             fail("Couldn't make file " + tempFile.getCanonicalPath() + " writable");
         }
@@ -70,18 +77,21 @@ public class PathWritableValidatorTest {
     }
 
     @Test
-    public void testCorrectDirectoryPermissions() throws ValidationException, IOException {
-        File tempDir = temporaryFolder.newFolder();
+    public void testCorrectDirectoryPermissions(@TempDir Path temp) throws IOException, ValidationException {
+        File tempDir = Files.createDirectories(temp.resolve("testdir2")).toFile();
         if (!tempDir.setWritable(true)) {
             fail("Couldn't make directory " + tempDir.getCanonicalPath() + " writable");
         }
 
         validator.validate("Test", tempDir.toPath());
+
     }
 
-    @Test(expected = ValidationException.class)
-    public void testMissingFile() throws ValidationException, IOException {
-        validator.validate("Test", Paths.get("does-not-exist-" + System.currentTimeMillis()));
+    @Test
+    public void testMissingFile() {
+        assertThrows(ValidationException.class,
+                () -> validator.validate("Test", Paths.get("does-not-exist-" + System.currentTimeMillis()))
+        );
     }
 
     @Test

@@ -2,9 +2,11 @@ package com.github.joschi.jadconfig.guava.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
 import com.google.common.primitives.UnsignedInteger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link UnsignedIntegerConverter}
@@ -12,49 +14,59 @@ import org.junit.Test;
 public class UnsignedIntegerConverterTest {
     private UnsignedIntegerConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         converter = new UnsignedIntegerConverter();
     }
 
     @Test
     public void testConvertFrom() {
-        Assert.assertEquals(UnsignedInteger.ZERO, converter.convertFrom("0"));
-        Assert.assertEquals(UnsignedInteger.ONE, converter.convertFrom("1"));
-        Assert.assertEquals(UnsignedInteger.valueOf(Integer.MAX_VALUE), converter.convertFrom("2147483647"));
-        Assert.assertEquals(UnsignedInteger.MAX_VALUE, converter.convertFrom("4294967295"));
+        Assertions.assertEquals(UnsignedInteger.ZERO, converter.convertFrom("0"));
+        Assertions.assertEquals(UnsignedInteger.ONE, converter.convertFrom("1"));
+        Assertions.assertEquals(UnsignedInteger.valueOf(Integer.MAX_VALUE), converter.convertFrom("2147483647"));
+        Assertions.assertEquals(UnsignedInteger.MAX_VALUE, converter.convertFrom("4294967295"));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromTooBig() {
-        converter.convertFrom("4294967296");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("4294967296")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNegative() {
-        converter.convertFrom("-1");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("-1")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertInvalid() {
-        converter.convertFrom("Not a number");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("Not a number")
+        );
     }
 
     @Test
     public void testConvertTo() {
-        Assert.assertEquals("0", converter.convertTo(UnsignedInteger.ZERO));
-        Assert.assertEquals("1", converter.convertTo(UnsignedInteger.ONE));
-        Assert.assertEquals("2147483647", converter.convertTo(UnsignedInteger.valueOf(Integer.MAX_VALUE)));
-        Assert.assertEquals("4294967295", converter.convertTo(UnsignedInteger.MAX_VALUE));
+        Assertions.assertEquals("0", converter.convertTo(UnsignedInteger.ZERO));
+        Assertions.assertEquals("1", converter.convertTo(UnsignedInteger.ONE));
+        Assertions.assertEquals("2147483647", converter.convertTo(UnsignedInteger.valueOf(Integer.MAX_VALUE)));
+        Assertions.assertEquals("4294967295", converter.convertTo(UnsignedInteger.MAX_VALUE));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-        converter.convertTo(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertTo(null)
+        );
     }
 }

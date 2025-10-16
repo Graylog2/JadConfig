@@ -1,9 +1,9 @@
 package com.github.joschi.jadconfig.repositories;
 
 import com.github.joschi.jadconfig.RepositoryException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link EnvironmentRepository}
@@ -14,7 +14,7 @@ public class EnvironmentRepositoryTest {
 
     private EnvironmentRepository repository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         repository = new EnvironmentRepository();
@@ -35,36 +35,36 @@ public class EnvironmentRepositoryTest {
     @Test
     public void testRead() throws RepositoryException {
 
-        Assert.assertNull(repository.read("This environment variable should not exist"));
+        Assertions.assertNull(repository.read("This environment variable should not exist"));
 
-        Assert.assertEquals(System.getenv("JAVA_HOME"), repository.read("JAVA_HOME"));
+        Assertions.assertEquals(System.getenv("JAVA_HOME"), repository.read("JAVA_HOME"));
     }
 
     @Test
     public void testUpperCaseEnabledRead() throws RepositoryException {
         final EnvironmentRepository testRepository = new EnvironmentRepository(true);
 
-        Assert.assertEquals(System.getenv("JAVA_HOME"), testRepository.read("jAvA_homE"));
+        Assertions.assertEquals(System.getenv("JAVA_HOME"), testRepository.read("jAvA_homE"));
     }
 
     @Test
     public void testUpperCaseDisabledRead() throws RepositoryException {
         final EnvironmentRepository testRepository = new EnvironmentRepository(false);
 
-        Assert.assertNull(testRepository.read("jAvA_homE"));
-        Assert.assertEquals(System.getenv("JAVA_HOME"), testRepository.read("JAVA_HOME"));
+        Assertions.assertNull(testRepository.read("jAvA_homE"));
+        Assertions.assertEquals(System.getenv("JAVA_HOME"), testRepository.read("JAVA_HOME"));
     }
 
     @Test
     public void testPrefixedRead() throws RepositoryException {
         final EnvironmentRepository testRepository = new EnvironmentRepository("JAVA_");
 
-        Assert.assertEquals(System.getenv("JAVA_HOME"), testRepository.read("HOME"));
+        Assertions.assertEquals(System.getenv("JAVA_HOME"), testRepository.read("HOME"));
     }
 
     @Test
     public void testSize() throws RepositoryException {
 
-        Assert.assertEquals(System.getenv().size(), repository.size());
+        Assertions.assertEquals(System.getenv().size(), repository.size());
     }
 }

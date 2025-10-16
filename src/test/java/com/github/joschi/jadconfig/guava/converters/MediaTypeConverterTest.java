@@ -2,9 +2,11 @@ package com.github.joschi.jadconfig.guava.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
 import com.google.common.net.MediaType;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link MediaTypeConverter}.
@@ -12,38 +14,44 @@ import org.junit.Test;
 public class MediaTypeConverterTest {
     private MediaTypeConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         converter = new MediaTypeConverter();
     }
 
     @Test
     public void testConvertFrom() {
-        Assert.assertEquals(MediaType.ANY_TYPE, converter.convertFrom("*/*"));
-        Assert.assertEquals(MediaType.create("text", "html"), converter.convertFrom("text/html"));
-        Assert.assertEquals(MediaType.JSON_UTF_8, converter.convertFrom("application/json; charset=utf-8"));
+        Assertions.assertEquals(MediaType.ANY_TYPE, converter.convertFrom("*/*"));
+        Assertions.assertEquals(MediaType.create("text", "html"), converter.convertFrom("text/html"));
+        Assertions.assertEquals(MediaType.JSON_UTF_8, converter.convertFrom("application/json; charset=utf-8"));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromInvalid() {
-        converter.convertFrom("Not a media type#123");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("Not a media type#123")
+        );
     }
 
     @Test
     public void testConvertTo() {
-        Assert.assertEquals("*/*", converter.convertTo(MediaType.ANY_TYPE));
-        Assert.assertEquals("text/html", converter.convertTo(MediaType.create("text", "html")));
-        Assert.assertEquals("application/json; charset=utf-8", converter.convertTo(MediaType.JSON_UTF_8));
+        Assertions.assertEquals("*/*", converter.convertTo(MediaType.ANY_TYPE));
+        Assertions.assertEquals("text/html", converter.convertTo(MediaType.create("text", "html")));
+        Assertions.assertEquals("application/json; charset=utf-8", converter.convertTo(MediaType.JSON_UTF_8));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-        converter.convertTo(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertTo(null)
+        );
     }
 }

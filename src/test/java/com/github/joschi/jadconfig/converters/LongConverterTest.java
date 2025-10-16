@@ -1,9 +1,11 @@
 package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link LongConverter}
@@ -14,7 +16,7 @@ public class LongConverterTest {
 
     private LongConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         converter = new LongConverter();
@@ -23,50 +25,55 @@ public class LongConverterTest {
     @Test
     public void testConvertFrom() {
 
-        Assert.assertEquals(Long.valueOf(0L), converter.convertFrom("0"));
-        Assert.assertEquals(Long.valueOf(1L), converter.convertFrom("1"));
-        Assert.assertEquals(Long.valueOf(-1L), converter.convertFrom("-1"));
-        Assert.assertEquals(Long.MIN_VALUE, converter.convertFrom("-9223372036854775808").longValue());
-        Assert.assertEquals(Long.MAX_VALUE, converter.convertFrom("9223372036854775807").longValue());
+        Assertions.assertEquals(Long.valueOf(0L), converter.convertFrom("0"));
+        Assertions.assertEquals(Long.valueOf(1L), converter.convertFrom("1"));
+        Assertions.assertEquals(Long.valueOf(-1L), converter.convertFrom("-1"));
+        Assertions.assertEquals(Long.MIN_VALUE, converter.convertFrom("-9223372036854775808").longValue());
+        Assertions.assertEquals(Long.MAX_VALUE, converter.convertFrom("9223372036854775807").longValue());
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromTooBig() {
-
-        converter.convertFrom("9223372036854775808");
+        assertThrows(ParameterException.class, () ->
+                converter.convertFrom("9223372036854775808")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromTooSmall() {
-
-        converter.convertFrom("-9223372036854775809");
+        assertThrows(ParameterException.class, () ->
+                converter.convertFrom("-9223372036854775809")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class, () ->
+                converter.convertFrom(null)
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromInvalid() {
-
-        converter.convertFrom("Not a number");
+        assertThrows(ParameterException.class, () ->
+                converter.convertFrom("Not a number")
+        );
     }
 
     @Test
     public void testConvertTo() {
 
-        Assert.assertEquals("0", converter.convertTo(0L));
-        Assert.assertEquals("1", converter.convertTo(1L));
-        Assert.assertEquals("-1", converter.convertTo(-1L));
-        Assert.assertEquals("-9223372036854775808", converter.convertTo(Long.MIN_VALUE));
-        Assert.assertEquals("9223372036854775807", converter.convertTo(Long.MAX_VALUE));
+        Assertions.assertEquals("0", converter.convertTo(0L));
+        Assertions.assertEquals("1", converter.convertTo(1L));
+        Assertions.assertEquals("-1", converter.convertTo(-1L));
+        Assertions.assertEquals("-9223372036854775808", converter.convertTo(Long.MIN_VALUE));
+        Assertions.assertEquals("9223372036854775807", converter.convertTo(Long.MAX_VALUE));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-
-        converter.convertTo(null);
+        assertThrows(ParameterException.class, () ->
+                converter.convertTo(null)
+        );
     }
 }

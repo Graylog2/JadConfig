@@ -1,9 +1,11 @@
 package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link IntegerConverter}
@@ -14,7 +16,7 @@ public class IntegerConverterTest {
 
     private IntegerConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         converter = new IntegerConverter();
@@ -23,50 +25,54 @@ public class IntegerConverterTest {
     @Test
     public void testConvertFrom() {
 
-        Assert.assertEquals(Integer.valueOf(0), converter.convertFrom("0"));
-        Assert.assertEquals(Integer.valueOf(1), converter.convertFrom("1"));
-        Assert.assertEquals(Integer.valueOf(-1), converter.convertFrom("-1"));
-        Assert.assertEquals(Integer.MIN_VALUE, converter.convertFrom("-2147483648").intValue());
-        Assert.assertEquals(Integer.MAX_VALUE, converter.convertFrom("2147483647").intValue());
+        Assertions.assertEquals(Integer.valueOf(0), converter.convertFrom("0"));
+        Assertions.assertEquals(Integer.valueOf(1), converter.convertFrom("1"));
+        Assertions.assertEquals(Integer.valueOf(-1), converter.convertFrom("-1"));
+        Assertions.assertEquals(Integer.MIN_VALUE, converter.convertFrom("-2147483648").intValue());
+        Assertions.assertEquals(Integer.MAX_VALUE, converter.convertFrom("2147483647").intValue());
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromTooBig() {
-
-        converter.convertFrom("2147483648");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("2147483648")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromTooSmall() {
-
-        converter.convertFrom("-2147483649");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("-2147483649")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertInvalid() {
-
-        converter.convertFrom("Not a number");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("Not a number")
+        );
     }
 
     @Test
     public void testConvertTo() {
-
-        Assert.assertEquals("0", converter.convertTo(0));
-        Assert.assertEquals("1", converter.convertTo(1));
-        Assert.assertEquals("-1", converter.convertTo(-1));
-        Assert.assertEquals("-2147483648", converter.convertTo(Integer.MIN_VALUE));
-        Assert.assertEquals("2147483647", converter.convertTo(Integer.MAX_VALUE));
+        Assertions.assertEquals("0", converter.convertTo(0));
+        Assertions.assertEquals("1", converter.convertTo(1));
+        Assertions.assertEquals("-1", converter.convertTo(-1));
+        Assertions.assertEquals("-2147483648", converter.convertTo(Integer.MIN_VALUE));
+        Assertions.assertEquals("2147483647", converter.convertTo(Integer.MAX_VALUE));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-
-        converter.convertTo(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertTo(null)
+        );
     }
 }

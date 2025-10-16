@@ -1,11 +1,13 @@
 package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link TimeUnitConverter}
@@ -15,41 +17,49 @@ import java.util.concurrent.TimeUnit;
 public class TimeUnitConverterTest {
     private TimeUnitConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         converter = new TimeUnitConverter();
     }
 
     @Test
     public void testConvertFrom() {
-        Assert.assertEquals(TimeUnit.DAYS, converter.convertFrom("days"));
-        Assert.assertEquals(TimeUnit.HOURS, converter.convertFrom("HoUrS"));
-        Assert.assertEquals(TimeUnit.MINUTES, converter.convertFrom("MINUTES"));
+        Assertions.assertEquals(TimeUnit.DAYS, converter.convertFrom("days"));
+        Assertions.assertEquals(TimeUnit.HOURS, converter.convertFrom("HoUrS"));
+        Assertions.assertEquals(TimeUnit.MINUTES, converter.convertFrom("MINUTES"));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class, () ->
+                converter.convertFrom(null)
+        );
     }
 
-    @Test(expected = ParameterException.class)
-    public void testConvertFromEmptyString() {
-        converter.convertFrom("");
+    @Test
+    public void testConvertFromEmptyString()  {
+        assertThrows(ParameterException.class, () ->
+                converter.convertFrom("")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromInvalid() {
-        converter.convertFrom("Invalid TimeUnit");
+        assertThrows(ParameterException.class, () ->
+                converter.convertFrom("Invalid TimeUnit")
+        );
     }
 
     @Test
     public void testConvertTo() {
-        Assert.assertEquals("DAYS", converter.convertTo(TimeUnit.DAYS));
-        Assert.assertEquals("NANOSECONDS", converter.convertTo(TimeUnit.NANOSECONDS));
+        Assertions.assertEquals("DAYS", converter.convertTo(TimeUnit.DAYS));
+        Assertions.assertEquals("NANOSECONDS", converter.convertTo(TimeUnit.NANOSECONDS));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-        converter.convertTo(null);
+        assertThrows(ParameterException.class, () ->
+                converter.convertTo(null)
+        );
     }
 }

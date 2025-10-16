@@ -1,12 +1,14 @@
 package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link InetAddressConverter}
@@ -17,7 +19,7 @@ public class InetAddressConverterTest {
 
     private InetAddressConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         converter = new InetAddressConverter();
@@ -26,21 +28,23 @@ public class InetAddressConverterTest {
     @Test
     public void testConvertFrom() throws UnknownHostException {
 
-        Assert.assertEquals(InetAddress.getByName("localhost"), converter.convertFrom("localhost"));
-        Assert.assertEquals(InetAddress.getByName("127.0.0.1"), converter.convertFrom("127.0.0.1"));
-        Assert.assertEquals(InetAddress.getByName("::1"), converter.convertFrom("::1"));
+        Assertions.assertEquals(InetAddress.getByName("localhost"), converter.convertFrom("localhost"));
+        Assertions.assertEquals(InetAddress.getByName("127.0.0.1"), converter.convertFrom("127.0.0.1"));
+        Assertions.assertEquals(InetAddress.getByName("::1"), converter.convertFrom("::1"));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromInvalid() {
-
-        converter.convertFrom("Not a hostname#123");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("Not a hostname#123")
+        );
     }
 
     @Test
@@ -48,14 +52,15 @@ public class InetAddressConverterTest {
 
         String loopbackCanonicalHostName = InetAddress.getLocalHost().getCanonicalHostName();
 
-        Assert.assertEquals(InetAddress.getByName("localhost").getCanonicalHostName(), converter.convertTo(InetAddress.getByName("localhost")));
-        Assert.assertEquals(loopbackCanonicalHostName, converter.convertTo(InetAddress.getLocalHost()));
-        Assert.assertEquals(InetAddress.getByName("").getCanonicalHostName(), converter.convertTo(InetAddress.getByName("")));
+        Assertions.assertEquals(InetAddress.getByName("localhost").getCanonicalHostName(), converter.convertTo(InetAddress.getByName("localhost")));
+        Assertions.assertEquals(loopbackCanonicalHostName, converter.convertTo(InetAddress.getLocalHost()));
+        Assertions.assertEquals(InetAddress.getByName("").getCanonicalHostName(), converter.convertTo(InetAddress.getByName("")));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-
-        converter.convertTo(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertTo(null)
+        );
     }
 }

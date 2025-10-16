@@ -1,14 +1,15 @@
 package com.github.joschi.jadconfig.repositories;
 
 import com.github.joschi.jadconfig.RepositoryException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for {@link PropertiesRepository}
@@ -21,7 +22,7 @@ public class PropertiesRepositoryTest {
 
     private PropertiesRepository repository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         repository = new PropertiesRepository(PROPERTIES_FILE);
@@ -31,55 +32,60 @@ public class PropertiesRepositoryTest {
     public void testConstructorFilename() throws RepositoryException {
 
         repository = new PropertiesRepository(PROPERTIES_FILE);
-        Assert.assertEquals(PROPERTIES_FILE, repository.getPropertiesFile().getPath());
+        Assertions.assertEquals(PROPERTIES_FILE, repository.getPropertiesFile().getPath());
 
         repository.open();
 
-        Assert.assertEquals("Test", repository.read("test.string"));
+        Assertions.assertEquals("Test", repository.read("test.string"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testConstructorNullFilename() {
-
-        new PropertiesRepository((String) null);
+        assertThrows(IllegalArgumentException.class,
+                () -> new PropertiesRepository((String) null)
+        );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testConstructorNullEmpty() {
-
-        new PropertiesRepository("");
+        assertThrows(IllegalArgumentException.class,
+                () -> new PropertiesRepository("")
+        );
     }
 
     @Test
     public void testConstructorFile() throws RepositoryException {
 
         repository = new PropertiesRepository(new File(PROPERTIES_FILE));
-        Assert.assertEquals(PROPERTIES_FILE, repository.getPropertiesFile().getPath());
+        Assertions.assertEquals(PROPERTIES_FILE, repository.getPropertiesFile().getPath());
 
         repository.open();
 
-        Assert.assertEquals("Test", repository.read("test.string"));
+        Assertions.assertEquals("Test", repository.read("test.string"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testConstructorNullFile() {
-
-        new PropertiesRepository((File) null);
+        assertThrows(IllegalArgumentException.class,
+                () -> new PropertiesRepository((File) null)
+        );
     }
 
-    @Test(expected = RepositoryException.class)
+    @Test
     public void testOpenNonExistingFile() throws RepositoryException, IOException {
+        assertThrows(RepositoryException.class,
+                () -> {
+                    File file = File.createTempFile("PropertiesRepositoryTest-testOpenNonExistingFile", ".properties");
 
-        File file = File.createTempFile("PropertiesRepositoryTest-testOpenNonExistingFile", ".properties");
+                    if (!file.delete()) {
 
-        if (!file.delete()) {
+                        fail(file.getCanonicalPath() + " already exists and can't be deleted. Test prerequisite not met!");
+                    }
 
-            fail(file.getCanonicalPath() + " already exists and can't be deleted. Test prerequisite not met!");
-        }
+                    repository = new PropertiesRepository(file);
 
-        repository = new PropertiesRepository(file);
-
-        repository.open();
+                    repository.open();
+                });
     }
 
     @Test
@@ -87,8 +93,8 @@ public class PropertiesRepositoryTest {
 
         repository.open();
 
-        Assert.assertEquals("Test", repository.read("test.string"));
-        Assert.assertEquals("123456", repository.read("test.integer"));
+        Assertions.assertEquals("Test", repository.read("test.string"));
+        Assertions.assertEquals("123456", repository.read("test.integer"));
     }
 
     @Test

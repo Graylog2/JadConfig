@@ -1,8 +1,10 @@
 package com.github.joschi.jadconfig.validators;
 
 import com.github.joschi.jadconfig.ValidationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link StringNotBlankValidator}
@@ -13,7 +15,7 @@ public class StringNotBlankValidatorTest {
 
     private StringNotBlankValidator validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         validator = new StringNotBlankValidator();
     }
@@ -23,19 +25,25 @@ public class StringNotBlankValidatorTest {
         validator.validate("Test", "Test");
     }
 
-    @Test(expected = ValidationException.class)
-    public void testValidateEmptyString() throws ValidationException {
-        validator.validate("Test", "");
+    @Test
+    public void testValidateEmptyString() {
+        assertThrows(ValidationException.class,
+                () -> validator.validate("Test", "")
+        );
     }
 
-    @Test(expected = ValidationException.class)
-    public void testValidateNewLineString() throws ValidationException {
-        validator.validate("Test", "\n");
+    @Test
+    public void testValidateNewLineString() {
+        assertThrows(ValidationException.class,
+                () -> validator.validate("Test", "\n")
+        );
     }
 
-    @Test(expected = ValidationException.class)
-    public void testValidateBlankString() throws ValidationException {
-        validator.validate("Test", " ");
+    @Test
+    public void testValidateBlankString() {
+        assertThrows(ValidationException.class,
+                () -> validator.validate("Test", " ")
+        );
     }
 
     @Test

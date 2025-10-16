@@ -1,15 +1,17 @@
 package com.github.joschi.jadconfig.repositories;
 
+import com.github.joschi.jadconfig.ParameterException;
 import com.github.joschi.jadconfig.RepositoryException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for {@link InMemoryRepository}
@@ -19,7 +21,7 @@ import static org.junit.Assert.fail;
 
     private InMemoryRepository repository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         repository = new InMemoryRepository();
@@ -30,20 +32,21 @@ import static org.junit.Assert.fail;
 
         repository.open();
 
-        Assert.assertEquals(0, repository.size());
+        Assertions.assertEquals(0, repository.size());
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void testCloseWithoutOpen() throws RepositoryException {
-
-        repository.close();
+    @Test
+    public void testCloseWithoutOpen() {
+        assertThrows(IllegalStateException.class,
+                () -> repository.close()
+        );
     }
 
     @Test
     public void testClose() throws RepositoryException {
 
         repository.open();
-        Assert.assertEquals(0, repository.size());
+        Assertions.assertEquals(0, repository.size());
         repository.close();
 
         try {
@@ -54,10 +57,11 @@ import static org.junit.Assert.fail;
         }
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testReadWithoutOpen() {
-
-        repository.read("Test");
+        assertThrows(IllegalStateException.class,
+                () -> repository.read("Test")
+        );
     }
 
     @Test
@@ -65,18 +69,19 @@ import static org.junit.Assert.fail;
 
         final InMemoryRepository emptyRepository = new InMemoryRepository();
         emptyRepository.open();
-        Assert.assertNull(emptyRepository.read("Test"));
+        Assertions.assertNull(emptyRepository.read("Test"));
 
         final InMemoryRepository inMemoryRepository = new InMemoryRepository(Collections.singletonMap("Test", "Value"));
         inMemoryRepository.open();
-        Assert.assertEquals("Value", inMemoryRepository.read("Test"));
+        Assertions.assertEquals("Value", inMemoryRepository.read("Test"));
     }
 
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSizeWithoutOpen() {
-
-        repository.size();
+        assertThrows(IllegalStateException.class,
+                () -> repository.size()
+        );
     }
 
     @Test
@@ -84,11 +89,11 @@ import static org.junit.Assert.fail;
 
         final InMemoryRepository emptyRepository = new InMemoryRepository();
         emptyRepository.open();
-        Assert.assertEquals(0, emptyRepository.size());
+        Assertions.assertEquals(0, emptyRepository.size());
 
         final InMemoryRepository inMemoryRepository = new InMemoryRepository(Collections.singletonMap("Test", "Value"));
         inMemoryRepository.open();
-        Assert.assertEquals(1, inMemoryRepository.size());
+        Assertions.assertEquals(1, inMemoryRepository.size());
     }
 
     @Test
@@ -101,8 +106,8 @@ import static org.junit.Assert.fail;
 
         InMemoryRepository inMemoryRepository = new InMemoryRepository(map);
 
-        Assert.assertEquals("one", inMemoryRepository.read("one"));
-        Assert.assertEquals("two", inMemoryRepository.read("two"));
-        Assert.assertEquals("three", inMemoryRepository.read("three"));
+        Assertions.assertEquals("one", inMemoryRepository.read("one"));
+        Assertions.assertEquals("two", inMemoryRepository.read("two"));
+        Assertions.assertEquals("three", inMemoryRepository.read("three"));
     }
 }

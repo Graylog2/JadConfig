@@ -1,13 +1,16 @@
 package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import com.github.joschi.jadconfig.ValidationException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link InetSocketAddressConverter}
@@ -18,7 +21,7 @@ public class InetSocketAddressConverterTest {
 
     private InetSocketAddressConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         converter = new InetSocketAddressConverter();
@@ -27,54 +30,60 @@ public class InetSocketAddressConverterTest {
     @Test
     public void testConvertFrom() throws UnknownHostException {
 
-        Assert.assertEquals(new InetSocketAddress("localhost", 1234), converter.convertFrom("localhost:1234"));
-        Assert.assertEquals(new InetSocketAddress("127.0.0.1", 1234), converter.convertFrom("127.0.0.1:1234"));
-        Assert.assertEquals(new InetSocketAddress("::1", 1234), converter.convertFrom("[::1]:1234"));
+        Assertions.assertEquals(new InetSocketAddress("localhost", 1234), converter.convertFrom("localhost:1234"));
+        Assertions.assertEquals(new InetSocketAddress("127.0.0.1", 1234), converter.convertFrom("127.0.0.1:1234"));
+        Assertions.assertEquals(new InetSocketAddress("::1", 1234), converter.convertFrom("[::1]:1234"));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromInvalidHostname() {
-
-        converter.convertFrom("Not a hostname#123:1234");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("Not a hostname#123:1234")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromPortInvalid() {
-
-        converter.convertFrom("localhost:99999");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("localhost:99999")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromPortMissing() {
-
-        converter.convertFrom("localhost");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("localhost")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromHostnameMissing() {
-
-        converter.convertFrom(":123");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(":123")
+        );
     }
 
     @Test
     public void testConvertTo() throws UnknownHostException {
 
-        Assert.assertEquals("localhost:1234", converter.convertTo(InetSocketAddress.createUnresolved("localhost", 1234)));
-        Assert.assertEquals("127.0.0.1:1234", converter.convertTo(InetSocketAddress.createUnresolved("127.0.0.1", 1234)));
-        Assert.assertEquals("[::1]:1234", converter.convertTo(InetSocketAddress.createUnresolved("[::1]", 1234)));
-        Assert.assertEquals(String.format("[%s]:%d", InetAddress.getByName("::1").getHostAddress(), 1234),
+        Assertions.assertEquals("localhost:1234", converter.convertTo(InetSocketAddress.createUnresolved("localhost", 1234)));
+        Assertions.assertEquals("127.0.0.1:1234", converter.convertTo(InetSocketAddress.createUnresolved("127.0.0.1", 1234)));
+        Assertions.assertEquals("[::1]:1234", converter.convertTo(InetSocketAddress.createUnresolved("[::1]", 1234)));
+        Assertions.assertEquals(String.format("[%s]:%d", InetAddress.getByName("::1").getHostAddress(), 1234),
                 converter.convertTo(new InetSocketAddress("[::1]", 1234)));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-
-        converter.convertTo(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertTo(null)
+        );
     }
 }

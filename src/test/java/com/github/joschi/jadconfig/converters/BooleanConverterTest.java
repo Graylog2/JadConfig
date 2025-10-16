@@ -1,9 +1,11 @@
 package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link BooleanConverter}
@@ -14,49 +16,51 @@ public class BooleanConverterTest {
 
     private BooleanConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-
         converter = new BooleanConverter();
     }
 
     @Test
     public void testConvertFrom() {
-
-        Assert.assertTrue(converter.convertFrom("true"));
-        Assert.assertTrue(converter.convertFrom("tRuE"));
-        Assert.assertFalse(converter.convertFrom("false"));
-        Assert.assertFalse(converter.convertFrom("fAlSe"));
+        Assertions.assertTrue(converter.convertFrom("true"));
+        Assertions.assertTrue(converter.convertFrom("tRuE"));
+        Assertions.assertFalse(converter.convertFrom("false"));
+        Assertions.assertFalse(converter.convertFrom("fAlSe"));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-
-        Assert.assertTrue(converter.convertFrom(null));
+        assertThrows(ParameterException.class, () ->
+                converter.convertFrom(null)
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertEmpty() {
-
-        Assert.assertTrue(converter.convertFrom(""));
+        assertThrows(ParameterException.class, () ->
+                converter.convertFrom("")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertInvalid() {
-
-        Assert.assertTrue(converter.convertFrom("yes"));
+        assertThrows(ParameterException.class, () ->
+                converter.convertFrom("yes")
+        );
     }
 
     @Test
     public void testConvertTo() {
 
-        Assert.assertEquals("true", converter.convertTo(true));
-        Assert.assertEquals("false", converter.convertTo(false));
+        Assertions.assertEquals("true", converter.convertTo(true));
+        Assertions.assertEquals("false", converter.convertTo(false));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-
-        converter.convertTo(null);
+        assertThrows(ParameterException.class, () ->
+                converter.convertTo(null)
+        );
     }
 }

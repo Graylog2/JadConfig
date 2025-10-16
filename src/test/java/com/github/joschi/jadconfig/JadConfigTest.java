@@ -21,11 +21,9 @@ import com.github.joschi.jadconfig.testbeans.ValidatorMethodConfigurationBean;
 import com.github.joschi.jadconfig.testbeans.VoidConfigurationBean;
 import com.github.joschi.jadconfig.testconverters.FoobarConverterFactory;
 import com.github.joschi.jadconfig.validators.StringNotBlankValidator;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +38,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
  * Unit tests for {@link JadConfig}
  *
@@ -49,15 +50,11 @@ public class JadConfigTest {
 
     private static final String PROPERTIES_FILE = PropertiesRepository.class.getResource("/testConfiguration.properties").getFile();
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
-
     private JadConfig jadConfig;
     private Repository repository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-
         repository = new PropertiesRepository(PROPERTIES_FILE);
     }
 
@@ -69,14 +66,14 @@ public class JadConfigTest {
 
         jadConfig.process();
 
-        Assert.assertEquals("Test", configurationBean.getMyString());
-        Assert.assertEquals(123, configurationBean.getMyByte());
-        Assert.assertEquals(1234, configurationBean.getMyShort());
-        Assert.assertEquals(123456, configurationBean.getMyInt());
-        Assert.assertEquals(1234567890123L, configurationBean.getMyLong());
-        Assert.assertEquals(5.432E-1f, configurationBean.getMyFloat(), 0.0f);
-        Assert.assertEquals(1.23E45d, configurationBean.getMyDouble(), 0.0d);
-        Assert.assertTrue(configurationBean.isMyBoolean());
+        Assertions.assertEquals("Test", configurationBean.getMyString());
+        Assertions.assertEquals(123, configurationBean.getMyByte());
+        Assertions.assertEquals(1234, configurationBean.getMyShort());
+        Assertions.assertEquals(123456, configurationBean.getMyInt());
+        Assertions.assertEquals(1234567890123L, configurationBean.getMyLong());
+        Assertions.assertEquals(5.432E-1f, configurationBean.getMyFloat(), 0.0f);
+        Assertions.assertEquals(1.23E45d, configurationBean.getMyDouble(), 0.0d);
+        assertTrue(configurationBean.isMyBoolean());
 
         List<String> stringList = new ArrayList<String>();
         stringList.add("one");
@@ -85,10 +82,10 @@ public class JadConfigTest {
         stringList.add("four");
         stringList.add("five");
 
-        Assert.assertEquals(stringList, configurationBean.getStringList());
-        Assert.assertEquals(URI.create("http://example.com/"), configurationBean.getUri());
-        Assert.assertEquals(new File("testConfiguration.properties"), configurationBean.getFile());
-        Assert.assertEquals(Paths.get("testConfiguration.properties"), configurationBean.getPath());
+        Assertions.assertEquals(stringList, configurationBean.getStringList());
+        Assertions.assertEquals(URI.create("http://example.com/"), configurationBean.getUri());
+        Assertions.assertEquals(new File("testConfiguration.properties"), configurationBean.getFile());
+        Assertions.assertEquals(Paths.get("testConfiguration.properties"), configurationBean.getPath());
     }
 
     @Test
@@ -97,10 +94,10 @@ public class JadConfigTest {
         jadConfig = new JadConfig(repository, configurationBean);
 
         jadConfig.process();
-        Assert.assertEquals("Test", configurationBean.getMyFallbackString());
-        Assert.assertEquals("prim", configurationBean.getMyPrimSecString());
-        Assert.assertNull(configurationBean.getMyNonexistentString());
-        Assert.assertEquals("sec", configurationBean.getMyHardcodedDefaultString());
+        Assertions.assertEquals("Test", configurationBean.getMyFallbackString());
+        Assertions.assertEquals("prim", configurationBean.getMyPrimSecString());
+        Assertions.assertNull(configurationBean.getMyNonexistentString());
+        Assertions.assertEquals("sec", configurationBean.getMyHardcodedDefaultString());
 
     }
 
@@ -115,14 +112,14 @@ public class JadConfigTest {
         jadConfig = new JadConfig(Arrays.asList(inMemoryRepository, repository), configurationBean);
         jadConfig.process();
 
-        Assert.assertEquals("Override", configurationBean.getMyString());
-        Assert.assertEquals(123, configurationBean.getMyByte());
-        Assert.assertEquals(1234, configurationBean.getMyShort());
-        Assert.assertEquals(123456, configurationBean.getMyInt());
-        Assert.assertEquals(1234567890123L, configurationBean.getMyLong());
-        Assert.assertEquals(5.432E-1f, configurationBean.getMyFloat(), 0.0f);
-        Assert.assertEquals(1.23E45d, configurationBean.getMyDouble(), 0.0d);
-        Assert.assertTrue(configurationBean.isMyBoolean());
+        Assertions.assertEquals("Override", configurationBean.getMyString());
+        Assertions.assertEquals(123, configurationBean.getMyByte());
+        Assertions.assertEquals(1234, configurationBean.getMyShort());
+        Assertions.assertEquals(123456, configurationBean.getMyInt());
+        Assertions.assertEquals(1234567890123L, configurationBean.getMyLong());
+        Assertions.assertEquals(5.432E-1f, configurationBean.getMyFloat(), 0.0f);
+        Assertions.assertEquals(1.23E45d, configurationBean.getMyDouble(), 0.0d);
+        assertTrue(configurationBean.isMyBoolean());
 
         List<String> stringList = new ArrayList<String>();
         stringList.add("one");
@@ -131,9 +128,9 @@ public class JadConfigTest {
         stringList.add("four");
         stringList.add("five");
 
-        Assert.assertEquals(stringList, configurationBean.getStringList());
-        Assert.assertEquals(URI.create("http://example.com/"), configurationBean.getUri());
-        Assert.assertEquals(new File("testConfiguration.properties"), configurationBean.getFile());
+        Assertions.assertEquals(stringList, configurationBean.getStringList());
+        Assertions.assertEquals(URI.create("http://example.com/"), configurationBean.getUri());
+        Assertions.assertEquals(new File("testConfiguration.properties"), configurationBean.getFile());
     }
 
     @Test
@@ -143,17 +140,19 @@ public class JadConfigTest {
         jadConfig = new JadConfig(repository, configurationBean);
 
         jadConfig.process();
-        Assert.assertEquals("Test", configurationBean.getMyString());
-        Assert.assertNull(configurationBean.getNonExisting());
+        Assertions.assertEquals("Test", configurationBean.getMyString());
+        Assertions.assertNull(configurationBean.getNonExisting());
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testProcessRequiredPropertyNotFound() throws RepositoryException, ValidationException {
+        assertThrows(ParameterException.class,
+                () -> {
+                    RequiredParameterBean configurationBean = new RequiredParameterBean();
+                    jadConfig = new JadConfig(repository, configurationBean);
 
-        RequiredParameterBean configurationBean = new RequiredParameterBean();
-        jadConfig = new JadConfig(repository, configurationBean);
-
-        jadConfig.process();
+                    jadConfig.process();
+                });
     }
 
     @Test
@@ -163,9 +162,9 @@ public class JadConfigTest {
         jadConfig = new JadConfig(repository, configurationBean);
 
         jadConfig.process();
-        Assert.assertEquals("Test", configurationBean.getMyString());
-        Assert.assertEquals(123, configurationBean.getMyByte());
-        Assert.assertEquals(1234, configurationBean.getMyShort());
+        Assertions.assertEquals("Test", configurationBean.getMyString());
+        Assertions.assertEquals(123, configurationBean.getMyByte());
+        Assertions.assertEquals(1234, configurationBean.getMyShort());
     }
 
     @Test
@@ -175,9 +174,9 @@ public class JadConfigTest {
         jadConfig = new JadConfig(repository, configurationBean);
 
         final Map<String, String> configDump = jadConfig.dump();
-        Assert.assertEquals("Will be overwritten", configDump.get("test.string"));
-        Assert.assertEquals("123", configDump.get("test.does-not-exist"));
-        Assert.assertEquals("0", configDump.get("test.short"));
+        Assertions.assertEquals("Will be overwritten", configDump.get("test.string"));
+        Assertions.assertEquals("123", configDump.get("test.does-not-exist"));
+        Assertions.assertEquals("0", configDump.get("test.short"));
     }
 
     @Test
@@ -187,42 +186,46 @@ public class JadConfigTest {
 
         jadConfig.process();
 
-        Assert.assertEquals("Test", configurationBean.getMyString());
-        Assert.assertEquals(123, configurationBean.getMyByte());
-        Assert.assertEquals(1234, configurationBean.getMyShort());
-        Assert.assertEquals(123456, configurationBean.getMyInt());
-        Assert.assertEquals(1234567890123L, configurationBean.getMyLong());
+        Assertions.assertEquals("Test", configurationBean.getMyString());
+        Assertions.assertEquals(123, configurationBean.getMyByte());
+        Assertions.assertEquals(1234, configurationBean.getMyShort());
+        Assertions.assertEquals(123456, configurationBean.getMyInt());
+        Assertions.assertEquals(1234567890123L, configurationBean.getMyLong());
     }
 
     @Test
     public void testProcessValidatorMethodThrowsException() throws RepositoryException, ValidationException {
-        expectedException.expect(ValidationException.class);
-        expectedException.expectMessage("BOOM");
+        Exception exception = assertThrows(ValidationException.class, () -> {
+            Map<String, String> properties = Collections.singletonMap("test.string", "Not Test");
+            ValidatorMethodConfigurationBean configurationBean = new ValidatorMethodConfigurationBean();
+            jadConfig = new JadConfig(new InMemoryRepository(properties), configurationBean);
 
-        Map<String, String> properties = Collections.singletonMap("test.string", "Not Test");
-        ValidatorMethodConfigurationBean configurationBean = new ValidatorMethodConfigurationBean();
-        jadConfig = new JadConfig(new InMemoryRepository(properties), configurationBean);
+            jadConfig.process();
+        });
 
+        String expectedMessage = "BOOM";
+        String actualMessage = exception.getMessage();
 
-        jadConfig.process();
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
     public void testProcessEmptyBean() throws RepositoryException, ValidationException {
-
         EmptyBean configurationBean = new EmptyBean();
         jadConfig = new JadConfig(repository, configurationBean);
 
         jadConfig.process();
     }
 
-    @Test(expected = ParameterException.class)
-    public void testProcessVoidBean() throws RepositoryException, ValidationException {
+    @Test
+    public void testProcessVoidBean() {
+        assertThrows(ParameterException.class,
+                () -> {
+                    VoidConfigurationBean configurationBean = new VoidConfigurationBean();
+                    jadConfig = new JadConfig(repository, configurationBean);
 
-        VoidConfigurationBean configurationBean = new VoidConfigurationBean();
-        jadConfig = new JadConfig(repository, configurationBean);
-
-        jadConfig.process();
+                    jadConfig.process();
+                });
     }
 
     @Test
@@ -233,9 +236,9 @@ public class JadConfigTest {
 
         jadConfig.process();
 
-        Assert.assertEquals("Test", configurationBean.getTrimmedString());
-        Assert.assertEquals("Test ", configurationBean.getUntrimmedString());
-        Assert.assertEquals(123456, configurationBean.getMyInt());
+        Assertions.assertEquals("Test", configurationBean.getTrimmedString());
+        Assertions.assertEquals("Test ", configurationBean.getUntrimmedString());
+        Assertions.assertEquals(123456, configurationBean.getMyInt());
     }
 
     @Test
@@ -252,7 +255,7 @@ public class JadConfigTest {
         jadConfig = new JadConfig(repository);
 
         jadConfig.process();
-        Assert.assertTrue(jadConfig.dump().isEmpty());
+        assertTrue(jadConfig.dump().isEmpty());
     }
 
     @Test
@@ -265,8 +268,8 @@ public class JadConfigTest {
 
         jadConfig.process();
 
-        Assert.assertEquals("Test", bean1.getMyString());
-        Assert.assertEquals(123, bean2.getMyByte());
+        Assertions.assertEquals("Test", bean1.getMyString());
+        Assertions.assertEquals(123, bean2.getMyByte());
     }
 
     @Test
@@ -282,8 +285,8 @@ public class JadConfigTest {
 
         jadConfig.process();
 
-        Assert.assertEquals("Test", bean1.getMyString());
-        Assert.assertEquals(123, bean2.getMyByte());
+        Assertions.assertEquals("Test", bean1.getMyString());
+        Assertions.assertEquals(123, bean2.getMyByte());
     }
 
     @Test
@@ -300,8 +303,8 @@ public class JadConfigTest {
         jadConfig.process();
         final Map<String, String> configDump = jadConfig.dump();
 
-        Assert.assertEquals("Test", configDump.get("test.string"));
-        Assert.assertEquals("123", configDump.get("test.byte"));
+        Assertions.assertEquals("Test", configDump.get("test.string"));
+        Assertions.assertEquals("123", configDump.get("test.byte"));
     }
 
     @Test
@@ -312,7 +315,7 @@ public class JadConfigTest {
 
         jadConfig.process();
 
-        Assert.assertEquals("Foobar", configurationBean.getMyString());
+        Assertions.assertEquals("Foobar", configurationBean.getMyString());
     }
 
     @Test
@@ -324,7 +327,7 @@ public class JadConfigTest {
         jadConfig.addConverterFactory(new FoobarConverterFactory());
         jadConfig.process();
 
-        Assert.assertEquals("Foobar", configurationBean.getMyString());
+        Assertions.assertEquals("Foobar", configurationBean.getMyString());
     }
 
     @Test
@@ -336,7 +339,7 @@ public class JadConfigTest {
         jadConfig.process();
 
         final Map<String, String> configDump = jadConfig.dump();
-        Assert.assertTrue(configDump.isEmpty());
+        assertTrue(configDump.isEmpty());
     }
 
     @Test
@@ -357,10 +360,10 @@ public class JadConfigTest {
 
         final Map<String, String> configDump = jadConfig.dump();
 
-        Assert.assertEquals("Test", configDump.get("save.me.string"));
-        Assert.assertEquals("123", configDump.get("save.me.integer"));
-        Assert.assertEquals("http://example.com/", configDump.get("save.me.uri"));
-        Assert.assertEquals(file.getPath(), configDump.get("save.me.file"));
+        Assertions.assertEquals("Test", configDump.get("save.me.string"));
+        Assertions.assertEquals("123", configDump.get("save.me.integer"));
+        Assertions.assertEquals("http://example.com/", configDump.get("save.me.uri"));
+        Assertions.assertEquals(file.getPath(), configDump.get("save.me.file"));
     }
 
     @Test
@@ -369,8 +372,8 @@ public class JadConfigTest {
         jadConfig = new JadConfig(repository, bean);
         jadConfig.process();
 
-        Assert.assertEquals("Test", bean.getMyString());
-        Assert.assertEquals(1234567890123L, bean.getMyInheritedLong());
+        Assertions.assertEquals("Test", bean.getMyString());
+        Assertions.assertEquals(1234567890123L, bean.getMyInheritedLong());
     }
 
     @Test
@@ -379,9 +382,9 @@ public class JadConfigTest {
         jadConfig = new JadConfig(repository, bean);
         jadConfig.process();
 
-        Assert.assertEquals("Test", bean.getMyString());
-        Assert.assertEquals(1234567890123L, bean.getMyInheritedLong());
-        Assert.assertEquals(new URI("http://example.com/"), bean.getMyUri());
+        Assertions.assertEquals("Test", bean.getMyString());
+        Assertions.assertEquals(1234567890123L, bean.getMyInheritedLong());
+        Assertions.assertEquals(new URI("http://example.com/"), bean.getMyUri());
     }
 
     @Test
@@ -392,9 +395,9 @@ public class JadConfigTest {
 
         final Map<String, String> configDump = jadConfig.dump();
 
-        Assert.assertEquals(2, configDump.size());
-        Assert.assertEquals("Test", configDump.get("test.string"));
-        Assert.assertEquals("1234567890123", configDump.get("test.long"));
+        Assertions.assertEquals(2, configDump.size());
+        Assertions.assertEquals("Test", configDump.get("test.string"));
+        Assertions.assertEquals("1234567890123", configDump.get("test.long"));
     }
 
     @Test
@@ -405,10 +408,10 @@ public class JadConfigTest {
 
         final Map<String, String> configDump = jadConfig.dump();
 
-        Assert.assertEquals(3, configDump.size());
-        Assert.assertEquals("Test", configDump.get("test.string"));
-        Assert.assertEquals("1234567890123", configDump.get("test.long"));
-        Assert.assertEquals("http://example.com/", configDump.get("test.uri"));
+        Assertions.assertEquals(3, configDump.size());
+        Assertions.assertEquals("Test", configDump.get("test.string"));
+        Assertions.assertEquals("1234567890123", configDump.get("test.long"));
+        Assertions.assertEquals("http://example.com/", configDump.get("test.uri"));
     }
 
     @Test
@@ -418,8 +421,8 @@ public class JadConfigTest {
         jadConfig.addConverterFactory(converterFactory);
 
         final List<ConverterFactory> converterFactories = jadConfig.getConverterFactories();
-        Assert.assertEquals(2, converterFactories.size());
-        Assert.assertTrue(converterFactories.contains(converterFactory));
+        Assertions.assertEquals(2, converterFactories.size());
+        assertTrue(converterFactories.contains(converterFactory));
     }
 
     @Test
@@ -429,9 +432,9 @@ public class JadConfigTest {
         jadConfig = new JadConfig(repository, bean1, bean2);
 
         final List<Object> beans = jadConfig.getConfigurationBeans();
-        Assert.assertEquals(2, beans.size());
-        Assert.assertTrue(beans.contains(bean1));
-        Assert.assertTrue(beans.contains(bean2));
+        Assertions.assertEquals(2, beans.size());
+        assertTrue(beans.contains(bean1));
+        assertTrue(beans.contains(bean2));
     }
 
     @Test
@@ -440,53 +443,67 @@ public class JadConfigTest {
         jadConfig = new JadConfig(repository);
 
         final List<Repository> repositories = jadConfig.getRepositories();
-        Assert.assertEquals(1, repositories.size());
-        Assert.assertTrue(repositories.contains(repository));
+        Assertions.assertEquals(1, repositories.size());
+        assertTrue(repositories.contains(repository));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSetRepositoryThrowsExceptionWhenNull() {
-        new JadConfig(repository).setRepository(null);
+        assertThrows(IllegalArgumentException.class,
+                () -> new JadConfig(repository).setRepository(null)
+        );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSetRepositoriesThrowsExceptionWhenArrayIsNull() {
-        new JadConfig(repository).setRepositories((Repository[]) null);
+        assertThrows(IllegalArgumentException.class,
+                () -> new JadConfig(repository).setRepositories((Repository[]) null)
+        );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSetRepositoriesThrowsExceptionWhenCollectionIsNull() {
-        new JadConfig(repository).setRepositories((Collection<Repository>) null);
+        assertThrows(IllegalArgumentException.class,
+                () -> new JadConfig(repository).setRepositories((Collection<Repository>) null)
+        );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSetRepositoriesThrowsExceptionWhenArrayIsEmpty() {
-        new JadConfig(repository).setRepositories();
+        assertThrows(IllegalArgumentException.class,
+                () -> new JadConfig(repository).setRepositories()
+        );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSetRepositoriesThrowsExceptionWhenCollectionIsEmpty() {
-        new JadConfig(repository).setRepositories(Collections.<Repository>emptyList());
+        assertThrows(IllegalArgumentException.class,
+                () -> new JadConfig(repository).setRepositories(Collections.<Repository>emptyList())
+        );
     }
 
     @Test
     public void testArgumentLessConstructor() {
         jadConfig = new JadConfig();
 
-        Assert.assertTrue(jadConfig.getConfigurationBeans().isEmpty());
-        Assert.assertTrue(jadConfig.getRepositories().isEmpty());
-        Assert.assertEquals(1, jadConfig.getConverterFactories().size());
+        assertTrue(jadConfig.getConfigurationBeans().isEmpty());
+        assertTrue(jadConfig.getRepositories().isEmpty());
+        Assertions.assertEquals(1, jadConfig.getConverterFactories().size());
     }
 
     @Test
     public void testParameterExceptionContainsParameterName() throws RepositoryException, ValidationException {
-        expectedException.expect(ParameterException.class);
-        expectedException.expectMessage("Couldn't convert value for parameter \"test.string\"");
+        Exception exception = assertThrows(ParameterException.class, () -> {
+            ConverterFailureBean configurationBean = new ConverterFailureBean();
+            jadConfig = new JadConfig(repository, configurationBean);
 
-        ConverterFailureBean configurationBean = new ConverterFailureBean();
-        jadConfig = new JadConfig(repository, configurationBean);
+            jadConfig.process();
+        });
 
-        jadConfig.process();
+        String expectedMessage = "Couldn't convert value for parameter \"test.string\"";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
@@ -496,12 +513,12 @@ public class JadConfigTest {
 
         jadConfig.process();
 
-        Assert.assertEquals("Test", configurationBean.getMyString());
-        Assert.assertEquals(123, configurationBean.getMyByte());
-        Assert.assertEquals(1234, configurationBean.getMyShort());
-        Assert.assertEquals(12345, configurationBean.getMyInetPort());
-        Assert.assertEquals(123456, configurationBean.getMyInt());
-        Assert.assertEquals(1234567890123L, configurationBean.getMyLong());
+        Assertions.assertEquals("Test", configurationBean.getMyString());
+        Assertions.assertEquals(123, configurationBean.getMyByte());
+        Assertions.assertEquals(1234, configurationBean.getMyShort());
+        Assertions.assertEquals(12345, configurationBean.getMyInetPort());
+        Assertions.assertEquals(123456, configurationBean.getMyInt());
+        Assertions.assertEquals(1234567890123L, configurationBean.getMyLong());
     }
 
     @Test
@@ -510,7 +527,7 @@ public class JadConfigTest {
         jadConfig = new JadConfig(repository, configurationBean);
 
         // the default value is -1, validator expects only positive longs => validation exception
-        Assert.assertThrows(ValidationException.class, () -> jadConfig.process());
+        assertThrows(ValidationException.class, () -> jadConfig.process());
     }
 
 

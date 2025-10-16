@@ -1,13 +1,15 @@
 package com.github.joschi.jadconfig.validators;
 
+import com.github.joschi.jadconfig.ParameterException;
 import com.github.joschi.jadconfig.ValidationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for {@link FileReadableValidator}
@@ -18,7 +20,7 @@ public class FileReadableValidatorTest {
 
     private FileReadableValidator validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         validator = new FileReadableValidator();
     }
@@ -31,27 +33,33 @@ public class FileReadableValidatorTest {
         validator.validate("Test", tempFile);
     }
 
-    @Test(expected = ValidationException.class)
-    public void testUnreadableFile() throws ValidationException, IOException {
-        File tempFile = File.createTempFile("FileReadableValidatorTest-testMissingPermissions", ".tmp");
-        tempFile.deleteOnExit();
+    @Test
+    public void testUnreadableFile() {
+        assertThrows(ValidationException.class,
+                () -> {
+                    File tempFile = File.createTempFile("FileReadableValidatorTest-testMissingPermissions", ".tmp");
+                    tempFile.deleteOnExit();
 
-        if (!tempFile.setReadable(false)) {
-            fail("Couldn't set file " + tempFile.getCanonicalPath() + " unreadable");
-        }
+                    if (!tempFile.setReadable(false)) {
+                        fail("Couldn't set file " + tempFile.getCanonicalPath() + " unreadable");
+                    }
 
-        validator.validate("Test", tempFile);
+                    validator.validate("Test", tempFile);
+                });
     }
 
-    @Test(expected = ValidationException.class)
-    public void testMissingFile() throws ValidationException, IOException {
-        File tempFile = File.createTempFile("FileReadableValidatorTest-testMissingFile", ".tmp");
+    @Test
+    public void testMissingFile() {
+        assertThrows(ValidationException.class,
+                () -> {
+                    File tempFile = File.createTempFile("FileReadableValidatorTest-testMissingFile", ".tmp");
 
-        if (!tempFile.delete()) {
-            fail("Couldn't delete temporary file " + tempFile.getCanonicalPath());
-        }
+                    if (!tempFile.delete()) {
+                        fail("Couldn't delete temporary file " + tempFile.getCanonicalPath());
+                    }
 
-        validator.validate("Test", tempFile);
+                    validator.validate("Test", tempFile);
+                });
     }
 
     @Test

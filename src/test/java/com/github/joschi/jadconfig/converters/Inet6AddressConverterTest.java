@@ -1,13 +1,15 @@
 package com.github.joschi.jadconfig.converters;
 
 import com.github.joschi.jadconfig.ParameterException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for {@link Inet6AddressConverter}
@@ -22,7 +24,7 @@ public class Inet6AddressConverterTest {
 
     private Inet6AddressConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         converter = new Inet6AddressConverter();
@@ -31,26 +33,29 @@ public class Inet6AddressConverterTest {
     @Test
     public void testConvertFrom() throws UnknownHostException {
 
-        Assert.assertEquals(InetAddress.getByName(INET6ADDRESS_LOCALHOST), converter.convertFrom(INET6ADDRESS_LOCALHOST));
-        Assert.assertEquals(InetAddress.getByName(INET6ADDRESS_EXAMPLE_COM), converter.convertFrom(INET6ADDRESS_EXAMPLE_COM));
+        Assertions.assertEquals(InetAddress.getByName(INET6ADDRESS_LOCALHOST), converter.convertFrom(INET6ADDRESS_LOCALHOST));
+        Assertions.assertEquals(InetAddress.getByName(INET6ADDRESS_EXAMPLE_COM), converter.convertFrom(INET6ADDRESS_EXAMPLE_COM));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromNull() {
-
-        converter.convertFrom(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(null)
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromInvalid() {
-
-        converter.convertFrom("Not a hostname#123");
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom("Not a hostname#123")
+        );
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertFromInet4Address() {
-
-        converter.convertFrom(INET4ADDRESS_EXAMPLE_COM);
+        assertThrows(ParameterException.class,
+                () -> converter.convertFrom(INET4ADDRESS_EXAMPLE_COM)
+        );
     }
 
     @Test
@@ -59,13 +64,14 @@ public class Inet6AddressConverterTest {
         Inet6Address loopbackInet6Address = (Inet6Address) InetAddress.getByName(INET6ADDRESS_LOCALHOST);
         Inet6Address exampleInet6Address = (Inet6Address) InetAddress.getByName(INET6ADDRESS_EXAMPLE_COM);
 
-        Assert.assertEquals(InetAddress.getByName(INET6ADDRESS_EXAMPLE_COM).getHostAddress(), converter.convertTo(exampleInet6Address));
-        Assert.assertEquals(loopbackInet6Address.getHostAddress(), converter.convertTo(loopbackInet6Address));
+        Assertions.assertEquals(InetAddress.getByName(INET6ADDRESS_EXAMPLE_COM).getHostAddress(), converter.convertTo(exampleInet6Address));
+        Assertions.assertEquals(loopbackInet6Address.getHostAddress(), converter.convertTo(loopbackInet6Address));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertToNull() {
-
-        converter.convertTo(null);
+        assertThrows(ParameterException.class,
+                () -> converter.convertTo(null)
+        );
     }
 }

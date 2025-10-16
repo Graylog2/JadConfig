@@ -1,11 +1,11 @@
 package com.github.joschi.jadconfig.util;
 
-import org.junit.Test;
+import com.github.joschi.jadconfig.ParameterException;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DurationTest {
     @Test
@@ -98,19 +98,25 @@ public class DurationTest {
         assertEquals(Duration.seconds(5), Duration.parse("5   seconds"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void unableParseWrongDurationCount() {
-        Duration.parse("five seconds");
+        assertThrows(IllegalArgumentException.class,
+                () -> Duration.parse("five seconds")
+        );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void unableParseWrongDurationTimeUnit() {
-        Duration.parse("1gs");
+        assertThrows(IllegalArgumentException.class,
+                () -> Duration.parse("1gs")
+        );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void unableParseWrongDurationFormat() {
-        Duration.parse("1 milli second");
+        assertThrows(IllegalArgumentException.class,
+                () -> Duration.parse("1 milli second")
+        );
     }
 
     @Test
