@@ -31,7 +31,7 @@ public class CsvDocsPrinter implements DocsPrinter {
 
     private void printHeaders() {
         try {
-            csvPrinter.printRecord(HEADERS);
+            csvPrinter.printRecord((Object[]) HEADERS);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
