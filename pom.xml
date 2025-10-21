@@ -4,7 +4,7 @@
 
     <groupId>org.graylog</groupId>
     <artifactId>jadconfig</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>JadConfig</name>
@@ -23,7 +23,7 @@
         <developerConnection>scm:git:git@github.com:Graylog2/JadConfig.git</developerConnection>
         <connection>scm:git:github.com/Graylog2/JadConfig.git</connection>
         <url>https://github.com/Graylog2/JadConfig</url>
-      <tag>jadconfig-1.0.0</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <issueManagement>
