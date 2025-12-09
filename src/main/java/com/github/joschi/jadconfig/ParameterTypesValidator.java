@@ -34,7 +34,9 @@ public class ParameterTypesValidator extends AbstractProcessor {
         annotations.stream()
                 .flatMap(annotation -> roundEnv.getElementsAnnotatedWith(annotation).stream())
                 .map(element -> (VariableElement) element)
-                .forEach(element -> {processField(element,typeUtils);});
+                .forEach(element -> {
+                    processField(element, typeUtils);
+                });
         return false; // do not claim this annotation, let other processors handle it as well
     }
 
@@ -45,8 +47,8 @@ public class ParameterTypesValidator extends AbstractProcessor {
         final AnnotationMirror annotationMirror = getParameterAnnotation(field);
         final String parameterName = getParameterValue(annotationMirror);
 
-        verifyConverterType(annotationMirror, typeUtils, fieldType, parameterName, fieldName);
-        verifyValidators(annotationMirror, typeUtils, fieldType, parameterName, fieldName);
+        verifyConverterType(annotationMirror, typeUtils, field, fieldType, parameterName, fieldName);
+        verifyValidators(annotationMirror, typeUtils, field, fieldType, parameterName, fieldName);
     }
 
     private static String getParameterValue(AnnotationMirror annotationMirror) {
@@ -80,7 +82,7 @@ public class ParameterTypesValidator extends AbstractProcessor {
         }
     }
 
-    private void verifyConverterType(AnnotationMirror annotationMirror, Types types, TypeMirror fieldType, String parameterName, String fieldName) {
+    private void verifyConverterType(AnnotationMirror annotationMirror, Types types, VariableElement field, TypeMirror fieldType, String parameterName, String fieldName) {
         getConverter(annotationMirror).ifPresent(converterValue -> {
             TypeElement converterType = (TypeElement) types.asElement(converterValue);
             List<? extends Element> members = processingEnv.getElementUtils().getAllMembers(converterType);
@@ -88,7 +90,7 @@ public class ParameterTypesValidator extends AbstractProcessor {
 
             final TypeMirror converterReturnType = convertFromMethod.getReturnType();
             if (!types.isSameType(converterReturnType, fieldType)) {
-                processingEnv.getMessager().printError("Property " + parameterName + " assigned to field " + fieldName + " has type " + fieldType + " but converter expects " + converterReturnType);
+                processingEnv.getMessager().printError("Property " + parameterName + " assigned to field " + fieldName + " has type " + fieldType + " but converter expects " + converterReturnType, field);
             }
         });
     }
@@ -109,23 +111,23 @@ public class ParameterTypesValidator extends AbstractProcessor {
                 .findFirst();
     }
 
-    private void verifyValidators(AnnotationMirror annotationMirror, Types types, TypeMirror fieldType, String parameterName, String fieldName) {
+    private void verifyValidators(AnnotationMirror annotationMirror, Types types, VariableElement field, TypeMirror fieldType, String parameterName, String fieldName) {
         annotationMirror.getElementValues().entrySet().stream()
                 .filter(entry -> entry.getKey().getSimpleName().toString().equals("validators"))
                 .flatMap(entry -> {
                     List<? extends AnnotationValue> values = (List<? extends AnnotationValue>) entry.getValue().getValue();
-                    return values.stream() .map(v -> (TypeMirror) v.getValue());
+                    return values.stream().map(v -> (TypeMirror) v.getValue());
                 })
                 .map(type -> (TypeElement) types.asElement(type))
-                .forEach(validatorType -> verifyValidator(types, fieldType, parameterName, fieldName, validatorType));
+                .forEach(validatorType -> verifyValidator(types, field, fieldType, parameterName, fieldName, validatorType));
     }
 
-    private void verifyValidator(Types types, TypeMirror fieldType, String parameterName, String fieldName, TypeElement validatorType) {
+    private void verifyValidator(Types types, VariableElement field, TypeMirror fieldType, String parameterName, String fieldName, TypeElement validatorType) {
         final ExecutableElement validatorMethod = getValidateMethod(validatorType);
         final TypeMirror acceptedValidatorType = getValidatorType(types, validatorMethod);
 
         if (!types.isSameType(acceptedValidatorType, fieldType)) {
-            processingEnv.getMessager().printError("Property " + parameterName + " assigned to field " + fieldName + " has type " + fieldType + " but validator expects " + acceptedValidatorType);
+            processingEnv.getMessager().printError("Property " + parameterName + " assigned to field " + fieldName + " has type " + fieldType + " but validator expects " + acceptedValidatorType, field);
         }
     }
 
