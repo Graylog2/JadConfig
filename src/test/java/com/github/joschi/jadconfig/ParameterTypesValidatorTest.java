@@ -25,10 +25,10 @@ class ParameterTypesValidatorTest {
                 .compilationFails()
                 .andThat()
                 .compilerMessage()
-                .ofKindError().equals("Property my_int assigned to field MyAnnotationValidatorTestClass#myIntField has type java.lang.Integer but converter expects java.lang.Long")
+                .ofKindError().atLine(9).atColumn(17).equals("Property my_int assigned to field MyAnnotationValidatorTestClass#myIntField has type java.lang.Integer but converter expects java.lang.Long")
                 .andThat()
                 .compilerMessage()
-                .ofKindError().equals("Property my_duration assigned to field MyAnnotationValidatorTestClass#myDurationField has type java.time.Duration but validator expects com.github.joschi.jadconfig.util.Duration")
+                .ofKindError().atLine(12).atColumn(22).equals("Property my_duration assigned to field MyAnnotationValidatorTestClass#myDurationField has type java.time.Duration but validator expects com.github.joschi.jadconfig.util.Duration")
                 .executeTest();
     }
 }
