@@ -12,33 +12,32 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.util.Types;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 
 @javax.annotation.processing.SupportedAnnotationTypes("com.github.joschi.jadconfig.Parameter")
-@javax.annotation.processing.SupportedSourceVersion(SourceVersion.RELEASE_8)
+@javax.annotation.processing.SupportedSourceVersion(SourceVersion.RELEASE_21)
 public class ParameterDocumentationValidator extends AbstractProcessor {
+
+    private static final int LINE_LENGTH_WARNING = 120;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
     }
 
+
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        Types typeUtils = processingEnv.getTypeUtils();
-
         annotations.stream()
                 .flatMap(annotation -> roundEnv.getElementsAnnotatedWith(annotation).stream())
                 .map(element -> (VariableElement) element)
-                .forEach(element -> {
-                    processField(element, typeUtils);
-                });
+                .forEach(this::processField);
         return false; // do not claim this annotation, let other processors handle it as well
     }
 
-    private void processField(VariableElement field, Types typeUtils) {
+    private void processField(VariableElement field) {
         final String fieldName = getFieldName(field);
 
         final AnnotationMirror parameterAnnotationMirror = getAnnotationMirror(field, Parameter.class)
@@ -52,12 +51,29 @@ public class ParameterDocumentationValidator extends AbstractProcessor {
             final boolean isDocumentationVisible = isDocumentationVisible(documentationAnnotation);
             final Optional<String> documentationText = getDocumentationText(documentationAnnotation);
 
-            if (isDocumentationVisible && documentationText.isEmpty()) {
-                processingEnv.getMessager().printError("Property " + parameterName + " assigned to field " + fieldName + " has no documentation available. Please, add @Documentation annotation value!", field);
+            if (isDocumentationVisible) {
+
+                documentationText.ifPresentOrElse(docs -> {
+                    if (Documentation.MISSING.equals(docs)) {
+                        processingEnv.getMessager().printWarning("Property " + parameterName + " assigned to field " + fieldName + " has TDB documentation, please write proper doc!", field);
+                    }
+
+                    final int maxLineLength = maxLineLength(docs);
+                    if (maxLineLength > LINE_LENGTH_WARNING) {
+                        processingEnv.getMessager().printWarning("Property " + parameterName + " assigned to field " + fieldName + " has too long lines (" + maxLineLength + "), please consider splitting it into multiple lines.", field);
+                    }
+                }, () -> processingEnv.getMessager().printError("Property " + parameterName + " assigned to field " + fieldName + " has no documentation available. Please, add @Documentation annotation value!", field));
+
             }
-        }, () -> {
-            processingEnv.getMessager().printError("Property " + parameterName + " assigned to field " + fieldName + " has no documentation available. Please, add @Documentation annotation!", field);
-        });
+        }, () -> processingEnv.getMessager().printError("Property " + parameterName + " assigned to field " + fieldName + " has no documentation available. Please, add @Documentation annotation!", field));
+    }
+
+    private int maxLineLength(String docs) {
+        return Arrays.stream(docs.split("\n"))
+                .map(String::trim)
+                .mapToInt(String::length)
+                .max()
+                .orElse(0);
     }
 
     private Optional<String> getDocumentationText(AnnotationMirror documentationAnnotationMirror) {

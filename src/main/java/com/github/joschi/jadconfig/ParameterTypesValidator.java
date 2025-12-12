@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @javax.annotation.processing.SupportedAnnotationTypes("com.github.joschi.jadconfig.Parameter")
-@javax.annotation.processing.SupportedSourceVersion(SourceVersion.RELEASE_8)
+@javax.annotation.processing.SupportedSourceVersion(SourceVersion.RELEASE_21)
 public class ParameterTypesValidator extends AbstractProcessor {
 
     @Override

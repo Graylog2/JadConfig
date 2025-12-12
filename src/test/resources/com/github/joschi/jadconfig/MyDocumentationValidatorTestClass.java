@@ -10,7 +10,7 @@ public class MyDocumentationValidatorTestClass {
     private String hiddenProperty;
 
     @Documentation("configure some int value")
-    @Parameter(value = "my_int")
+    @Parameter(value = "my_int", required = true)
     private int myIntField = 10;
 
     // here's no @Documentation annotation, should lead to an error

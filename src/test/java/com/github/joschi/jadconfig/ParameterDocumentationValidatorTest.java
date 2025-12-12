@@ -18,7 +18,7 @@ class ParameterDocumentationValidatorTest {
     }
 
     @Test
-    public void testPropertyValidatorProcessor() {
+    public void testDocumentationProcessor() {
         compileTestBuilder
                 .andSourceFiles("/com/github/joschi/jadconfig/MyDocumentationValidatorTestClass.java")
                 .whenCompiled().thenExpectThat()
