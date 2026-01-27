@@ -18,9 +18,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-@javax.annotation.processing.SupportedAnnotationTypes("com.github.joschi.jadconfig.Parameter")
-@javax.annotation.processing.SupportedSourceVersion(SourceVersion.RELEASE_21)
 public class ParameterTypesValidator extends AbstractProcessor {
+
+    @Override
+    public Set<String> getSupportedAnnotationTypes() {
+        return Set.of(Parameter.class.getCanonicalName());
+    }
+
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
+        return SourceVersion.RELEASE_8;
+    }
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
