@@ -13,6 +13,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Documentation {
+
+    String MISSING = "tbd";
+
     /**
      * We don't want to expose some configuration fields to users. They are internal, required for system packages functionality
      * or deprecated. Set to false if you want to hide this field from documentation.
