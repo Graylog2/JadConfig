@@ -82,6 +82,36 @@ class GenerateConfigDocumentationTest {
         Assertions.assertThat(content).contains("#indexer_jwt_auth_token_caching_duration = 60 seconds");
     }
 
+    @Test
+    void testInheritedParameters(@TempDir Path tmpPath) throws IOException {
+        final Path file = tmpPath.resolve("my-documentation.csv");
+        final DocumentationFormat format = new DocumentationFormat("csv", file.toFile().getAbsolutePath());
+        generator.generateDocumentation(format, () -> List.of(new InheritingConfiguration()));
+
+        final CSVFormat csvFormat = CSVFormat.Builder.create(CSVFormat.EXCEL)
+                .setHeader(CsvDocsPrinter.HEADERS)
+                .setSkipHeaderRecord(true)
+                .build();
+
+        final CSVParser parser = new CSVParser(new FileReader(file.toFile(), StandardCharsets.UTF_8), csvFormat);
+        final List<String> parameters = parser.getRecords().stream()
+                .map(line -> line.get(CsvDocsPrinter.HEADER_PARAMETER))
+                .toList();
+
+        // Parameters inherited from DummyConfiguration are documented as well. Required password_secret without default
+        // value goes first, indexer_jwt_auth_token_caching_duration is printed in its own section afterwards.
+        Assertions.assertThat(parameters).containsExactly(
+                "password_secret",
+                "inherited_option",
+                "indexer_jwt_auth_token_caching_duration");
+    }
+
+    private static class InheritingConfiguration extends DummyConfiguration {
+        @Documentation("An option declared in a subclass")
+        @Parameter(value = "inherited_option")
+        private String inheritedOption = "foo";
+    }
+
     @DocumentationSection(heading = "my-test-config", description = "this is how you configure your app")
     private static class DummyConfiguration {
         @Documentation(visible = false)

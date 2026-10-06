@@ -63,4 +63,11 @@ public @interface Parameter {
      * then {@link #fallbackPropertyName()} and if there are no values, only then the field value will be used (=stays untouched)
      */
     String fallbackPropertyName() default "";
+
+    /**
+     * Whether this parameter contains sensitive data (e. g. passwords or secrets) which must not be exposed.
+     *
+     * @see com.github.joschi.jadconfig.info.ParameterInfo#getValue()
+     */
+    boolean sensitive() default false;
 }

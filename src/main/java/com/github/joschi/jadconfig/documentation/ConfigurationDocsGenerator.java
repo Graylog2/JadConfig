@@ -6,6 +6,7 @@ import com.github.joschi.jadconfig.documentation.printers.ConfigFileDocsPrinter;
 import com.github.joschi.jadconfig.documentation.printers.ConfigurationSection;
 import com.github.joschi.jadconfig.documentation.printers.CsvDocsPrinter;
 import com.github.joschi.jadconfig.documentation.printers.DocsPrinter;
+import com.github.joschi.jadconfig.info.ParameterMetadata;
 import jakarta.annotation.Nonnull;
 import org.apache.commons.lang3.ClassUtils;
 
@@ -13,13 +14,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -79,9 +80,8 @@ public class ConfigurationDocsGenerator {
             sectionDescription = documentationSection.description();
         }
 
-        final List<ConfigurationEntryWithSection> entries = Arrays.stream(configurationBean.getClass().getDeclaredFields())
-                .filter(f -> f.isAnnotationPresent(Parameter.class))
-                .filter(ConfigurationDocsGenerator::isPublicFacing)
+        final List<ConfigurationEntryWithSection> entries = parameterFields(configurationBean.getClass()).stream()
+                .filter(f -> ParameterMetadata.of(f).visible())
                 .map(f -> toConfigurationEntry(f, configurationBean))
                 .toList();
 
@@ -126,21 +126,24 @@ public class ConfigurationDocsGenerator {
     }
 
     /**
-     * There are some configuration options not intended for general usage, mainly just for system packages configuration.
-     *
-     * @see Documentation#visible()
+     * Returns all fields annotated with {@link Parameter}, including inherited ones. Fields of superclasses come first,
+     * so that shared parameters are documented before the specific ones of a subclass.
      */
-    private static boolean isPublicFacing(Field f) {
-        return !f.isAnnotationPresent(Documentation.class) || f.getAnnotation(Documentation.class).visible();
+    private static List<Field> parameterFields(Class<?> beanClass) {
+        final List<Field> fields = new ArrayList<>();
+        for (Class<?> c = beanClass; c != null; c = c.getSuperclass()) {
+            final List<Field> declaredFields = Arrays.stream(c.getDeclaredFields())
+                    .filter(f -> f.isAnnotationPresent(Parameter.class))
+                    .toList();
+            fields.addAll(0, declaredFields);
+        }
+        return fields;
     }
 
     private static ConfigurationEntryWithSection toConfigurationEntry(Field f, Object instance) {
-        final String documentation = Optional.ofNullable(f.getAnnotation(Documentation.class)).map(Documentation::value).orElse(null);
-        final Parameter parameter = f.getAnnotation(Parameter.class);
-        final String propertyName = parameter.value();
+        final ParameterMetadata metadata = ParameterMetadata.of(f);
         final Object defaultValue = getDefaultValue(f, instance);
         final String type = getType(f);
-        final boolean required = parameter.required();
 
         final DocumentationSection documentationSection = f.getAnnotation(DocumentationSection.class);
         String sectionHeading = null;
@@ -149,7 +152,7 @@ public class ConfigurationDocsGenerator {
             sectionHeading = documentationSection.heading();
             sectionDescription = documentationSection.description();
         }
-        final ConfigurationEntry entry = new ConfigurationEntry(instance.getClass(), f.getName(), type, propertyName, defaultValue, required, documentation);
+        final ConfigurationEntry entry = new ConfigurationEntry(instance.getClass(), f.getName(), type, metadata.name(), defaultValue, metadata.required(), metadata.documentation());
         return new ConfigurationEntryWithSection(entry, sectionHeading, sectionDescription);
     }
 

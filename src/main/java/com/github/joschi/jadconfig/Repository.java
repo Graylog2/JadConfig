@@ -26,6 +26,17 @@ public interface Repository {
     String read(String name);
 
     /**
+     * Returns a human readable description of where the parameter {@literal name} is being read from, e. g.
+     * {@code "environment variable GRAYLOG_HTTP_BIND_ADDRESS"}.
+     *
+     * @param name The parameter name
+     * @return A description of the source of the parameter
+     */
+    default String describeSource(String name) {
+        return getClass().getSimpleName();
+    }
+
+    /**
      * Closes the underlying data source when it isn't require any more.
      *
      * @throws RepositoryException If an error occurred while closing the underlying data source

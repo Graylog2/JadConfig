@@ -2,6 +2,10 @@ package com.github.joschi.jadconfig;
 
 import com.github.joschi.jadconfig.converters.NoConverter;
 import com.github.joschi.jadconfig.converters.StringConverter;
+import com.github.joschi.jadconfig.info.ParameterDeclaration;
+import com.github.joschi.jadconfig.info.ParameterListener;
+import com.github.joschi.jadconfig.info.ParameterMetadata;
+import com.github.joschi.jadconfig.info.ParameterSource;
 import com.github.joschi.jadconfig.response.ProcessingOutcome;
 import com.github.joschi.jadconfig.response.ProcessingResponse;
 import org.slf4j.Logger;
@@ -15,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +43,9 @@ import java.util.stream.Collectors;
 public class JadConfig {
     private static final Logger LOG = LoggerFactory.getLogger(JadConfig.class);
     private final LinkedList<ConverterFactory> converterFactories = new LinkedList<ConverterFactory>();
+    private final List<ParameterListener> parameterListeners = new ArrayList<>();
+    // Field values of each configuration bean before it has been processed for the first time
+    private final Map<Object, Map<Field, Object>> defaultValues = new IdentityHashMap<>();
     private List<Object> configurationBeans;
     private List<Repository> repositories;
 
@@ -139,6 +147,7 @@ public class JadConfig {
 
 
     private void processClassFields(Object configurationBean, Field[] fields) throws ValidationException {
+        captureDefaultValues(configurationBean, fields);
         for (Field field : fields) {
             processClassField(configurationBean, field);
         }
@@ -146,6 +155,7 @@ public class JadConfig {
 
     private Map<String, Exception> processClassFieldsFailingLazily(Object configurationBean, Field[] fields) {
         final Map<String, Exception> fieldProcessingProblems = new HashMap<>();
+        captureDefaultValues(configurationBean, fields);
         for (Field field : fields) {
             try {
                 processClassField(configurationBean, field);
@@ -154,6 +164,20 @@ public class JadConfig {
             }
         }
         return fieldProcessingProblems;
+    }
+
+    private void captureDefaultValues(Object configurationBean, Field[] fields) {
+        if (defaultValues.containsKey(configurationBean)) {
+            return;
+        }
+
+        final Map<Field, Object> values = new HashMap<>();
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(Parameter.class)) {
+                values.put(field, getFieldValue(field, configurationBean));
+            }
+        }
+        defaultValues.put(configurationBean, values);
     }
 
     private void processClassField(Object configurationBean, Field field) throws ValidationException {
@@ -165,9 +189,9 @@ public class JadConfig {
             Object fieldValue = getFieldValue(field, configurationBean);
 
             String parameterName = parameter.value();
-            String parameterValue = lookupParameter(parameterName)
+            final ResolvedValue resolvedValue = lookupParameter(parameterName)
                     .orElseGet(() -> lookupFallbackParameter(parameter));
-
+            String parameterValue = resolvedValue == null ? null : resolvedValue.value();
 
             if (parameterValue == null && fieldValue == null && parameter.required()) {
                 throw new ParameterException("Required parameter \"" + parameterName + "\" not found.");
@@ -198,6 +222,35 @@ public class JadConfig {
             } catch (Exception e) {
                 throw new ParameterException("Couldn't set field " + field.getName(), e);
             }
+
+            if (!parameterListeners.isEmpty()) {
+                final Object defaultValue = defaultValues.get(configurationBean).get(field);
+                final ParameterDeclaration declaration = new ParameterDeclaration(
+                        configurationBean.getClass(),
+                        ParameterMetadata.of(field),
+                        defaultValue,
+                        defaultValueAsString(field.getType(), parameter.converter(), defaultValue));
+                notifyParameterListeners(parameterName, declaration, resolvedValue == null ? null : resolvedValue.source(), parameterValue);
+            }
+        }
+    }
+
+    private void notifyParameterListeners(String name, ParameterDeclaration declaration, ParameterSource source, String value) {
+        for (ParameterListener listener : parameterListeners) {
+            listener.onParameterProcessed(name, declaration, source, value);
+        }
+    }
+
+    private String defaultValueAsString(Class<?> fieldType, Class<? extends Converter<?>> converterClass, Object defaultValue) {
+        if (defaultValue == null) {
+            return null;
+        }
+
+        try {
+            return convertFieldValue(fieldType, converterClass, defaultValue);
+        } catch (RuntimeException e) {
+            LOG.debug("Couldn't convert default value of type {} to string", fieldType, e);
+            return String.valueOf(defaultValue);
         }
     }
 
@@ -209,8 +262,8 @@ public class JadConfig {
         validateParameter(validators, parameterName, fieldValue);
     }
 
-    private String lookupFallbackParameter(Parameter parameter) {
-        final Optional<String> fallbackValue = Optional.ofNullable(parameter.fallbackPropertyName())
+    private ResolvedValue lookupFallbackParameter(Parameter parameter) {
+        final Optional<ResolvedValue> fallbackValue = Optional.ofNullable(parameter.fallbackPropertyName())
                 .filter(fallbackName -> !fallbackName.trim().isEmpty())
                 .flatMap(this::lookupParameter);
         fallbackValue.ifPresent(value -> LOG.warn("Primary parameter {} not found, using the fallback value of {}. Please correct your configuration if possible.",
@@ -218,12 +271,22 @@ public class JadConfig {
         return fallbackValue.orElse(null);
     }
 
-    private Optional<String> lookupParameter(String parameterName) {
-        return repositories.stream()
-                .peek(repository -> LOG.debug("Looking up parameter {} in repository {}", parameterName, repository))
-                .map(repository -> repository.read(parameterName))
-                .filter(Objects::nonNull)
-                .findFirst();
+    private Optional<ResolvedValue> lookupParameter(String parameterName) {
+        for (Repository repository : repositories) {
+            LOG.debug("Looking up parameter {} in repository {}", parameterName, repository);
+            final String value = repository.read(parameterName);
+            if (value != null) {
+                return Optional.of(resolve(repository, parameterName, value));
+            }
+        }
+        return Optional.empty();
+    }
+
+    private ResolvedValue resolve(Repository repository, String name, String value) {
+        return new ResolvedValue(new ParameterSource(repository, name, repository.describeSource(name)), value);
+    }
+
+    private record ResolvedValue(ParameterSource source, String value) {
     }
 
     private Object convertStringValue(Class<?> fieldType, Class<? extends Converter<?>> converterClass, String stringValue) {
@@ -340,6 +403,18 @@ public class JadConfig {
         converterFactories.addFirst(converterFactory);
 
         LOG.info("Added converter factory {}", converterFactory);
+        return this;
+    }
+
+    /**
+     * Adds a {@link ParameterListener} which will be notified about every successfully processed parameter.
+     *
+     * @param parameterListener The {@link ParameterListener} to be added
+     * @return the JadConfig instance
+     * @see com.github.joschi.jadconfig.info.ParameterInfoCollector
+     */
+    public JadConfig addParameterListener(ParameterListener parameterListener) {
+        parameterListeners.add(Objects.requireNonNull(parameterListener, "parameterListener"));
         return this;
     }
 
