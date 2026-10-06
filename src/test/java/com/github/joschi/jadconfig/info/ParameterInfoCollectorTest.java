@@ -4,6 +4,7 @@ import com.github.joschi.jadconfig.JadConfig;
 import com.github.joschi.jadconfig.Parameter;
 import com.github.joschi.jadconfig.Repository;
 import com.github.joschi.jadconfig.RepositoryException;
+import com.github.joschi.jadconfig.RestartRequirement;
 import com.github.joschi.jadconfig.ValidationException;
 import com.github.joschi.jadconfig.documentation.Documentation;
 import com.github.joschi.jadconfig.repositories.EnvironmentRepository;
@@ -22,7 +23,7 @@ public class ParameterInfoCollectorTest {
 
     public static class BeanA {
         @Documentation("The port to listen on")
-        @Parameter("port")
+        @Parameter(value = "port", requiresRestart = RestartRequirement.REQUIRED)
         private int port = 9000;
 
         @Parameter(value = "tags")
@@ -31,7 +32,7 @@ public class ParameterInfoCollectorTest {
         @Parameter(value = "password", required = true, sensitive = true)
         private String password;
 
-        @Parameter(value = "new_name", fallbackPropertyName = "old_name")
+        @Parameter(value = "new_name", fallbackPropertyName = "old_name", requiresRestart = RestartRequirement.NOT_REQUIRED)
         private String renamed = "default";
 
         @Documentation(visible = false)
@@ -45,7 +46,7 @@ public class ParameterInfoCollectorTest {
     }
 
     public static class BeanB {
-        @Parameter("shared")
+        @Parameter(value = "shared", requiresRestart = RestartRequirement.REQUIRED)
         private Integer shared = 42;
     }
 
@@ -210,5 +211,46 @@ public class ParameterInfoCollectorTest {
         Assertions.assertEquals(InheritingBean.class, infos.get("extra").declarations().get(0).beanClass());
         Assertions.assertEquals(InheritingBean.class, infos.get("port").declarations().get(0).beanClass());
         Assertions.assertEquals(9000, infos.get("port").declarations().get(0).defaultValue());
+    }
+
+    @Test
+    public void recordsRequiresRestart() throws Exception {
+        final Map<String, ParameterInfo> infos = process(Arrays.asList(repository("password", "secret")), new BeanA(), new BeanB());
+
+        Assertions.assertEquals(RestartRequirement.REQUIRED, infos.get("port").declarations().get(0).metadata().requiresRestart());
+        Assertions.assertEquals(RestartRequirement.REQUIRED, infos.get("port").requiresRestart());
+
+        Assertions.assertEquals(RestartRequirement.NOT_REQUIRED, infos.get("new_name").requiresRestart());
+
+        // Not annotated
+        Assertions.assertEquals(RestartRequirement.UNKNOWN, infos.get("tags").declarations().get(0).metadata().requiresRestart());
+        Assertions.assertEquals(RestartRequirement.UNKNOWN, infos.get("tags").requiresRestart());
+
+        // Required by one of the declarations, unknown for the other one
+        final ParameterInfo shared = infos.get("shared");
+        Assertions.assertEquals(RestartRequirement.UNKNOWN, shared.declarations().get(0).metadata().requiresRestart());
+        Assertions.assertEquals(RestartRequirement.REQUIRED, shared.declarations().get(1).metadata().requiresRestart());
+        Assertions.assertEquals(RestartRequirement.REQUIRED, shared.requiresRestart());
+    }
+
+    @Test
+    public void combinesRestartRequirementsOfDeclarations() {
+        Assertions.assertEquals(RestartRequirement.NOT_REQUIRED,
+                info(RestartRequirement.NOT_REQUIRED, RestartRequirement.NOT_REQUIRED).requiresRestart());
+        Assertions.assertEquals(RestartRequirement.UNKNOWN,
+                info(RestartRequirement.NOT_REQUIRED, RestartRequirement.UNKNOWN).requiresRestart());
+        Assertions.assertEquals(RestartRequirement.REQUIRED,
+                info(RestartRequirement.NOT_REQUIRED, RestartRequirement.REQUIRED).requiresRestart());
+        Assertions.assertEquals(RestartRequirement.UNKNOWN, info().requiresRestart());
+    }
+
+    private static ParameterInfo info(RestartRequirement... requirements) {
+        final List<ParameterDeclaration> declarations = new ArrayList<>();
+        for (int i = 0; i < requirements.length; i++) {
+            final ParameterMetadata metadata = new ParameterMetadata("name", "field" + i, String.class,
+                    false, true, false, requirements[i], null, true);
+            declarations.add(new ParameterDeclaration(BeanA.class, metadata, null, null));
+        }
+        return new ParameterInfo("name", null, null, declarations);
     }
 }

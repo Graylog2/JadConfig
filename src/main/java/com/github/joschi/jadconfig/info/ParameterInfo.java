@@ -1,5 +1,6 @@
 package com.github.joschi.jadconfig.info;
 
+import com.github.joschi.jadconfig.RestartRequirement;
 import jakarta.annotation.Nullable;
 
 import java.util.List;
@@ -45,5 +46,26 @@ public record ParameterInfo(
      */
     public boolean isSensitive() {
         return declarations.stream().anyMatch(declaration -> declaration.metadata().sensitive());
+    }
+
+    /**
+     * Whether changing this parameter requires a restart, combined over all declarations:
+     * {@link RestartRequirement#REQUIRED} if any declaration requires a restart,
+     * {@link RestartRequirement#NOT_REQUIRED} if all declarations don't require one and
+     * {@link RestartRequirement#UNKNOWN} otherwise.
+     *
+     * @see com.github.joschi.jadconfig.Parameter#requiresRestart()
+     */
+    public RestartRequirement requiresRestart() {
+        final List<RestartRequirement> requirements = declarations.stream()
+                .map(declaration -> declaration.metadata().requiresRestart())
+                .toList();
+        if (requirements.contains(RestartRequirement.REQUIRED)) {
+            return RestartRequirement.REQUIRED;
+        }
+        if (!requirements.isEmpty() && requirements.stream().allMatch(RestartRequirement.NOT_REQUIRED::equals)) {
+            return RestartRequirement.NOT_REQUIRED;
+        }
+        return RestartRequirement.UNKNOWN;
     }
 }

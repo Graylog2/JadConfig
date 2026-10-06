@@ -70,4 +70,14 @@ public @interface Parameter {
      * @see com.github.joschi.jadconfig.info.ParameterInfo#getValue()
      */
     boolean sensitive() default false;
+
+    /**
+     * Whether changing this parameter requires a restart of the application to take effect.
+     * <p>
+     * JadConfig itself only reads configuration values when processing the configuration beans, so this is purely
+     * informational and describes how the application uses the parameter.
+     *
+     * @see com.github.joschi.jadconfig.info.ParameterInfo#requiresRestart()
+     */
+    RestartRequirement requiresRestart() default RestartRequirement.UNKNOWN;
 }

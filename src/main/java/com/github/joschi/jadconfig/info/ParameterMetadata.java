@@ -1,6 +1,7 @@
 package com.github.joschi.jadconfig.info;
 
 import com.github.joschi.jadconfig.Parameter;
+import com.github.joschi.jadconfig.RestartRequirement;
 import com.github.joschi.jadconfig.documentation.Documentation;
 import jakarta.annotation.Nullable;
 
@@ -13,15 +14,17 @@ import java.util.Objects;
  * interpreting the annotations of a parameter field, shared by {@link com.github.joschi.jadconfig.JadConfig} and the
  * {@link com.github.joschi.jadconfig.documentation.ConfigurationDocsGenerator documentation generator}.
  *
- * @param name          The parameter name, see {@link Parameter#value()}
- * @param fieldName     The name of the field
- * @param type          The (generic) type of the field, e. g. {@code java.util.List<java.lang.String>}
- * @param required      Whether the parameter is {@link Parameter#required() required}
- * @param nullable      Whether the field may be {@code null} after processing, i. e. it is neither a primitive nor
- *                      required
- * @param sensitive     Whether the parameter has been marked as {@link Parameter#sensitive() sensitive}
- * @param documentation The {@link Documentation#value() documentation} of the parameter, {@code null} if missing or empty
- * @param visible       Whether the parameter is {@link Documentation#visible() visible} to users
+ * @param name            The parameter name, see {@link Parameter#value()}
+ * @param fieldName       The name of the field
+ * @param type            The (generic) type of the field, e. g. {@code java.util.List<java.lang.String>}
+ * @param required        Whether the parameter is {@link Parameter#required() required}
+ * @param nullable        Whether the field may be {@code null} after processing, i. e. it is neither a primitive nor
+ *                        required
+ * @param sensitive       Whether the parameter has been marked as {@link Parameter#sensitive() sensitive}
+ * @param requiresRestart Whether changing the parameter {@link Parameter#requiresRestart() requires a restart}
+ * @param documentation   The {@link Documentation#value() documentation} of the parameter, {@code null} if missing or
+ *                        empty
+ * @param visible         Whether the parameter is {@link Documentation#visible() visible} to users
  */
 public record ParameterMetadata(
         String name,
@@ -30,6 +33,7 @@ public record ParameterMetadata(
         boolean required,
         boolean nullable,
         boolean sensitive,
+        RestartRequirement requiresRestart,
         @Nullable String documentation,
         boolean visible
 ) {
@@ -38,6 +42,7 @@ public record ParameterMetadata(
         Objects.requireNonNull(name, "name");
         Objects.requireNonNull(fieldName, "fieldName");
         Objects.requireNonNull(type, "type");
+        Objects.requireNonNull(requiresRestart, "requiresRestart");
     }
 
     /**
@@ -59,6 +64,7 @@ public record ParameterMetadata(
                 parameter.required(),
                 !field.getType().isPrimitive() && !parameter.required(),
                 parameter.sensitive(),
+                parameter.requiresRestart(),
                 documentation == null || documentation.value().isBlank() ? null : documentation.value(),
                 documentation == null || documentation.visible());
     }
