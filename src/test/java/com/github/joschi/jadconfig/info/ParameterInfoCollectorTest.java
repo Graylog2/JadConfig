@@ -13,11 +13,7 @@ import com.github.joschi.jadconfig.repositories.SystemPropertiesRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ParameterInfoCollectorTest {
 
@@ -27,7 +23,7 @@ public class ParameterInfoCollectorTest {
         private int port = 9000;
 
         @Parameter(value = "tags")
-        private List<String> tags = new ArrayList<>(Arrays.asList("a", "b"));
+        private final List<String> tags = new ArrayList<>(Arrays.asList("a", "b"));
 
         @Parameter(value = "password", required = true, sensitive = true)
         private String password;
@@ -74,19 +70,22 @@ public class ParameterInfoCollectorTest {
 
         final ParameterInfo port = infos.get("port");
         Assertions.assertFalse(port.isDefault());
+        Assertions.assertNotNull(port.source());
         Assertions.assertSame(second, port.source().repository());
         Assertions.assertEquals("port", port.source().propertyName());
         Assertions.assertEquals("InMemoryRepository", port.source().description());
         Assertions.assertEquals("1234", port.value());
 
-        Assertions.assertSame(first, infos.get("password").source().repository());
+        final ParameterInfo password = infos.get("password");
+        Assertions.assertNotNull(password.source());
+        Assertions.assertSame(first, password.source().repository());
     }
 
     @Test
     public void recordsDeclaration() throws Exception {
-        final Map<String, ParameterInfo> infos = process(Arrays.asList(repository("port", "1234", "password", "secret")), new BeanA());
+        final Map<String, ParameterInfo> infos = process(List.of(repository("port", "1234", "password", "secret")), new BeanA());
 
-        final ParameterDeclaration port = infos.get("port").declarations().get(0);
+        final ParameterDeclaration port = infos.get("port").declarations().getFirst();
         Assertions.assertEquals(BeanA.class, port.beanClass());
         Assertions.assertEquals("port", port.metadata().fieldName());
         Assertions.assertEquals(int.class, port.metadata().type());
@@ -95,12 +94,12 @@ public class ParameterInfoCollectorTest {
         Assertions.assertFalse(port.metadata().required());
         Assertions.assertFalse(port.metadata().nullable());
 
-        final ParameterDeclaration tags = infos.get("tags").declarations().get(0);
+        final ParameterDeclaration tags = infos.get("tags").declarations().getFirst();
         Assertions.assertEquals("java.util.List<java.lang.String>", tags.metadata().type().getTypeName());
         Assertions.assertEquals("[a, b]", tags.defaultValueAsString());
         Assertions.assertTrue(tags.metadata().nullable());
 
-        final ParameterDeclaration password = infos.get("password").declarations().get(0);
+        final ParameterDeclaration password = infos.get("password").declarations().getFirst();
         Assertions.assertTrue(password.metadata().required());
         Assertions.assertFalse(password.metadata().nullable());
         Assertions.assertNull(password.defaultValue());
@@ -109,7 +108,7 @@ public class ParameterInfoCollectorTest {
 
     @Test
     public void recordsParametersUsingDefaultValue() throws Exception {
-        final Map<String, ParameterInfo> infos = process(Arrays.asList(repository("password", "secret")), new BeanA());
+        final Map<String, ParameterInfo> infos = process(List.of(repository("password", "secret")), new BeanA());
 
         final ParameterInfo tags = infos.get("tags");
         Assertions.assertTrue(tags.isDefault());
@@ -119,16 +118,17 @@ public class ParameterInfoCollectorTest {
 
     @Test
     public void recordsFallbackPropertyName() throws Exception {
-        final Map<String, ParameterInfo> infos = process(Arrays.asList(repository("password", "secret", "old_name", "legacy")), new BeanA());
+        final Map<String, ParameterInfo> infos = process(List.of(repository("password", "secret", "old_name", "legacy")), new BeanA());
 
         final ParameterInfo renamed = infos.get("new_name");
+        Assertions.assertNotNull(renamed.source());
         Assertions.assertEquals("old_name", renamed.source().propertyName());
         Assertions.assertEquals("legacy", renamed.value());
     }
 
     @Test
     public void hidesValueOfSensitiveParameters() throws Exception {
-        final Map<String, ParameterInfo> infos = process(Arrays.asList(repository("password", "secret")), new BeanA());
+        final Map<String, ParameterInfo> infos = process(List.of(repository("password", "secret")), new BeanA());
 
         final ParameterInfo password = infos.get("password");
         Assertions.assertTrue(password.isSensitive());
@@ -151,13 +151,13 @@ public class ParameterInfoCollectorTest {
         final Map<String, ParameterInfo> infos = collector.getParameterInfos();
         Assertions.assertEquals(1234, beanA.port);
         Assertions.assertEquals(1, infos.get("port").declarations().size());
-        Assertions.assertEquals(9000, infos.get("port").declarations().get(0).defaultValue());
+        Assertions.assertEquals(9000, infos.get("port").declarations().getFirst().defaultValue());
         Assertions.assertEquals(2, infos.get("shared").declarations().size());
     }
 
     @Test
     public void collectsAllDeclarationsOfParameter() throws Exception {
-        final Map<String, ParameterInfo> infos = process(Arrays.asList(repository("password", "secret", "shared", "7")), new BeanA(), new BeanB());
+        final Map<String, ParameterInfo> infos = process(List.of(repository("password", "secret", "shared", "7")), new BeanA(), new BeanB());
 
         final ParameterInfo shared = infos.get("shared");
         Assertions.assertEquals("7", shared.value());
@@ -178,7 +178,7 @@ public class ParameterInfoCollectorTest {
                     new SystemPropertiesRepository("jadconfig.test."),
                     repository("password", "secret")), new BeanA());
 
-            Assertions.assertEquals("system property jadconfig.test.port", infos.get("port").source().description());
+            Assertions.assertEquals("system property jadconfig.test.port", Objects.requireNonNull(infos.get("port").source()).description());
         } finally {
             System.clearProperty(property);
         }
@@ -189,41 +189,41 @@ public class ParameterInfoCollectorTest {
 
     @Test
     public void recordsDocumentation() throws Exception {
-        final Map<String, ParameterInfo> infos = process(Arrays.asList(repository("password", "secret")), new BeanA());
+        final Map<String, ParameterInfo> infos = process(List.of(repository("password", "secret")), new BeanA());
 
-        final ParameterMetadata port = infos.get("port").declarations().get(0).metadata();
+        final ParameterMetadata port = infos.get("port").declarations().getFirst().metadata();
         Assertions.assertEquals("The port to listen on", port.documentation());
         Assertions.assertTrue(port.visible());
 
-        final ParameterMetadata shared = infos.get("shared").declarations().get(0).metadata();
+        final ParameterMetadata shared = infos.get("shared").declarations().getFirst().metadata();
         Assertions.assertNull(shared.documentation());
         Assertions.assertFalse(shared.visible());
 
-        final ParameterMetadata tags = infos.get("tags").declarations().get(0).metadata();
+        final ParameterMetadata tags = infos.get("tags").declarations().getFirst().metadata();
         Assertions.assertNull(tags.documentation());
         Assertions.assertTrue(tags.visible());
     }
 
     @Test
     public void recordsInheritedParametersWithBeanClass() throws Exception {
-        final Map<String, ParameterInfo> infos = process(Arrays.asList(repository("password", "secret")), new InheritingBean());
+        final Map<String, ParameterInfo> infos = process(List.of(repository("password", "secret")), new InheritingBean());
 
-        Assertions.assertEquals(InheritingBean.class, infos.get("extra").declarations().get(0).beanClass());
-        Assertions.assertEquals(InheritingBean.class, infos.get("port").declarations().get(0).beanClass());
-        Assertions.assertEquals(9000, infos.get("port").declarations().get(0).defaultValue());
+        Assertions.assertEquals(InheritingBean.class, infos.get("extra").declarations().getFirst().beanClass());
+        Assertions.assertEquals(InheritingBean.class, infos.get("port").declarations().getFirst().beanClass());
+        Assertions.assertEquals(9000, infos.get("port").declarations().getFirst().defaultValue());
     }
 
     @Test
     public void recordsRequiresRestart() throws Exception {
-        final Map<String, ParameterInfo> infos = process(Arrays.asList(repository("password", "secret")), new BeanA(), new BeanB());
+        final Map<String, ParameterInfo> infos = process(List.of(repository("password", "secret")), new BeanA(), new BeanB());
 
-        Assertions.assertEquals(RestartRequirement.REQUIRED, infos.get("port").declarations().get(0).metadata().requiresRestart());
+        Assertions.assertEquals(RestartRequirement.REQUIRED, infos.get("port").declarations().getFirst().metadata().requiresRestart());
         Assertions.assertEquals(RestartRequirement.REQUIRED, infos.get("port").requiresRestart());
 
         Assertions.assertEquals(RestartRequirement.NOT_REQUIRED, infos.get("new_name").requiresRestart());
 
         // Not annotated
-        Assertions.assertEquals(RestartRequirement.UNKNOWN, infos.get("tags").declarations().get(0).metadata().requiresRestart());
+        Assertions.assertEquals(RestartRequirement.UNKNOWN, infos.get("tags").declarations().getFirst().metadata().requiresRestart());
         Assertions.assertEquals(RestartRequirement.UNKNOWN, infos.get("tags").requiresRestart());
 
         // Required by one of the declarations, unknown for the other one

@@ -60,14 +60,14 @@ public @interface Parameter {
      * Optional fallback name of the configuration option in the {@link Repository}
      * Used only when the original name in {@link #value()} doesn't deliver any results in the repository.
      * If you have a hardcoded value in the field, it will be used only as a last resort. The order is {@link #value()},
-     * then {@link #fallbackPropertyName()} and if there are no values, only then the field value will be used (=stays untouched)
+     * then fallbackPropertyName and if there are no values, only then the field value will be used (=stays untouched)
      */
     String fallbackPropertyName() default "";
 
     /**
      * Whether this parameter contains sensitive data (e. g. passwords or secrets) which must not be exposed.
      *
-     * @see com.github.joschi.jadconfig.info.ParameterInfo#getValue()
+     * @see com.github.joschi.jadconfig.info.ParameterInfo#value()
      */
     boolean sensitive() default false;
 
