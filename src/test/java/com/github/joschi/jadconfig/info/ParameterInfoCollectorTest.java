@@ -13,6 +13,7 @@ import com.github.joschi.jadconfig.repositories.SystemPropertiesRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 public class ParameterInfoCollectorTest {
@@ -44,6 +45,31 @@ public class ParameterInfoCollectorTest {
     public static class BeanB {
         @Parameter(value = "shared", requiresRestart = RestartRequirement.REQUIRED)
         private Integer shared = 42;
+    }
+
+    public static class SensitiveDefaultBean {
+        @Parameter(value = "api_key", sensitive = true)
+        private String apiKey = "default-secret";
+    }
+
+    public static class OtherFallbackBean {
+        @Parameter(value = "new_name", fallbackPropertyName = "other_old_name")
+        private String renamed = "otherDefault";
+    }
+
+    public static class NoFallbackBean {
+        @Parameter("new_name")
+        private String renamed = "noFallbackDefault";
+    }
+
+    public static class ShadowedBase {
+        @Parameter("shadowed")
+        private String shadowed = "base";
+    }
+
+    public static class ShadowingBean extends ShadowedBase {
+        @Parameter("shadowed")
+        private String shadowed = "sub";
     }
 
     private static InMemoryRepository repository(String... keyValues) {
@@ -138,6 +164,102 @@ public class ParameterInfoCollectorTest {
     }
 
     @Test
+    public void hidesDefaultValueOfSensitiveParameters() throws Exception {
+        final Map<String, ParameterInfo> infos = process(List.of(repository("password", "secret")), new SensitiveDefaultBean(), new BeanA());
+
+        final ParameterInfo apiKey = infos.get("api_key");
+        Assertions.assertTrue(apiKey.isSensitive());
+        Assertions.assertTrue(apiKey.isDefault());
+        final ParameterDeclaration declaration = apiKey.declarations().getFirst();
+        Assertions.assertNull(declaration.defaultValue());
+        Assertions.assertNull(declaration.defaultValueAsString());
+        Assertions.assertFalse(apiKey.toString().contains("default-secret"));
+
+        final ParameterDeclaration password = infos.get("password").declarations().getFirst();
+        Assertions.assertNotNull(password.source());
+        Assertions.assertNull(password.value());
+        Assertions.assertFalse(password.toString().contains("secret"));
+    }
+
+    @Test
+    public void doesNotRetainDefaultValueOfSensitiveParameters() throws Exception {
+        final JadConfig jadConfig = new JadConfig(repository("api_key", "configured"), new SensitiveDefaultBean());
+        jadConfig.process();
+
+        final Field defaultValuesField = JadConfig.class.getDeclaredField("defaultValues");
+        defaultValuesField.setAccessible(true);
+        final Map<?, ?> defaultValues = (Map<?, ?>) defaultValuesField.get(jadConfig);
+        Assertions.assertFalse(defaultValues.toString().contains("default-secret"));
+    }
+
+    @Test
+    public void passesRawValueOfSensitiveParametersToListeners() throws Exception {
+        final Map<String, String> rawValues = new HashMap<>();
+        final JadConfig jadConfig = new JadConfig(repository("password", "secret"), new BeanA())
+                .addParameterListener((declaration, rawValue) -> rawValues.put(declaration.metadata().name(), rawValue));
+        jadConfig.process();
+
+        Assertions.assertEquals("secret", rawValues.get("password"));
+    }
+
+    @Test
+    public void recordsResolutionPerDeclaration() throws Exception {
+        final Map<String, ParameterInfo> infos = process(
+                List.of(repository("password", "secret", "old_name", "legacy", "other_old_name", "other")),
+                new BeanA(), new OtherFallbackBean(), new NoFallbackBean());
+
+        final ParameterInfo renamed = infos.get("new_name");
+        Assertions.assertEquals(3, renamed.declarations().size());
+
+        final ParameterDeclaration a = renamed.declarations().getFirst();
+        Assertions.assertEquals(BeanA.class, a.beanClass());
+        Assertions.assertEquals("old_name", Objects.requireNonNull(a.source()).propertyName());
+        Assertions.assertEquals("legacy", a.value());
+
+        final ParameterDeclaration other = renamed.declarations().get(1);
+        Assertions.assertEquals(OtherFallbackBean.class, other.beanClass());
+        Assertions.assertEquals("other_old_name", Objects.requireNonNull(other.source()).propertyName());
+        Assertions.assertEquals("other", other.value());
+
+        final ParameterDeclaration noFallback = renamed.declarations().get(2);
+        Assertions.assertEquals(NoFallbackBean.class, noFallback.beanClass());
+        Assertions.assertTrue(noFallback.isDefault());
+        Assertions.assertNull(noFallback.value());
+
+        Assertions.assertFalse(renamed.isDefault());
+        Assertions.assertEquals("old_name", Objects.requireNonNull(renamed.source()).propertyName());
+        Assertions.assertEquals("legacy", renamed.value());
+    }
+
+    @Test
+    public void summaryDoesNotDependOnProcessingOrder() throws Exception {
+        final Map<String, ParameterInfo> infos = process(
+                List.of(repository("password", "secret", "old_name", "legacy")),
+                new NoFallbackBean(), new BeanA());
+
+        final ParameterInfo renamed = infos.get("new_name");
+        Assertions.assertTrue(renamed.declarations().get(0).isDefault());
+        Assertions.assertFalse(renamed.declarations().get(1).isDefault());
+        Assertions.assertFalse(renamed.isDefault());
+        Assertions.assertEquals("old_name", Objects.requireNonNull(renamed.source()).propertyName());
+        Assertions.assertEquals("legacy", renamed.value());
+    }
+
+    @Test
+    public void keepsDeclarationsOfShadowedFields() throws Exception {
+        final Map<String, ParameterInfo> infos = process(List.of(repository("shadowed", "value")), new ShadowingBean());
+
+        final List<ParameterDeclaration> declarations = infos.get("shadowed").declarations();
+        Assertions.assertEquals(2, declarations.size());
+        Assertions.assertEquals(ShadowingBean.class, declarations.getFirst().beanClass());
+        Assertions.assertEquals(ShadowingBean.class, declarations.get(0).declaringClass());
+        Assertions.assertEquals("sub", declarations.get(0).defaultValue());
+        Assertions.assertEquals(ShadowingBean.class, declarations.get(1).beanClass());
+        Assertions.assertEquals(ShadowedBase.class, declarations.get(1).declaringClass());
+        Assertions.assertEquals("base", declarations.get(1).defaultValue());
+    }
+
+    @Test
     public void keepsDefaultValuesWhenProcessingRepeatedly() throws Exception {
         final ParameterInfoCollector collector = new ParameterInfoCollector();
         final BeanA beanA = new BeanA();
@@ -210,6 +332,8 @@ public class ParameterInfoCollectorTest {
 
         Assertions.assertEquals(InheritingBean.class, infos.get("extra").declarations().getFirst().beanClass());
         Assertions.assertEquals(InheritingBean.class, infos.get("port").declarations().getFirst().beanClass());
+        Assertions.assertEquals(BeanA.class, infos.get("port").declarations().getFirst().declaringClass());
+        Assertions.assertEquals(InheritingBean.class, infos.get("extra").declarations().getFirst().declaringClass());
         Assertions.assertEquals(9000, infos.get("port").declarations().getFirst().defaultValue());
     }
 
@@ -249,8 +373,8 @@ public class ParameterInfoCollectorTest {
         for (int i = 0; i < requirements.length; i++) {
             final ParameterMetadata metadata = new ParameterMetadata("name", "field" + i, String.class,
                     false, true, false, requirements[i], null, true);
-            declarations.add(new ParameterDeclaration(BeanA.class, metadata, null, null));
+            declarations.add(new ParameterDeclaration(BeanA.class, BeanA.class, metadata, null, null, null, null));
         }
-        return new ParameterInfo("name", null, null, declarations);
+        return new ParameterInfo("name", declarations);
     }
 }

@@ -67,7 +67,7 @@ public @interface Parameter {
     /**
      * Whether this parameter contains sensitive data (e. g. passwords or secrets) which must not be exposed.
      *
-     * @see com.github.joschi.jadconfig.info.ParameterInfo#value()
+     * @see com.github.joschi.jadconfig.info.ParameterDeclaration#value()
      */
     boolean sensitive() default false;
 

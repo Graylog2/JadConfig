@@ -5,40 +5,59 @@ import jakarta.annotation.Nullable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
- * Information about a configuration parameter: where its value came from and where it has been declared.
+ * Information about a configuration parameter: where it has been declared and where its value came from.
  * <p>
- * The value and its source are the same for all declarations, since JadConfig looks up a parameter name the same
- * way regardless of the configuration bean declaring it.
+ * All declarations look up the parameter name the same way, but they may still resolve differently, e. g. if they
+ * define different {@link com.github.joschi.jadconfig.Parameter#fallbackPropertyName() fallback property names}.
+ * {@link #source()} and {@link #value()} are therefore only a summary, see {@link #declarations()} for the
+ * resolution of each declaration.
  *
  * @param name         The parameter name
- * @param source       Where the value has been read from, {@code null} if no repository provided a value and the
- *                     default value is used
- * @param value        The raw value read from the repository. Always {@code null} for {@link #isSensitive() sensitive}
- *                     parameters, the value isn't even stored in that case.
  * @param declarations All declarations of this parameter, in the order they have been processed
  */
 public record ParameterInfo(
         String name,
-        @Nullable ParameterSource source,
-        @Nullable String value,
         List<ParameterDeclaration> declarations
 ) {
 
     public ParameterInfo {
         Objects.requireNonNull(name, "name");
         declarations = List.copyOf(declarations);
-        if (declarations.stream().anyMatch(declaration -> declaration.metadata().sensitive())) {
-            value = null;
-        }
     }
 
     /**
-     * Whether no repository provided a value and the default value of the configuration bean(s) is used.
+     * The source of the first declaration which got its value from a repository, {@code null} if no declaration did.
+     *
+     * @see ParameterDeclaration#source()
+     */
+    @Nullable
+    public ParameterSource source() {
+        return firstResolvedDeclaration().map(ParameterDeclaration::source).orElse(null);
+    }
+
+    /**
+     * The value of the first declaration which got its value from a repository, {@code null} if no declaration did.
+     * Always {@code null} for {@link #isSensitive() sensitive} parameters.
+     *
+     * @see ParameterDeclaration#value()
+     */
+    @Nullable
+    public String value() {
+        if (isSensitive()) {
+            return null;
+        }
+        return firstResolvedDeclaration().map(ParameterDeclaration::value).orElse(null);
+    }
+
+    /**
+     * Whether no repository provided a value for any declaration, i. e. the default values of the configuration
+     * bean(s) are used.
      */
     public boolean isDefault() {
-        return source == null;
+        return declarations.stream().allMatch(ParameterDeclaration::isDefault);
     }
 
     /**
@@ -67,5 +86,11 @@ public record ParameterInfo(
             return RestartRequirement.NOT_REQUIRED;
         }
         return RestartRequirement.UNKNOWN;
+    }
+
+    private Optional<ParameterDeclaration> firstResolvedDeclaration() {
+        return declarations.stream()
+                .filter(declaration -> !declaration.isDefault())
+                .findFirst();
     }
 }

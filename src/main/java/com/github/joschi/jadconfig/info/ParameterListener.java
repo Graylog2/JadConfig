@@ -1,5 +1,7 @@
 package com.github.joschi.jadconfig.info;
 
+import jakarta.annotation.Nullable;
+
 /**
  * Callback notified by {@link com.github.joschi.jadconfig.JadConfig} for every configuration parameter which has
  * been processed successfully.
@@ -13,12 +15,11 @@ package com.github.joschi.jadconfig.info;
 public interface ParameterListener {
 
     /**
-     * @param name        The parameter name
-     * @param declaration The declaration of the parameter in the configuration bean
-     * @param source      Where the value has been read from, or {@code null} if no repository provided a value and
-     *                    the default value is being used
-     * @param value       The raw (trimmed) value read from the repository, or {@code null} if no repository provided
-     *                    a value. This is passed on even for sensitive parameters.
+     * @param declaration The declaration of the parameter in the configuration bean, including where its value has
+     *                    been read from. The parameter name is available via {@link ParameterMetadata#name()}.
+     * @param rawValue    The raw (trimmed if enabled) value read from the repository, or {@code null} if no repository
+     *                    provided a value. In contrast to {@link ParameterDeclaration#value()} this is passed on even
+     *                    for sensitive parameters.
      */
-    void onParameterProcessed(String name, ParameterDeclaration declaration, ParameterSource source, String value);
+    void onParameterProcessed(ParameterDeclaration declaration, @Nullable String rawValue);
 }

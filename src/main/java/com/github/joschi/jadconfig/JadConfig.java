@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
  */
 public class JadConfig {
     private static final Logger LOG = LoggerFactory.getLogger(JadConfig.class);
-    private final LinkedList<ConverterFactory> converterFactories = new LinkedList<ConverterFactory>();
+    private final LinkedList<ConverterFactory> converterFactories = new LinkedList<>();
     private final List<ParameterListener> parameterListeners = new ArrayList<>();
     // Field values of each configuration bean before it has been processed for the first time
     private final Map<Object, Map<Field, Object>> defaultValues = new IdentityHashMap<>();
@@ -173,7 +173,9 @@ public class JadConfig {
 
         final Map<Field, Object> values = new HashMap<>();
         for (Field field : fields) {
-            if (field.isAnnotationPresent(Parameter.class)) {
+            final Parameter parameter = field.getAnnotation(Parameter.class);
+            // Default values of sensitive parameters are never exposed, so don't keep them around
+            if (parameter != null && !parameter.sensitive()) {
                 values.put(field, getFieldValue(field, configurationBean));
             }
         }
@@ -227,17 +229,20 @@ public class JadConfig {
                 final Object defaultValue = defaultValues.get(configurationBean).get(field);
                 final ParameterDeclaration declaration = new ParameterDeclaration(
                         configurationBean.getClass(),
+                        field.getDeclaringClass(),
                         ParameterMetadata.of(field),
+                        resolvedValue == null ? null : resolvedValue.source(),
+                        parameterValue,
                         defaultValue,
                         defaultValueAsString(field.getType(), parameter.converter(), defaultValue));
-                notifyParameterListeners(parameterName, declaration, resolvedValue == null ? null : resolvedValue.source(), parameterValue);
+                notifyParameterListeners(declaration, parameterValue);
             }
         }
     }
 
-    private void notifyParameterListeners(String name, ParameterDeclaration declaration, ParameterSource source, String value) {
+    private void notifyParameterListeners(ParameterDeclaration declaration, String rawValue) {
         for (ParameterListener listener : parameterListeners) {
-            listener.onParameterProcessed(name, declaration, source, value);
+            listener.onParameterProcessed(declaration, rawValue);
         }
     }
 
