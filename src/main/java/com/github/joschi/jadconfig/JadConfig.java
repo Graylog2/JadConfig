@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -46,6 +47,8 @@ public class JadConfig {
     private final List<ParameterListener> parameterListeners = new ArrayList<>();
     // Field values of each configuration bean before it has been processed for the first time
     private final Map<Object, Map<Field, Object>> defaultValues = new IdentityHashMap<>();
+    // Names of parameters marked as sensitive by any declaration in any configuration bean
+    private Set<String> sensitiveParameterNames = Set.of();
     private List<Object> configurationBeans;
     private List<Repository> repositories;
 
@@ -60,7 +63,7 @@ public class JadConfig {
      * @see #setRepositories(Collection)
      */
     public JadConfig() {
-        this(Collections.<Repository>emptyList());
+        this(Collections.emptyList());
     }
 
     /**
@@ -105,6 +108,7 @@ public class JadConfig {
             repository.open();
         }
 
+        updateSensitiveParameterNames();
         for (Object configurationBean : configurationBeans) {
             LOG.debug("Processing configuration bean {}", configurationBean);
 
@@ -133,6 +137,7 @@ public class JadConfig {
             repository.open();
         }
 
+        updateSensitiveParameterNames();
         return configurationBeans.stream()
                 .peek(bean -> LOG.debug("Processing configuration bean {}", bean))
                 .map(this::processBean)
@@ -166,6 +171,26 @@ public class JadConfig {
         return fieldProcessingProblems;
     }
 
+    /**
+     * A parameter is sensitive if any of its declarations is marked as sensitive, regardless of which configuration
+     * bean declares it. Default values captured before a configuration bean marking a parameter as sensitive had been
+     * added are dropped.
+     */
+    private void updateSensitiveParameterNames() {
+        sensitiveParameterNames = configurationBeans.stream()
+                .flatMap(bean -> Arrays.stream(ReflectionUtils.getAllFields(bean.getClass())))
+                .map(field -> field.getAnnotation(Parameter.class))
+                .filter(parameter -> parameter != null && parameter.sensitive())
+                .map(Parameter::value)
+                .collect(Collectors.toUnmodifiableSet());
+        defaultValues.values().forEach(values ->
+                values.keySet().removeIf(field -> isSensitive(field.getAnnotation(Parameter.class))));
+    }
+
+    private boolean isSensitive(Parameter parameter) {
+        return parameter.sensitive() || sensitiveParameterNames.contains(parameter.value());
+    }
+
     private void captureDefaultValues(Object configurationBean, Field[] fields) {
         if (defaultValues.containsKey(configurationBean)) {
             return;
@@ -175,7 +200,7 @@ public class JadConfig {
         for (Field field : fields) {
             final Parameter parameter = field.getAnnotation(Parameter.class);
             // Default values of sensitive parameters are never exposed, so don't keep them around
-            if (parameter != null && !parameter.sensitive()) {
+            if (parameter != null && !isSensitive(parameter)) {
                 values.put(field, getFieldValue(field, configurationBean));
             }
         }
@@ -232,7 +257,7 @@ public class JadConfig {
                         field.getDeclaringClass(),
                         ParameterMetadata.of(field),
                         resolvedValue == null ? null : resolvedValue.source(),
-                        parameterValue,
+                        isSensitive(parameter) ? null : parameterValue,
                         defaultValue,
                         defaultValueAsString(field.getType(), parameter.converter(), defaultValue));
                 notifyParameterListeners(declaration, parameterValue);

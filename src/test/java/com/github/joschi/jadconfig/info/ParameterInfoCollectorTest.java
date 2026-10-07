@@ -52,6 +52,12 @@ public class ParameterInfoCollectorTest {
         private String apiKey = "default-secret";
     }
 
+    // Declares "password" without marking it as sensitive, unlike BeanA
+    public static class PlainPasswordBean {
+        @Parameter("password")
+        private String password = "plain-default";
+    }
+
     public static class OtherFallbackBean {
         @Parameter(value = "new_name", fallbackPropertyName = "other_old_name")
         private String renamed = "otherDefault";
@@ -186,10 +192,91 @@ public class ParameterInfoCollectorTest {
         final JadConfig jadConfig = new JadConfig(repository("api_key", "configured"), new SensitiveDefaultBean());
         jadConfig.process();
 
+        Assertions.assertFalse(retainedDefaultValues(jadConfig).contains("default-secret"));
+    }
+
+    /**
+     * Returns the default values {@link JadConfig} keeps in memory as a string.
+     */
+    private static String retainedDefaultValues(JadConfig jadConfig) throws ReflectiveOperationException {
         final Field defaultValuesField = JadConfig.class.getDeclaredField("defaultValues");
         defaultValuesField.setAccessible(true);
-        final Map<?, ?> defaultValues = (Map<?, ?>) defaultValuesField.get(jadConfig);
-        Assertions.assertFalse(defaultValues.toString().contains("default-secret"));
+        return defaultValuesField.get(jadConfig).toString();
+    }
+
+    @Test
+    public void hidesValuesOfAllDeclarationsIfAnyDeclarationIsSensitive() throws Exception {
+        final Map<String, ParameterInfo> infos = process(List.of(repository("password", "secret")), new PlainPasswordBean(), new BeanA());
+
+        final ParameterInfo password = infos.get("password");
+        Assertions.assertTrue(password.isSensitive());
+        Assertions.assertEquals(2, password.declarations().size());
+        for (ParameterDeclaration declaration : password.declarations()) {
+            Assertions.assertNotNull(declaration.source());
+            Assertions.assertNull(declaration.value());
+            Assertions.assertNull(declaration.defaultValue());
+            Assertions.assertNull(declaration.defaultValueAsString());
+        }
+        Assertions.assertFalse(password.toString().contains("secret"));
+        Assertions.assertFalse(password.toString().contains("plain-default"));
+    }
+
+    @Test
+    public void redactsInfoBuiltFromUnredactedDeclarations() {
+        final ParameterMetadata plain = new ParameterMetadata("password", "plain", String.class,
+                false, true, false, RestartRequirement.UNKNOWN, null, true);
+        final ParameterMetadata sensitive = new ParameterMetadata("password", "sensitive", String.class,
+                false, true, true, RestartRequirement.UNKNOWN, null, true);
+        final ParameterInfo info = new ParameterInfo("password", List.of(
+                new ParameterDeclaration(BeanA.class, BeanA.class, plain, null, "secret", "plain-default", "plain-default"),
+                new ParameterDeclaration(BeanB.class, BeanB.class, sensitive, null, null, null, null)));
+
+        Assertions.assertNull(info.declarations().getFirst().value());
+        Assertions.assertNull(info.declarations().getFirst().defaultValue());
+        Assertions.assertFalse(info.toString().contains("secret"));
+        Assertions.assertFalse(info.toString().contains("plain-default"));
+    }
+
+    @Test
+    public void redactsDeclarationsPassedToListenersIfParameterIsSensitiveElsewhere() throws Exception {
+        final List<ParameterDeclaration> declarations = new ArrayList<>();
+        final List<String> rawValues = new ArrayList<>();
+        final JadConfig jadConfig = new JadConfig(repository("password", "secret"), new PlainPasswordBean(), new BeanA())
+                .addParameterListener((declaration, rawValue) -> {
+                    if (declaration.metadata().name().equals("password")) {
+                        declarations.add(declaration);
+                        rawValues.add(rawValue);
+                    }
+                });
+        jadConfig.process();
+
+        Assertions.assertEquals(2, declarations.size());
+        Assertions.assertEquals(PlainPasswordBean.class, declarations.getFirst().beanClass());
+        Assertions.assertFalse(declarations.getFirst().metadata().sensitive());
+        Assertions.assertNull(declarations.getFirst().value());
+        Assertions.assertNull(declarations.getFirst().defaultValue());
+        Assertions.assertEquals(List.of("secret", "secret"), rawValues);
+        Assertions.assertFalse(retainedDefaultValues(jadConfig).contains("plain-default"));
+    }
+
+    @Test
+    public void redactsParameterMarkedSensitiveByLaterAddedBean() throws Exception {
+        final ParameterInfoCollector collector = new ParameterInfoCollector();
+        final JadConfig jadConfig = new JadConfig(repository("password", "secret"), new PlainPasswordBean())
+                .addParameterListener(collector);
+
+        jadConfig.process();
+        Assertions.assertEquals("secret", collector.getParameterInfos().get("password").value());
+        Assertions.assertTrue(retainedDefaultValues(jadConfig).contains("plain-default"));
+
+        jadConfig.addConfigurationBean(new BeanA());
+        jadConfig.process();
+
+        final ParameterInfo password = collector.getParameterInfos().get("password");
+        Assertions.assertTrue(password.isSensitive());
+        Assertions.assertFalse(password.toString().contains("secret"));
+        Assertions.assertFalse(password.toString().contains("plain-default"));
+        Assertions.assertFalse(retainedDefaultValues(jadConfig).contains("plain-default"));
     }
 
     @Test

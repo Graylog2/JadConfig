@@ -16,7 +16,8 @@ import java.util.Optional;
  * resolution of each declaration.
  *
  * @param name         The parameter name
- * @param declarations All declarations of this parameter, in the order they have been processed
+ * @param declarations All declarations of this parameter, in the order they have been processed. If any declaration
+ *                     is {@link #isSensitive() sensitive}, values and default values of all declarations are removed.
  */
 public record ParameterInfo(
         String name,
@@ -25,7 +26,12 @@ public record ParameterInfo(
 
     public ParameterInfo {
         Objects.requireNonNull(name, "name");
-        declarations = List.copyOf(declarations);
+        // A parameter is sensitive if any declaration says so, so don't expose values of the other declarations
+        if (declarations.stream().anyMatch(declaration -> declaration.metadata().sensitive())) {
+            declarations = declarations.stream().map(ParameterDeclaration::redacted).toList();
+        } else {
+            declarations = List.copyOf(declarations);
+        }
     }
 
     /**

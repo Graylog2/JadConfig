@@ -14,7 +14,8 @@ import java.util.Objects;
  * {@link com.github.joschi.jadconfig.Parameter#trim() trim} setting.
  * <p>
  * For {@link ParameterMetadata#sensitive() sensitive} parameters the value and the default values are always
- * {@code null}, they aren't even stored in that case.
+ * {@code null}, they aren't even stored in that case. This also applies to declarations which aren't marked as
+ * sensitive themselves if another declaration of the same parameter name is.
  *
  * @param beanClass            The class of the configuration bean declaring the parameter. For inherited fields this
  *                             is the class of the bean, not the superclass declaring the field.
@@ -47,6 +48,14 @@ public record ParameterDeclaration(
             defaultValue = null;
             defaultValueAsString = null;
         }
+    }
+
+    /**
+     * Returns a copy of this declaration without value and default values, used if another declaration of the same
+     * parameter has been marked as sensitive.
+     */
+    public ParameterDeclaration redacted() {
+        return new ParameterDeclaration(beanClass, declaringClass, metadata, source, null, null, null);
     }
 
     /**
