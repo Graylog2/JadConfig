@@ -111,7 +111,7 @@ to use it just add the Google Guice dependency to your `pom.xml`:
 <dependency>
     <groupId>com.google.inject</groupId>
     <artifactId>guice</artifactId>
-    <version>4.0</version>
+    <version>7.0.0</version>
 </dependency>
 ```
 
@@ -146,6 +146,9 @@ public class MyClass {
 // MyClass will be instantiated with the value of customConfig from the MyConfigBean instance.
 MyClass myClass = injector.getInstance(MyClass.class);
 ```
+Which `@Inject` and `@Named` annotations (`javax.inject`, `jakarta.inject` or Guice's own) are supported depends on
+your Guice version, see [JSR-330 Integration](https://github.com/google/guice/wiki/JSR330) in the Guice wiki for details.
+Annotations your Guice version doesn't support are silently ignored, so the parameter will not be injected.
 
 Please note that nullable properties which should be injected by Guice have to be annotated with `@Nullable`,
 see [UseNullable](https://github.com/google/guice/wiki/UseNullable) in the Guice wiki for details.
