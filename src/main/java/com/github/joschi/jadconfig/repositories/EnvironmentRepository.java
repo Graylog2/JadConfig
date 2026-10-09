@@ -64,15 +64,20 @@ public class EnvironmentRepository implements Repository {
 
     @Override
     public String read(final String name) {
-        final String envName;
+        return System.getenv(constructPropertyName(name));
+    }
 
+    @Override
+    public String describeSource(String name) {
+        return "environment variable " + constructPropertyName(name);
+    }
+
+    private String constructPropertyName(String name) {
         if (upperCase) {
-            envName = (prefix + name).toUpperCase();
+            return (prefix + name).toUpperCase();
         } else {
-            envName = prefix + name;
+            return prefix + name;
         }
-
-        return System.getenv(envName);
     }
 
     @Override

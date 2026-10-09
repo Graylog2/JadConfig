@@ -47,6 +47,11 @@ public class SystemPropertiesRepository implements Repository {
     }
 
     @Override
+    public String describeSource(String name) {
+        return "system property " + prefix + name;
+    }
+
+    @Override
     public void close() throws RepositoryException {
 
         // NOP

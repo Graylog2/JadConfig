@@ -2,6 +2,10 @@ package com.github.joschi.jadconfig;
 
 import com.github.joschi.jadconfig.converters.NoConverter;
 import com.github.joschi.jadconfig.converters.StringConverter;
+import com.github.joschi.jadconfig.info.ParameterDeclaration;
+import com.github.joschi.jadconfig.info.ParameterListener;
+import com.github.joschi.jadconfig.info.ParameterMetadata;
+import com.github.joschi.jadconfig.info.ParameterSource;
 import com.github.joschi.jadconfig.response.ProcessingOutcome;
 import com.github.joschi.jadconfig.response.ProcessingResponse;
 import org.slf4j.Logger;
@@ -15,11 +19,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -37,7 +43,12 @@ import java.util.stream.Collectors;
  */
 public class JadConfig {
     private static final Logger LOG = LoggerFactory.getLogger(JadConfig.class);
-    private final LinkedList<ConverterFactory> converterFactories = new LinkedList<ConverterFactory>();
+    private final LinkedList<ConverterFactory> converterFactories = new LinkedList<>();
+    private final List<ParameterListener> parameterListeners = new ArrayList<>();
+    // Field values of each configuration bean before it has been processed for the first time
+    private final Map<Object, Map<Field, Object>> defaultValues = new IdentityHashMap<>();
+    // Names of parameters marked as sensitive by any declaration in any configuration bean
+    private Set<String> sensitiveParameterNames = Set.of();
     private List<Object> configurationBeans;
     private List<Repository> repositories;
 
@@ -52,7 +63,7 @@ public class JadConfig {
      * @see #setRepositories(Collection)
      */
     public JadConfig() {
-        this(Collections.<Repository>emptyList());
+        this(Collections.emptyList());
     }
 
     /**
@@ -97,6 +108,7 @@ public class JadConfig {
             repository.open();
         }
 
+        updateSensitiveParameterNames();
         for (Object configurationBean : configurationBeans) {
             LOG.debug("Processing configuration bean {}", configurationBean);
 
@@ -125,6 +137,7 @@ public class JadConfig {
             repository.open();
         }
 
+        updateSensitiveParameterNames();
         return configurationBeans.stream()
                 .peek(bean -> LOG.debug("Processing configuration bean {}", bean))
                 .map(this::processBean)
@@ -139,6 +152,7 @@ public class JadConfig {
 
 
     private void processClassFields(Object configurationBean, Field[] fields) throws ValidationException {
+        captureDefaultValues(configurationBean, fields);
         for (Field field : fields) {
             processClassField(configurationBean, field);
         }
@@ -146,6 +160,7 @@ public class JadConfig {
 
     private Map<String, Exception> processClassFieldsFailingLazily(Object configurationBean, Field[] fields) {
         final Map<String, Exception> fieldProcessingProblems = new HashMap<>();
+        captureDefaultValues(configurationBean, fields);
         for (Field field : fields) {
             try {
                 processClassField(configurationBean, field);
@@ -154,6 +169,42 @@ public class JadConfig {
             }
         }
         return fieldProcessingProblems;
+    }
+
+    /**
+     * A parameter is sensitive if any of its declarations is marked as sensitive, regardless of which configuration
+     * bean declares it. Default values captured before a configuration bean marking a parameter as sensitive had been
+     * added are dropped.
+     */
+    private void updateSensitiveParameterNames() {
+        sensitiveParameterNames = configurationBeans.stream()
+                .flatMap(bean -> Arrays.stream(ReflectionUtils.getAllFields(bean.getClass())))
+                .map(field -> field.getAnnotation(Parameter.class))
+                .filter(parameter -> parameter != null && parameter.sensitive())
+                .map(Parameter::value)
+                .collect(Collectors.toUnmodifiableSet());
+        defaultValues.values().forEach(values ->
+                values.keySet().removeIf(field -> isSensitive(field.getAnnotation(Parameter.class))));
+    }
+
+    private boolean isSensitive(Parameter parameter) {
+        return parameter.sensitive() || sensitiveParameterNames.contains(parameter.value());
+    }
+
+    private void captureDefaultValues(Object configurationBean, Field[] fields) {
+        if (defaultValues.containsKey(configurationBean)) {
+            return;
+        }
+
+        final Map<Field, Object> values = new HashMap<>();
+        for (Field field : fields) {
+            final Parameter parameter = field.getAnnotation(Parameter.class);
+            // Default values of sensitive parameters are never exposed, so don't keep them around
+            if (parameter != null && !isSensitive(parameter)) {
+                values.put(field, getFieldValue(field, configurationBean));
+            }
+        }
+        defaultValues.put(configurationBean, values);
     }
 
     private void processClassField(Object configurationBean, Field field) throws ValidationException {
@@ -165,9 +216,9 @@ public class JadConfig {
             Object fieldValue = getFieldValue(field, configurationBean);
 
             String parameterName = parameter.value();
-            String parameterValue = lookupParameter(parameterName)
+            final ResolvedValue resolvedValue = lookupParameter(parameterName)
                     .orElseGet(() -> lookupFallbackParameter(parameter));
-
+            String parameterValue = resolvedValue == null ? null : resolvedValue.value();
 
             if (parameterValue == null && fieldValue == null && parameter.required()) {
                 throw new ParameterException("Required parameter \"" + parameterName + "\" not found.");
@@ -198,6 +249,38 @@ public class JadConfig {
             } catch (Exception e) {
                 throw new ParameterException("Couldn't set field " + field.getName(), e);
             }
+
+            if (!parameterListeners.isEmpty()) {
+                final Object defaultValue = defaultValues.get(configurationBean).get(field);
+                final ParameterDeclaration declaration = new ParameterDeclaration(
+                        configurationBean.getClass(),
+                        field.getDeclaringClass(),
+                        ParameterMetadata.of(field),
+                        resolvedValue == null ? null : resolvedValue.source(),
+                        isSensitive(parameter) ? null : parameterValue,
+                        defaultValue,
+                        defaultValueAsString(field.getType(), parameter.converter(), defaultValue));
+                notifyParameterListeners(declaration, parameterValue);
+            }
+        }
+    }
+
+    private void notifyParameterListeners(ParameterDeclaration declaration, String rawValue) {
+        for (ParameterListener listener : parameterListeners) {
+            listener.onParameterProcessed(declaration, rawValue);
+        }
+    }
+
+    private String defaultValueAsString(Class<?> fieldType, Class<? extends Converter<?>> converterClass, Object defaultValue) {
+        if (defaultValue == null) {
+            return null;
+        }
+
+        try {
+            return convertFieldValue(fieldType, converterClass, defaultValue);
+        } catch (RuntimeException e) {
+            LOG.debug("Couldn't convert default value of type {} to string", fieldType, e);
+            return String.valueOf(defaultValue);
         }
     }
 
@@ -209,8 +292,8 @@ public class JadConfig {
         validateParameter(validators, parameterName, fieldValue);
     }
 
-    private String lookupFallbackParameter(Parameter parameter) {
-        final Optional<String> fallbackValue = Optional.ofNullable(parameter.fallbackPropertyName())
+    private ResolvedValue lookupFallbackParameter(Parameter parameter) {
+        final Optional<ResolvedValue> fallbackValue = Optional.ofNullable(parameter.fallbackPropertyName())
                 .filter(fallbackName -> !fallbackName.trim().isEmpty())
                 .flatMap(this::lookupParameter);
         fallbackValue.ifPresent(value -> LOG.warn("Primary parameter {} not found, using the fallback value of {}. Please correct your configuration if possible.",
@@ -218,12 +301,22 @@ public class JadConfig {
         return fallbackValue.orElse(null);
     }
 
-    private Optional<String> lookupParameter(String parameterName) {
-        return repositories.stream()
-                .peek(repository -> LOG.debug("Looking up parameter {} in repository {}", parameterName, repository))
-                .map(repository -> repository.read(parameterName))
-                .filter(Objects::nonNull)
-                .findFirst();
+    private Optional<ResolvedValue> lookupParameter(String parameterName) {
+        for (Repository repository : repositories) {
+            LOG.debug("Looking up parameter {} in repository {}", parameterName, repository);
+            final String value = repository.read(parameterName);
+            if (value != null) {
+                return Optional.of(resolve(repository, parameterName, value));
+            }
+        }
+        return Optional.empty();
+    }
+
+    private ResolvedValue resolve(Repository repository, String name, String value) {
+        return new ResolvedValue(new ParameterSource(repository, name, repository.describeSource(name)), value);
+    }
+
+    private record ResolvedValue(ParameterSource source, String value) {
     }
 
     private Object convertStringValue(Class<?> fieldType, Class<? extends Converter<?>> converterClass, String stringValue) {
@@ -340,6 +433,18 @@ public class JadConfig {
         converterFactories.addFirst(converterFactory);
 
         LOG.info("Added converter factory {}", converterFactory);
+        return this;
+    }
+
+    /**
+     * Adds a {@link ParameterListener} which will be notified about every successfully processed parameter.
+     *
+     * @param parameterListener The {@link ParameterListener} to be added
+     * @return the JadConfig instance
+     * @see com.github.joschi.jadconfig.info.ParameterInfoCollector
+     */
+    public JadConfig addParameterListener(ParameterListener parameterListener) {
+        parameterListeners.add(Objects.requireNonNull(parameterListener, "parameterListener"));
         return this;
     }
 

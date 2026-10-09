@@ -100,6 +100,11 @@ public class PropertiesRepository implements Repository {
         return PROPERTIES.getProperty(name);
     }
 
+    @Override
+    public String describeSource(String name) {
+        return "properties file " + propertiesFile.getPath();
+    }
+
     /**
      * Close the underlying properties file.
      *

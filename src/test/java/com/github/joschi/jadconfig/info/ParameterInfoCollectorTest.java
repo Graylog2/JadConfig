@@ -1,0 +1,467 @@
+package com.github.joschi.jadconfig.info;
+
+import com.github.joschi.jadconfig.JadConfig;
+import com.github.joschi.jadconfig.Parameter;
+import com.github.joschi.jadconfig.Repository;
+import com.github.joschi.jadconfig.RepositoryException;
+import com.github.joschi.jadconfig.RestartRequirement;
+import com.github.joschi.jadconfig.ValidationException;
+import com.github.joschi.jadconfig.documentation.Documentation;
+import com.github.joschi.jadconfig.repositories.EnvironmentRepository;
+import com.github.joschi.jadconfig.repositories.InMemoryRepository;
+import com.github.joschi.jadconfig.repositories.SystemPropertiesRepository;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.Field;
+import java.util.*;
+
+public class ParameterInfoCollectorTest {
+
+    public static class BeanA {
+        @Documentation("The port to listen on")
+        @Parameter(value = "port", requiresRestart = RestartRequirement.REQUIRED)
+        private int port = 9000;
+
+        @Parameter(value = "tags")
+        private final List<String> tags = new ArrayList<>(Arrays.asList("a", "b"));
+
+        @Parameter(value = "password", required = true, sensitive = true)
+        private String password;
+
+        @Parameter(value = "new_name", fallbackPropertyName = "old_name", requiresRestart = RestartRequirement.NOT_REQUIRED)
+        private String renamed = "default";
+
+        @Documentation(visible = false)
+        @Parameter("shared")
+        private String shared = "fromA";
+    }
+
+    public static class InheritingBean extends BeanA {
+        @Parameter("extra")
+        private String extra = "x";
+    }
+
+    public static class BeanB {
+        @Parameter(value = "shared", requiresRestart = RestartRequirement.REQUIRED)
+        private Integer shared = 42;
+    }
+
+    public static class SensitiveDefaultBean {
+        @Parameter(value = "api_key", sensitive = true)
+        private String apiKey = "default-secret";
+    }
+
+    // Declares "password" without marking it as sensitive, unlike BeanA
+    public static class PlainPasswordBean {
+        @Parameter("password")
+        private String password = "plain-default";
+    }
+
+    public static class OtherFallbackBean {
+        @Parameter(value = "new_name", fallbackPropertyName = "other_old_name")
+        private String renamed = "otherDefault";
+    }
+
+    public static class NoFallbackBean {
+        @Parameter("new_name")
+        private String renamed = "noFallbackDefault";
+    }
+
+    public static class ShadowedBase {
+        @Parameter("shadowed")
+        private String shadowed = "base";
+    }
+
+    public static class ShadowingBean extends ShadowedBase {
+        @Parameter("shadowed")
+        private String shadowed = "sub";
+    }
+
+    private static InMemoryRepository repository(String... keyValues) {
+        final Map<String, String> properties = new HashMap<>();
+        for (int i = 0; i < keyValues.length; i += 2) {
+            properties.put(keyValues[i], keyValues[i + 1]);
+        }
+        return new InMemoryRepository(properties);
+    }
+
+    private static Map<String, ParameterInfo> process(List<Repository> repositories, Object... beans) throws RepositoryException, ValidationException {
+        final ParameterInfoCollector collector = new ParameterInfoCollector();
+        final JadConfig jadConfig = new JadConfig(repositories, beans).addParameterListener(collector);
+        jadConfig.process();
+        return collector.getParameterInfos();
+    }
+
+    @Test
+    public void recordsSourceOfFirstRepositoryProvidingValue() throws Exception {
+        final Repository first = repository("password", "secret");
+        final Repository second = repository("port", "1234", "password", "other");
+
+        final Map<String, ParameterInfo> infos = process(Arrays.asList(first, second), new BeanA());
+
+        final ParameterInfo port = infos.get("port");
+        Assertions.assertFalse(port.isDefault());
+        Assertions.assertNotNull(port.source());
+        Assertions.assertSame(second, port.source().repository());
+        Assertions.assertEquals("port", port.source().propertyName());
+        Assertions.assertEquals("InMemoryRepository", port.source().description());
+        Assertions.assertEquals("1234", port.value());
+
+        final ParameterInfo password = infos.get("password");
+        Assertions.assertNotNull(password.source());
+        Assertions.assertSame(first, password.source().repository());
+    }
+
+    @Test
+    public void recordsDeclaration() throws Exception {
+        final Map<String, ParameterInfo> infos = process(List.of(repository("port", "1234", "password", "secret")), new BeanA());
+
+        final ParameterDeclaration port = infos.get("port").declarations().getFirst();
+        Assertions.assertEquals(BeanA.class, port.beanClass());
+        Assertions.assertEquals("port", port.metadata().fieldName());
+        Assertions.assertEquals(int.class, port.metadata().type());
+        Assertions.assertEquals(9000, port.defaultValue());
+        Assertions.assertEquals("9000", port.defaultValueAsString());
+        Assertions.assertFalse(port.metadata().required());
+        Assertions.assertFalse(port.metadata().nullable());
+
+        final ParameterDeclaration tags = infos.get("tags").declarations().getFirst();
+        Assertions.assertEquals("java.util.List<java.lang.String>", tags.metadata().type().getTypeName());
+        Assertions.assertEquals("[a, b]", tags.defaultValueAsString());
+        Assertions.assertTrue(tags.metadata().nullable());
+
+        final ParameterDeclaration password = infos.get("password").declarations().getFirst();
+        Assertions.assertTrue(password.metadata().required());
+        Assertions.assertFalse(password.metadata().nullable());
+        Assertions.assertNull(password.defaultValue());
+        Assertions.assertNull(password.defaultValueAsString());
+    }
+
+    @Test
+    public void recordsParametersUsingDefaultValue() throws Exception {
+        final Map<String, ParameterInfo> infos = process(List.of(repository("password", "secret")), new BeanA());
+
+        final ParameterInfo tags = infos.get("tags");
+        Assertions.assertTrue(tags.isDefault());
+        Assertions.assertNull(tags.source());
+        Assertions.assertNull(tags.value());
+    }
+
+    @Test
+    public void recordsFallbackPropertyName() throws Exception {
+        final Map<String, ParameterInfo> infos = process(List.of(repository("password", "secret", "old_name", "legacy")), new BeanA());
+
+        final ParameterInfo renamed = infos.get("new_name");
+        Assertions.assertNotNull(renamed.source());
+        Assertions.assertEquals("old_name", renamed.source().propertyName());
+        Assertions.assertEquals("legacy", renamed.value());
+    }
+
+    @Test
+    public void hidesValueOfSensitiveParameters() throws Exception {
+        final Map<String, ParameterInfo> infos = process(List.of(repository("password", "secret")), new BeanA());
+
+        final ParameterInfo password = infos.get("password");
+        Assertions.assertTrue(password.isSensitive());
+        Assertions.assertNull(password.value());
+        Assertions.assertNotNull(password.source());
+        Assertions.assertFalse(password.toString().contains("secret"));
+    }
+
+    @Test
+    public void hidesDefaultValueOfSensitiveParameters() throws Exception {
+        final Map<String, ParameterInfo> infos = process(List.of(repository("password", "secret")), new SensitiveDefaultBean(), new BeanA());
+
+        final ParameterInfo apiKey = infos.get("api_key");
+        Assertions.assertTrue(apiKey.isSensitive());
+        Assertions.assertTrue(apiKey.isDefault());
+        final ParameterDeclaration declaration = apiKey.declarations().getFirst();
+        Assertions.assertNull(declaration.defaultValue());
+        Assertions.assertNull(declaration.defaultValueAsString());
+        Assertions.assertFalse(apiKey.toString().contains("default-secret"));
+
+        final ParameterDeclaration password = infos.get("password").declarations().getFirst();
+        Assertions.assertNotNull(password.source());
+        Assertions.assertNull(password.value());
+        Assertions.assertFalse(password.toString().contains("secret"));
+    }
+
+    @Test
+    public void doesNotRetainDefaultValueOfSensitiveParameters() throws Exception {
+        final JadConfig jadConfig = new JadConfig(repository("api_key", "configured"), new SensitiveDefaultBean());
+        jadConfig.process();
+
+        Assertions.assertFalse(retainedDefaultValues(jadConfig).contains("default-secret"));
+    }
+
+    /**
+     * Returns the default values {@link JadConfig} keeps in memory as a string.
+     */
+    private static String retainedDefaultValues(JadConfig jadConfig) throws ReflectiveOperationException {
+        final Field defaultValuesField = JadConfig.class.getDeclaredField("defaultValues");
+        defaultValuesField.setAccessible(true);
+        return defaultValuesField.get(jadConfig).toString();
+    }
+
+    @Test
+    public void hidesValuesOfAllDeclarationsIfAnyDeclarationIsSensitive() throws Exception {
+        final Map<String, ParameterInfo> infos = process(List.of(repository("password", "secret")), new PlainPasswordBean(), new BeanA());
+
+        final ParameterInfo password = infos.get("password");
+        Assertions.assertTrue(password.isSensitive());
+        Assertions.assertEquals(2, password.declarations().size());
+        for (ParameterDeclaration declaration : password.declarations()) {
+            Assertions.assertNotNull(declaration.source());
+            Assertions.assertNull(declaration.value());
+            Assertions.assertNull(declaration.defaultValue());
+            Assertions.assertNull(declaration.defaultValueAsString());
+        }
+        Assertions.assertFalse(password.toString().contains("secret"));
+        Assertions.assertFalse(password.toString().contains("plain-default"));
+    }
+
+    @Test
+    public void redactsInfoBuiltFromUnredactedDeclarations() {
+        final ParameterMetadata plain = new ParameterMetadata("password", "plain", String.class,
+                false, true, false, RestartRequirement.UNKNOWN, null, true);
+        final ParameterMetadata sensitive = new ParameterMetadata("password", "sensitive", String.class,
+                false, true, true, RestartRequirement.UNKNOWN, null, true);
+        final ParameterInfo info = new ParameterInfo("password", List.of(
+                new ParameterDeclaration(BeanA.class, BeanA.class, plain, null, "secret", "plain-default", "plain-default"),
+                new ParameterDeclaration(BeanB.class, BeanB.class, sensitive, null, null, null, null)));
+
+        Assertions.assertNull(info.declarations().getFirst().value());
+        Assertions.assertNull(info.declarations().getFirst().defaultValue());
+        Assertions.assertFalse(info.toString().contains("secret"));
+        Assertions.assertFalse(info.toString().contains("plain-default"));
+    }
+
+    @Test
+    public void redactsDeclarationsPassedToListenersIfParameterIsSensitiveElsewhere() throws Exception {
+        final List<ParameterDeclaration> declarations = new ArrayList<>();
+        final List<String> rawValues = new ArrayList<>();
+        final JadConfig jadConfig = new JadConfig(repository("password", "secret"), new PlainPasswordBean(), new BeanA())
+                .addParameterListener((declaration, rawValue) -> {
+                    if (declaration.metadata().name().equals("password")) {
+                        declarations.add(declaration);
+                        rawValues.add(rawValue);
+                    }
+                });
+        jadConfig.process();
+
+        Assertions.assertEquals(2, declarations.size());
+        Assertions.assertEquals(PlainPasswordBean.class, declarations.getFirst().beanClass());
+        Assertions.assertFalse(declarations.getFirst().metadata().sensitive());
+        Assertions.assertNull(declarations.getFirst().value());
+        Assertions.assertNull(declarations.getFirst().defaultValue());
+        Assertions.assertEquals(List.of("secret", "secret"), rawValues);
+        Assertions.assertFalse(retainedDefaultValues(jadConfig).contains("plain-default"));
+    }
+
+    @Test
+    public void redactsParameterMarkedSensitiveByLaterAddedBean() throws Exception {
+        final ParameterInfoCollector collector = new ParameterInfoCollector();
+        final JadConfig jadConfig = new JadConfig(repository("password", "secret"), new PlainPasswordBean())
+                .addParameterListener(collector);
+
+        jadConfig.process();
+        Assertions.assertEquals("secret", collector.getParameterInfos().get("password").value());
+        Assertions.assertTrue(retainedDefaultValues(jadConfig).contains("plain-default"));
+
+        jadConfig.addConfigurationBean(new BeanA());
+        jadConfig.process();
+
+        final ParameterInfo password = collector.getParameterInfos().get("password");
+        Assertions.assertTrue(password.isSensitive());
+        Assertions.assertFalse(password.toString().contains("secret"));
+        Assertions.assertFalse(password.toString().contains("plain-default"));
+        Assertions.assertFalse(retainedDefaultValues(jadConfig).contains("plain-default"));
+    }
+
+    @Test
+    public void passesRawValueOfSensitiveParametersToListeners() throws Exception {
+        final Map<String, String> rawValues = new HashMap<>();
+        final JadConfig jadConfig = new JadConfig(repository("password", "secret"), new BeanA())
+                .addParameterListener((declaration, rawValue) -> rawValues.put(declaration.metadata().name(), rawValue));
+        jadConfig.process();
+
+        Assertions.assertEquals("secret", rawValues.get("password"));
+    }
+
+    @Test
+    public void recordsResolutionPerDeclaration() throws Exception {
+        final Map<String, ParameterInfo> infos = process(
+                List.of(repository("password", "secret", "old_name", "legacy", "other_old_name", "other")),
+                new BeanA(), new OtherFallbackBean(), new NoFallbackBean());
+
+        final ParameterInfo renamed = infos.get("new_name");
+        Assertions.assertEquals(3, renamed.declarations().size());
+
+        final ParameterDeclaration a = renamed.declarations().getFirst();
+        Assertions.assertEquals(BeanA.class, a.beanClass());
+        Assertions.assertEquals("old_name", Objects.requireNonNull(a.source()).propertyName());
+        Assertions.assertEquals("legacy", a.value());
+
+        final ParameterDeclaration other = renamed.declarations().get(1);
+        Assertions.assertEquals(OtherFallbackBean.class, other.beanClass());
+        Assertions.assertEquals("other_old_name", Objects.requireNonNull(other.source()).propertyName());
+        Assertions.assertEquals("other", other.value());
+
+        final ParameterDeclaration noFallback = renamed.declarations().get(2);
+        Assertions.assertEquals(NoFallbackBean.class, noFallback.beanClass());
+        Assertions.assertTrue(noFallback.isDefault());
+        Assertions.assertNull(noFallback.value());
+
+        Assertions.assertFalse(renamed.isDefault());
+        Assertions.assertEquals("old_name", Objects.requireNonNull(renamed.source()).propertyName());
+        Assertions.assertEquals("legacy", renamed.value());
+    }
+
+    @Test
+    public void summaryDoesNotDependOnProcessingOrder() throws Exception {
+        final Map<String, ParameterInfo> infos = process(
+                List.of(repository("password", "secret", "old_name", "legacy")),
+                new NoFallbackBean(), new BeanA());
+
+        final ParameterInfo renamed = infos.get("new_name");
+        Assertions.assertTrue(renamed.declarations().get(0).isDefault());
+        Assertions.assertFalse(renamed.declarations().get(1).isDefault());
+        Assertions.assertFalse(renamed.isDefault());
+        Assertions.assertEquals("old_name", Objects.requireNonNull(renamed.source()).propertyName());
+        Assertions.assertEquals("legacy", renamed.value());
+    }
+
+    @Test
+    public void keepsDeclarationsOfShadowedFields() throws Exception {
+        final Map<String, ParameterInfo> infos = process(List.of(repository("shadowed", "value")), new ShadowingBean());
+
+        final List<ParameterDeclaration> declarations = infos.get("shadowed").declarations();
+        Assertions.assertEquals(2, declarations.size());
+        Assertions.assertEquals(ShadowingBean.class, declarations.getFirst().beanClass());
+        Assertions.assertEquals(ShadowingBean.class, declarations.get(0).declaringClass());
+        Assertions.assertEquals("sub", declarations.get(0).defaultValue());
+        Assertions.assertEquals(ShadowingBean.class, declarations.get(1).beanClass());
+        Assertions.assertEquals(ShadowedBase.class, declarations.get(1).declaringClass());
+        Assertions.assertEquals("base", declarations.get(1).defaultValue());
+    }
+
+    @Test
+    public void keepsDefaultValuesWhenProcessingRepeatedly() throws Exception {
+        final ParameterInfoCollector collector = new ParameterInfoCollector();
+        final BeanA beanA = new BeanA();
+        final JadConfig jadConfig = new JadConfig(repository("port", "1234", "password", "secret"), beanA)
+                .addParameterListener(collector);
+
+        jadConfig.process();
+        jadConfig.addConfigurationBean(new BeanB());
+        jadConfig.process();
+
+        final Map<String, ParameterInfo> infos = collector.getParameterInfos();
+        Assertions.assertEquals(1234, beanA.port);
+        Assertions.assertEquals(1, infos.get("port").declarations().size());
+        Assertions.assertEquals(9000, infos.get("port").declarations().getFirst().defaultValue());
+        Assertions.assertEquals(2, infos.get("shared").declarations().size());
+    }
+
+    @Test
+    public void collectsAllDeclarationsOfParameter() throws Exception {
+        final Map<String, ParameterInfo> infos = process(List.of(repository("password", "secret", "shared", "7")), new BeanA(), new BeanB());
+
+        final ParameterInfo shared = infos.get("shared");
+        Assertions.assertEquals("7", shared.value());
+        Assertions.assertEquals(2, shared.declarations().size());
+        Assertions.assertEquals(BeanA.class, shared.declarations().get(0).beanClass());
+        Assertions.assertEquals("fromA", shared.declarations().get(0).defaultValue());
+        Assertions.assertEquals(BeanB.class, shared.declarations().get(1).beanClass());
+        Assertions.assertEquals(42, shared.declarations().get(1).defaultValue());
+        Assertions.assertEquals(Integer.class, shared.declarations().get(1).metadata().type());
+    }
+
+    @Test
+    public void describesEnvironmentAndSystemPropertySources() throws Exception {
+        final String property = "jadconfig.test.port";
+        System.setProperty(property, "1234");
+        try {
+            final Map<String, ParameterInfo> infos = process(Arrays.asList(
+                    new SystemPropertiesRepository("jadconfig.test."),
+                    repository("password", "secret")), new BeanA());
+
+            Assertions.assertEquals("system property jadconfig.test.port", Objects.requireNonNull(infos.get("port").source()).description());
+        } finally {
+            System.clearProperty(property);
+        }
+
+        Assertions.assertEquals("environment variable GRAYLOG_HTTP_BIND_ADDRESS",
+                new EnvironmentRepository("GRAYLOG_").describeSource("http_bind_address"));
+    }
+
+    @Test
+    public void recordsDocumentation() throws Exception {
+        final Map<String, ParameterInfo> infos = process(List.of(repository("password", "secret")), new BeanA());
+
+        final ParameterMetadata port = infos.get("port").declarations().getFirst().metadata();
+        Assertions.assertEquals("The port to listen on", port.documentation());
+        Assertions.assertTrue(port.visible());
+
+        final ParameterMetadata shared = infos.get("shared").declarations().getFirst().metadata();
+        Assertions.assertNull(shared.documentation());
+        Assertions.assertFalse(shared.visible());
+
+        final ParameterMetadata tags = infos.get("tags").declarations().getFirst().metadata();
+        Assertions.assertNull(tags.documentation());
+        Assertions.assertTrue(tags.visible());
+    }
+
+    @Test
+    public void recordsInheritedParametersWithBeanClass() throws Exception {
+        final Map<String, ParameterInfo> infos = process(List.of(repository("password", "secret")), new InheritingBean());
+
+        Assertions.assertEquals(InheritingBean.class, infos.get("extra").declarations().getFirst().beanClass());
+        Assertions.assertEquals(InheritingBean.class, infos.get("port").declarations().getFirst().beanClass());
+        Assertions.assertEquals(BeanA.class, infos.get("port").declarations().getFirst().declaringClass());
+        Assertions.assertEquals(InheritingBean.class, infos.get("extra").declarations().getFirst().declaringClass());
+        Assertions.assertEquals(9000, infos.get("port").declarations().getFirst().defaultValue());
+    }
+
+    @Test
+    public void recordsRequiresRestart() throws Exception {
+        final Map<String, ParameterInfo> infos = process(List.of(repository("password", "secret")), new BeanA(), new BeanB());
+
+        Assertions.assertEquals(RestartRequirement.REQUIRED, infos.get("port").declarations().getFirst().metadata().requiresRestart());
+        Assertions.assertEquals(RestartRequirement.REQUIRED, infos.get("port").requiresRestart());
+
+        Assertions.assertEquals(RestartRequirement.NOT_REQUIRED, infos.get("new_name").requiresRestart());
+
+        // Not annotated
+        Assertions.assertEquals(RestartRequirement.UNKNOWN, infos.get("tags").declarations().getFirst().metadata().requiresRestart());
+        Assertions.assertEquals(RestartRequirement.UNKNOWN, infos.get("tags").requiresRestart());
+
+        // Required by one of the declarations, unknown for the other one
+        final ParameterInfo shared = infos.get("shared");
+        Assertions.assertEquals(RestartRequirement.UNKNOWN, shared.declarations().get(0).metadata().requiresRestart());
+        Assertions.assertEquals(RestartRequirement.REQUIRED, shared.declarations().get(1).metadata().requiresRestart());
+        Assertions.assertEquals(RestartRequirement.REQUIRED, shared.requiresRestart());
+    }
+
+    @Test
+    public void combinesRestartRequirementsOfDeclarations() {
+        Assertions.assertEquals(RestartRequirement.NOT_REQUIRED,
+                info(RestartRequirement.NOT_REQUIRED, RestartRequirement.NOT_REQUIRED).requiresRestart());
+        Assertions.assertEquals(RestartRequirement.UNKNOWN,
+                info(RestartRequirement.NOT_REQUIRED, RestartRequirement.UNKNOWN).requiresRestart());
+        Assertions.assertEquals(RestartRequirement.REQUIRED,
+                info(RestartRequirement.NOT_REQUIRED, RestartRequirement.REQUIRED).requiresRestart());
+        Assertions.assertEquals(RestartRequirement.UNKNOWN, info().requiresRestart());
+    }
+
+    private static ParameterInfo info(RestartRequirement... requirements) {
+        final List<ParameterDeclaration> declarations = new ArrayList<>();
+        for (int i = 0; i < requirements.length; i++) {
+            final ParameterMetadata metadata = new ParameterMetadata("name", "field" + i, String.class,
+                    false, true, false, requirements[i], null, true);
+            declarations.add(new ParameterDeclaration(BeanA.class, BeanA.class, metadata, null, null, null, null));
+        }
+        return new ParameterInfo("name", declarations);
+    }
+}
